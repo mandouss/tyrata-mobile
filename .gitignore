@@ -1,5 +1,7 @@
 # Template from https://github.com/github/gitignore/blob/master/Android.gitignore
 
+.idea/
+
 # Built application files
 *.apk
 *.ap_
