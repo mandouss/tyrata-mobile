@@ -1,7 +1,5 @@
 # Template from https://github.com/github/gitignore/blob/master/Android.gitignore
 
-.idea/
-
 # Built application files
 *.apk
 *.ap_
@@ -40,13 +38,12 @@ captures/
 
 # IntelliJ
 *.iml
+.idea/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/dictionaries
 .idea/libraries
-/.idea/workspace.xml
-/.idea/libraries
 
 # Keystore files
 *.jks
