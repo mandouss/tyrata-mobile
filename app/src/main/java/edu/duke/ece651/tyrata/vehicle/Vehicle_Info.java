@@ -14,7 +14,7 @@ public class Vehicle_Info extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.vehicle_info);
+        setContentView(R.layout.activity_vehicle__info);
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
@@ -37,10 +37,13 @@ public class Vehicle_Info extends AppCompatActivity {
         TextView textView_vin = findViewById(R.id.textView_vin);
         textView_vin.setText(message_vin);
     }
+
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
 
         startActivity(intent);
         // Do something in response to button
     }
+
+
 }

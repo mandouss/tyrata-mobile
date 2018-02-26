@@ -8,51 +8,74 @@
 
     <EditText
         android:id="@+id/input_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Enter your password"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@+id/input_username"
-        tools:layout_editor_absoluteX="170dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/login_password"
+        app:layout_constraintTop_toBottomOf="@+id/input_username" />
 
     <TextView
         android:id="@+id/login_password"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:text="Password: "
-        android:textSize="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/login_username"
-        tools:layout_editor_absoluteX="30dp" />
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/input_password"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_username" />
 
     <TextView
         android:id="@+id/login_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
         android:text="Username: "
-        android:textSize="25dp"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="236dp" />
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/input_username"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
         android:id="@+id/input_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="24dp"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Enter your username"
         android:inputType="textPersonName"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="225dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/login_username"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:onClick="switchto_main"
         android:text="Log in"
-        app:layout_constraintTop_toBottomOf="@+id/login_password"
-        tools:layout_editor_absoluteX="94dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_password" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="230dp"
+        android:layout_height="242dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/tyrata" />
 </android.support.constraint.ConstraintLayout>

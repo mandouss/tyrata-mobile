@@ -4,19 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tyrata.Input_Vehicle_Info">
+    tools:context="edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Please input your vehicle information: "
+        android:textSize="22dip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/Make"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="Make: "
         android:textSize="25dp"
         app:layout_constraintEnd_toStartOf="@+id/edit_make"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_input_vehicle" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         android:id="@+id/Model"
@@ -58,14 +69,14 @@
         android:id="@+id/edit_make"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="@string/edit_vehicle_make"
         android:inputType="textLongMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Make"
-        app:layout_constraintTop_toBottomOf="@+id/title_input_vehicle" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <EditText
         android:id="@+id/edit_model"
@@ -109,7 +120,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_year" />
 
     <Button
-        android:id="@+id/button_submit_m"
+        android:id="@+id/button_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
@@ -122,17 +133,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/VIN"
         app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/title_input_vehicle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:text="Please input your vehicle information: "
-        android:textSize="22dip"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
 </android.support.constraint.ConstraintLayout>
