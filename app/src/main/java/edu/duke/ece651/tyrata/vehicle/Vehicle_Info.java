@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 
 public class Vehicle_Info extends AppCompatActivity {
-
+    private Integer buttonnumber = 0;
+    private Button left3;
+    private Button right3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,18 @@ public class Vehicle_Info extends AppCompatActivity {
         String message_vin = intent.getStringExtra("VIN");
         TextView textView_vin = findViewById(R.id.textView_vin);
         textView_vin.setText(message_vin);
+
+        String message_tirenumber = intent.getStringExtra("TIRENUMBER");
+        TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
+        textView_tirenumber.setText(message_tirenumber);
+
+        buttonnumber=Integer.parseInt(message_tirenumber);
+        left3 = (Button)findViewById(R.id.button_letf3);
+        right3 = (Button)findViewById(R.id.button_right3);
+        if( buttonnumber==6){
+            left3.setVisibility(View.VISIBLE);
+            right3.setVisibility(View.VISIBLE);
+        }
     }
 
     public void switchToEdit(View view) {

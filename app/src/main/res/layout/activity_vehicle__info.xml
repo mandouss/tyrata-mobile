@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="edu.duke.ece651.tyrata.vehicle.Vehicle_Info">
 
+
     <TextView
         android:id="@+id/textView_make"
         android:layout_width="250dp"
@@ -144,48 +145,48 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_front-left"
+        android:id="@+id/button_left1"
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="50dp"
-        android:text=" front-left"
-        app:layout_constraintEnd_toStartOf="@+id/button_front-right"
+        android:text="left 1"
+        app:layout_constraintEnd_toStartOf="@+id/button_right1"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
 
     <Button
-        android:id="@+id/button_rear-left"
+        android:id="@+id/button_left2"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="rear-left"
-        app:layout_constraintEnd_toStartOf="@+id/button_rear-right"
+        android:layout_marginTop="20dp"
+        android:text="left 2"
+        app:layout_constraintEnd_toStartOf="@+id/button_right2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_front-left" />
+        app:layout_constraintTop_toBottomOf="@+id/button_left1" />
 
     <Button
-        android:id="@+id/button_front-right"
+        android:id="@+id/button_right1"
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="50dp"
-        android:text="front-right"
+        android:text="right 1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_front-left"
+        app:layout_constraintStart_toEndOf="@+id/button_left1"
         app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
 
     <Button
-        android:id="@+id/button_rear-right"
+        android:id="@+id/button_right2"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="rear-right"
+        android:layout_marginTop="20dp"
+        android:text="right 2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_rear-left"
-        app:layout_constraintTop_toBottomOf="@+id/button_front-right" />
+        app:layout_constraintStart_toEndOf="@+id/button_left2"
+        app:layout_constraintTop_toBottomOf="@+id/button_right1" />
 
     <TextView
         android:id="@+id/textView"
@@ -197,5 +198,29 @@
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
+
+    <Button
+        android:id="@+id/button_letf3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="left 3"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/button_right3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_left2" />
+
+    <Button
+        android:id="@+id/button_right3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="right 3"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_letf3"
+        app:layout_constraintTop_toBottomOf="@+id/button_right2" />
 
 </android.support.constraint.ConstraintLayout>

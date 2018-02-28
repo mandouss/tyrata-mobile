@@ -16,14 +16,36 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_addcar"
+        android:id="@+id/main_addcar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="switchto_addcar"
+        android:onClick="main_to_addcar"
         android:text="Add a car"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="47dp" />
+
+    <Button
+        android:id="@+id/main_report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:onClick="main_to_report"
+        android:text="Report"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_addcar" />
+
+    <Button
+        android:id="@+id/main_vehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:onClick="main_to_vehicleinfo"
+        android:text="vehicle info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_report" />
 
 </android.support.constraint.ConstraintLayout>

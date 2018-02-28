@@ -9,24 +9,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        
-        <activity android:name=".MainActivity"
-            android:parentActivityName=".user.Log_in">
-        </activity>
-        
+        <activity
+            android:name=".MainActivity"
+            android:parentActivityName=".user.Log_in" />
         <activity android:name=".user.Log_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".calibration.Input_Vehicle_Info"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        
-        <activity android:name=".vehicle.Vehicle_Info"
-            android:parentActivityName=".MainActivity">
-        </activity>
+        <activity
+            android:name=".calibration.Input_Vehicle_Info"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".vehicle.Vehicle_Info"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".user.Register"
+            android:parentActivityName=".user.Log_in"/>
+        <activity
+            android:name=".vehicle.Report_accident"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

@@ -14,8 +14,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void switchto_addcar(View view) {
+    public void main_to_addcar(View view) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
+
+        startActivity(intent);
+        // Do something in response to button
+    }
+    public void main_to_report(View view) {
+        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.vehicle.Report_accident.class);
+
+        startActivity(intent);
+        // Do something in response to button
+    }
+
+    public void main_to_vehicleinfo(View view) {
+        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.vehicle.Vehicle_Info.class);
 
         startActivity(intent);
         // Do something in response to button

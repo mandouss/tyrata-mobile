@@ -8,21 +8,15 @@ import android.view.View;
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 
-public class Log_in extends AppCompatActivity {
+public class Register extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        setContentView(R.layout.activity_register);
     }
-    public void switchto_main(View view) {
-        Intent intent = new Intent(Log_in.this, MainActivity.class);
-
-        startActivity(intent);
-        // Do something in response to button
-    }
-    public void switchto_register(View view) {
-        Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
+    public void Register_to_main(View view) {
+        Intent intent = new Intent(Register.this, edu.duke.ece651.tyrata.MainActivity.class);
 
         startActivity(intent);
         // Do something in response to button
