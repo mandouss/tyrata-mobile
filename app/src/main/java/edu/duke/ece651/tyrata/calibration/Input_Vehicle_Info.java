@@ -27,7 +27,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
-        //为dataList赋值，将下面这些数据添加到数据源中
+
         dataList = new ArrayList<String>();
         dataList.add("4");
         dataList.add("6");
