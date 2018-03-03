@@ -1,6 +1,6 @@
 package edu.duke.ece651.tyrata.communication;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,16 @@ import android.widget.Toast;
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
 
+/**
+ * Example Activity using Bluetooth API
+ * @author Saeed Alrahma
+ * Created by Saeed on 2/25/2018.
+ */
+
 public class BluetoothActivity extends AppCompatActivity {
+
+    /* GLOBAL VARIABLES */
+    private BluetoothDevice mBluetoothDevice; // device to connect to
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +44,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
-        BluetoothAPI.enableBt(this);
+        BluetoothAPI.enableBt(this, mHandler);
     }
 
     @Override
@@ -44,15 +52,9 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onDestroy();
 
         BluetoothAPI.disableBt();
+        BluetoothAPI.closeBtConnection();
 
-        // @todo move unregister to proper location (maybe onClick to connect)
         unregisterReceiver(mReceiver);
-    }
-
-    // @todo remove this function
-    public void connectBluetooth(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "connectBluetooth()");
-        BluetoothAPI.enableBt(this);
     }
 
     public void pairedBluetooth(View view) {
@@ -68,6 +70,29 @@ public class BluetoothActivity extends AppCompatActivity {
         setTitle("Discovering Bluetooth Devices");
 
         BluetoothAPI.discoverDevicesBt(this);
+    }
+
+    public void acceptBluetooth(View view) {
+        Log.d(Common.LOG_TAG_BT_ACTIVITY, "acceptBluetooth()");
+
+        BluetoothAPI.acceptBt();
+
+    }
+
+    public void connectBluetooth(View view) {
+        Log.d(Common.LOG_TAG_BT_ACTIVITY, "connectBluetooth()");
+
+        if(mBluetoothDevice != null) {
+            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Connecting to device " + mBluetoothDevice);
+            BluetoothAPI.connectBt(mBluetoothDevice);
+        }
+        else
+            Log.d(Common.LOG_TAG_BT_ACTIVITY, "No device to connect to...");
+
+    }
+
+    public void sendMsg(View view) {
+        BluetoothAPI.write("Test".getBytes());
     }
 
     @Override
@@ -114,6 +139,10 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
                 Log.v(Common.LOG_TAG_BT_ACTIVITY, "Device name: " + device.getName() + ", " +
                         "MAC address: " + device.getAddress());
+                if(device.getName() != null && device.getName().equalsIgnoreCase("GT-N7100")) {
+                    Log.d(Common.LOG_TAG_BT_ACTIVITY, "Found device " + device.getName());
+                    mBluetoothDevice = device;
+                }
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive DISCOVERY_STARTED");
@@ -130,24 +159,39 @@ public class BluetoothActivity extends AppCompatActivity {
      * The Handler that gets information back from the BluetoothChatService
      */
     // @todo fix "This handler class should be static or leaks might occur" warning
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.i(Common.LOG_TAG_BT_ACTIVITY, "mHandler with type " + msg.what);
             switch (msg.what) {
                 case Common.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     Log.d(Common.LOG_TAG_BT_ACTIVITY, readMessage);
+                    Toast.makeText(getApplicationContext(), "Msg read: "
+                            + readMessage, Toast.LENGTH_LONG).show();
                     break;
                 case Common.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
+                    String writeMessage = new String(writeBuf, 0, msg.arg1);
+                    Log.d(Common.LOG_TAG_BT_ACTIVITY, writeMessage);
+                    Toast.makeText(getApplicationContext(), "Msg written: "
+                            + writeMessage, Toast.LENGTH_LONG).show();
                     break;
                 case Common.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), "Toast Msg", Toast.LENGTH_SHORT).show();
                     break;
+                case Common.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    String deviceName = msg.getData().getString(Common.DEVICE_NAME);
+                    Toast.makeText(getApplicationContext(), "Connected to "
+                            + deviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.w(Common.LOG_TAG_BT_ACTIVITY, "Unknown message passed to handler: " + msg.what);
             }
         }
     };

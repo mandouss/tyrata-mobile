@@ -25,17 +25,23 @@ import edu.duke.ece651.tyrata.Common;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
+ * This class has Bluetooth API
+ * @author Saeed Alrahma
  * Created by Saeed on 2/25/2018.
  */
 
-public class BluetoothAPI {
+class BluetoothAPI {
     /* Constants */
 
     /* GLOBAL */
     private static BluetoothAdapter mBluetoothAdapter; // Device BluetoothAPI adapter (required for all BluetoothAPI activity)
+    private static AcceptThread mAcceptThread;
+    private static ConnectThread mConnectThread;
+    private static ConnectedThread mConnectedThread;
+    private static Handler mHandler; // handler that gets info from Bluetooth service
 
     /* Functions */
-    static void enableBt(Activity activity) {
+    static void enableBt(Activity activity, Handler handler) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device doesn't support BluetoothAPI
@@ -49,6 +55,8 @@ public class BluetoothAPI {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(activity, enableBtIntent, Common.REQUEST_ENABLE_BT, null);
         }
+
+        mHandler = handler;
     }
 
     static void disableBt() {
@@ -111,12 +119,87 @@ public class BluetoothAPI {
         */
     }
 
+    static void acceptBt() {
+        // Start the thread to listen on a BluetoothServerSocket
+        if (mAcceptThread == null) {
+            Log.d(Common.LOG_TAG_BT_API, "Starting AcceptThread");
+            mAcceptThread = new AcceptThread();
+            mAcceptThread.start();
+        }
+        Log.d(Common.LOG_TAG_BT_API, "Starting ConnectThread...");
+    }
+
+    static void connectBt(BluetoothDevice device) {
+        // Start the thread to connect with the given device
+        if (mConnectThread == null) {
+            mConnectThread = new ConnectThread(device);
+            mConnectThread.start();
+        }
+        Log.d(Common.LOG_TAG_BT_API, "ConnectThread already exists");
+    }
+
+    /** Cancel all threads
+     *
+     */
+    static void closeBtConnection() {
+        if (mAcceptThread != null)
+            mAcceptThread.cancel();
+
+        if (mConnectThread != null)
+            mConnectThread.cancel();
+
+        if (mConnectedThread != null)
+            mConnectedThread.cancel();
+
+        mAcceptThread = null;
+        mConnectThread = null;
+        mConnectedThread = null;
+    }
+
+    /**
+     * Start the ConnectedThread to begin managing a Bluetooth connection
+     *
+     * @param socket The BluetoothSocket on which the connection was made
+     * @param device The BluetoothDevice that has been connected
+     */
+    private static void connectedBt(BluetoothSocket socket, BluetoothDevice device) {
+        // Start the thread to manage the connection and perform transmissions
+        mConnectedThread = new ConnectedThread(socket);
+        mConnectedThread.start();
+        // Send the name of the connected device back to the UI Activity
+        Message msg = mHandler.obtainMessage(Common.MESSAGE_DEVICE_NAME);
+        Bundle bundle = new Bundle();
+        bundle.putString(Common.DEVICE_NAME, device.getName());
+        msg.setData(bundle);
+        mHandler.sendMessage(msg);
+    }
+
+    /**
+     * Write to the ConnectedThread
+     *
+     * @param out The bytes to write
+     * @see ConnectedThread#write(byte[])
+     */
+    static void write(byte[] out) {
+        if (mConnectedThread != null) {
+            Log.d(Common.LOG_TAG_BT_API, "Writing to device through Bluetooth");
+            // Perform the write
+            mConnectedThread.write(out);
+        } else {
+            Log.d(Common.LOG_TAG_BT_API, "No ConnectedThread Available");
+        }
+    }
 
 
-    private class AcceptThread extends Thread {
+    /**
+     * This thread runs while listening for incoming connections. It behaves
+     * like a server-side client. It runs until a connection is accepted
+     * (or until cancelled).
+     */
+    private static class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
 
-        public AcceptThread() {
+        AcceptThread() {
             // Use a temporary object that is later assigned to mmServerSocket
             // because mmServerSocket is final.
             BluetoothServerSocket tmp = null;
@@ -128,10 +211,11 @@ public class BluetoothAPI {
                 Log.e(Common.LOG_TAG_BT_API, "Socket's listen() method failed", e);
             }
             mmServerSocket = tmp;
+            Log.d(Common.LOG_TAG_BT_API, "Bluetooth Server Socket " + mmServerSocket);
         }
 
         public void run() {
-            BluetoothSocket socket = null;
+            BluetoothSocket socket;
             // Keep listening until exception occurs or a socket is returned.
             while (true) {
                 try {
@@ -144,7 +228,8 @@ public class BluetoothAPI {
                 if (socket != null) {
                     // A connection was accepted. Perform work associated with
                     // the connection in a separate thread.
-                    ConnectedThread mBtService = new ConnectedThread(socket);
+                    connectedBt(socket, socket.getRemoteDevice());
+                    Log.d(Common.LOG_TAG_BT_API, "AcceptThread is ConnectedThread");
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -156,7 +241,7 @@ public class BluetoothAPI {
         }
 
         // Closes the connect socket and causes the thread to finish.
-        public void cancel() {
+        void cancel() {
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
@@ -165,11 +250,11 @@ public class BluetoothAPI {
         }
     }
 
-    private class ConnectThread extends Thread {
+    private static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
-        public ConnectThread(BluetoothDevice device) {
+        ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket
             // because mmSocket is final.
             BluetoothSocket tmp = null;
@@ -183,6 +268,7 @@ public class BluetoothAPI {
                 Log.e(Common.LOG_TAG_BT_API, "Socket's create() method failed", e);
             }
             mmSocket = tmp;
+            Log.d(Common.LOG_TAG_BT_API, "Bluetooth Socket " + mmSocket);
         }
 
         public void run() {
@@ -205,11 +291,12 @@ public class BluetoothAPI {
 
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
-            ConnectedThread mBtService = new ConnectedThread(mmSocket);
+            connectedBt(mmSocket, mmDevice);
+            Log.d(Common.LOG_TAG_BT_API, "ConnectThread is ConnectedThread");
         }
 
         // Closes the client socket and causes the thread to finish.
-        public void cancel() {
+        void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {
@@ -218,15 +305,17 @@ public class BluetoothAPI {
         }
     }
 
-    private Handler mHandler; // handler that gets info from Bluetooth service
-
-    private class ConnectedThread extends Thread {
+    /**
+     * This thread runs during a connection with a remote device.
+     * It handles all incoming and outgoing transmissions.
+     */
+    private static class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private byte[] mmBuffer; // mmBuffer store for the stream
 
-        public ConnectedThread(BluetoothSocket socket) {
+        ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -246,9 +335,11 @@ public class BluetoothAPI {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+            Log.d(Common.LOG_TAG_BT_API, "Connected socket and attached i/o streams");
         }
 
         public void run() {
+            Log.i(Common.LOG_TAG_BT_API, "BEGIN ConnectedThread");
             mmBuffer = new byte[1024];
             int numBytes; // bytes returned from read()
 
@@ -270,13 +361,18 @@ public class BluetoothAPI {
 
         // @todo I didn't proofread this method
         // Call this from the main activity to send data to the remote device.
-        public void write(byte[] bytes) {
+        /**
+         * Write to the connected OutStream.
+         *
+         * @param bytes The bytes to write
+         */
+        void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
 
                 // Share the sent message with the UI activity.
                 Message writtenMsg = mHandler.obtainMessage(
-                        Common.MESSAGE_WRITE, -1, -1, mmBuffer);
+                        Common.MESSAGE_WRITE, bytes.length, -1, mmBuffer);
                 writtenMsg.sendToTarget();
             } catch (IOException e) {
                 Log.e(Common.LOG_TAG_BT_API, "Error occurred when sending data", e);
@@ -293,7 +389,7 @@ public class BluetoothAPI {
         }
 
         // Call this method from the main activity to shut down the connection.
-        public void cancel() {
+        void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {
