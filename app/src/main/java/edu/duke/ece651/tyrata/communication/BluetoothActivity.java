@@ -1,5 +1,6 @@
 package edu.duke.ece651.tyrata.communication;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,13 +26,17 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
-        // Register for broadcasts when a device is discovered.
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        // Register for broadcasts when discovery is started/finish or device is discovered.
+        Log.v(Common.LOG_TAG_BT_ACTIVITY, "Registering receiver...");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, filter);
 
-        // Register for broadcasts when discovery has finished
-        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.registerReceiver(mReceiver, filter);
+        // Enable Bluetooth
+        Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
+        BluetoothAPI.enableBt(this);
     }
 
     @Override
@@ -43,9 +49,9 @@ public class BluetoothActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+    // @todo remove this function
     public void connectBluetooth(View view) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "connectBluetooth()");
-        // @todo maybe move this to onCreate
         BluetoothAPI.enableBt(this);
     }
 
@@ -61,11 +67,12 @@ public class BluetoothActivity extends AppCompatActivity {
         setProgressBarIndeterminateVisibility(true);
         setTitle("Discovering Bluetooth Devices");
 
-        BluetoothAPI.discoverDevicesBt();
+        BluetoothAPI.discoverDevicesBt(this);
     }
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        Log.v(Common.LOG_TAG_BT_ACTIVITY, "onActivityResult with code " + requestCode);
         switch (requestCode) {
             case Common.REQUEST_ENABLE_BT:
                 if (resultCode == RESULT_CANCELED) {
@@ -74,13 +81,29 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
                 else if (resultCode == RESULT_OK) {
                     // @todo connect to sensor/simulator
+                    Log.v(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enabled");
                 }
+                break;
+            case Common.REQUEST_ACCESS_COARSE_LOCATION:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.w(Common.LOG_TAG_BT_ACTIVITY, "Location access request canceled");
+                    // @todo Cannot discover devices
+                }
+                else if (resultCode == RESULT_OK) {
+                    Log.v(Common.LOG_TAG_BT_ACTIVITY, "Location access granted");
+                    //@todo this is not tested. Might not work here
+                    BluetoothAPI.discoverDevicesBt(this);
+                }
+                break;
+            default:
+                Log.w(Common.LOG_TAG_BT_ACTIVITY, "Unknown REQUEST_CODE " + requestCode);
         }
     }
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
+            Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive");
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Discovery has found a device
@@ -92,7 +115,12 @@ public class BluetoothActivity extends AppCompatActivity {
                 Log.v(Common.LOG_TAG_BT_ACTIVITY, "Device name: " + device.getName() + ", " +
                         "MAC address: " + device.getAddress());
             }
+            else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive DISCOVERY_STARTED");
+                setProgressBarIndeterminateVisibility(true);
+            }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive DISCOVERY_FINISHED");
                 setProgressBarIndeterminateVisibility(false);
             }
         }

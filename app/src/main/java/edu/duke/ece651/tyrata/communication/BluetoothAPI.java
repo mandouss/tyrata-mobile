@@ -1,14 +1,18 @@
 package edu.duke.ece651.tyrata.communication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -68,14 +72,43 @@ public class BluetoothAPI {
         }
     }
 
-    static void discoverDevicesBt() {
+    static void discoverDevicesBt(Activity activity) {
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
+            Log.d(Common.LOG_TAG_BT_API, "cancelDiscovery()");
             mBluetoothAdapter.cancelDiscovery();
         }
 
-        // Request discover from BluetoothAdapter
-        mBluetoothAdapter.startDiscovery();
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Request permission for location
+            Log.d(Common.LOG_TAG_BT_API, "Requesting location access...");
+            ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                Common.REQUEST_ACCESS_COARSE_LOCATION);
+        } else {
+            // Permission has already been granted
+            // Request discover from BluetoothAdapter
+            boolean discoverySuccess = mBluetoothAdapter.startDiscovery();
+            Log.d(Common.LOG_TAG_BT_API,
+                    "startDiscovery() " + (discoverySuccess? "successful":"failed"));
+        }
+
+        /* //@todo if I wanted to show a message for rationale to access location
+        // Should we show an explanation?
+        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
+                Manifest.permission.READ_CONTACTS)) {
+
+            // Show an explanation to the user *asynchronously* -- don't block
+            // this thread waiting for the user's response! After the user
+            // sees the explanation, try again to request the permission.
+
+        } else {
+        }
+        */
     }
 
 

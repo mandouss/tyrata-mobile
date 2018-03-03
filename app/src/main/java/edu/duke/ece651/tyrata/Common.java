@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public class Common {
     /* CONSTANTS */
+
+    // Defines constants for logger keywords/tags
     public static final String LOG_TAG_BT_API = "BluetoothAPI";
     public static final String LOG_TAG_BT_ACTIVITY = "BluetoothActivity";
+
+
     public static final UUID MY_UUID = UUID.fromString("@string/app_name");
 
     // Defines several constants used when transmitting messages between the
@@ -19,8 +23,9 @@ public class Common {
     public static final int MESSAGE_TOAST = 2;
 
 
-
+    // Defines constants for Activity result return
     public static final int REQUEST_ENABLE_BT = 1;
+    public static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
 
 
     /* GLOBAL VARIABLES */
