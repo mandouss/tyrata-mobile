@@ -1,4 +1,4 @@
-package edu.duke.ece651.tyrata;
+package com.example.myfirstapp;
 
 import org.junit.Test;
 
