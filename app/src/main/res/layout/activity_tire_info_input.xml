@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/Model"
-        android:layout_width="80dp"
+        android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:text="Model: "
@@ -43,7 +43,7 @@
 
     <TextView
         android:id="@+id/SKU"
-        android:layout_width="80dp"
+        android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:text="SKU: "
@@ -55,7 +55,7 @@
 
     <TextView
         android:id="@+id/odometer"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:text="Odometer: "
@@ -69,7 +69,7 @@
         android:id="@+id/edit_manufacturer"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Type in Manufacturer"
         android:inputType="textLongMessage"
@@ -115,6 +115,8 @@
         android:hint="Type in Odometer"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/odometer"
         app:layout_constraintTop_toBottomOf="@+id/edit_SKU" />
 
     <Button
@@ -147,7 +149,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:ems="10"
-        android:hint="Type in the tire thickness between 5 @android:string/defaultMsisdnAlphaTagm and 15mm"
+        android:hint="Type in the tire thickness between 5mm and 15mm"
         android:inputType="textPersonName"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
