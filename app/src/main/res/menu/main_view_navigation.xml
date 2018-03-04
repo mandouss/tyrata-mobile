@@ -18,5 +18,9 @@
         android:title="Sign Out"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/n_item5"
+        android:title="Communication"
+        app:showAsAction="never"/>
+
 
 </menu>

@@ -27,10 +27,17 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".user.Register"
-            android:parentActivityName=".user.Log_in"/>
+            android:parentActivityName=".user.Log_in" />
         <activity
             android:name=".vehicle.Report_accident"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".display.TireInfo"
+            android:parentActivityName=".vehicle.Vehicle_Info" />
+        <activity
+            android:name=".calibration.TireInfoInput"
+            android:parentActivityName=".display.TireInfo" />
+        <activity android:name=".communication.EmptyActivity"></activity>
     </application>
 
 </manifest>

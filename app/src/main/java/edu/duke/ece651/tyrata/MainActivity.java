@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.n_item4:
                 main_to_login();
                 return true;
+            case R.id.n_item5:
+                main_to_communication();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -74,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public void main_to_vehicle_info(View view) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.vehicle.Vehicle_Info.class);
+
+        startActivity(intent);
+        // Do something in response to button
+    }
+    public void main_to_communication() {
+        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.communication.EmptyActivity.class);
 
         startActivity(intent);
         // Do something in response to button
