@@ -1,10 +1,13 @@
-package com.example.myfirstapp;
+package edu.duke.ece651.tyrata.calibration;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.display.TireInfo;
 
 public class TireInfoInput extends AppCompatActivity {
 
