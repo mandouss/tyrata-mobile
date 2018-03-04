@@ -34,30 +34,37 @@ public class Database extends AppCompatActivity {
         }
 
     }
-    public void storeTireData(String username, String carmodel, String tiremodel, String tireyear){
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS info (Name VARCHAR, Carmodel VARCHAR, Tiremodel VARCHAR, Tirehyear VARCHAR)");
-        myDatabase.execSQL("INSERT INTO info (Name, Carmodel, Tiremodel, Tireyear) VALUES (username, carmodel, tiremodel, tireyear)");
+    public void storeTireData(String username, String carmodel, String tiremodel, String tireyear, String vin){
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS info (Name VARCHAR, Carmodel VARCHAR, Tiremodel VARCHAR, Tirehyear VARCHAR, VIN VARCHAR)");
+        myDatabase.execSQL("INSERT INTO info (Name, Carmodel, Tiremodel, Tireyear, VIN) VALUES (username, carmodel, tiremodel, tireyear, vin)");
     }
 
     public String carModelLoaddata(String username){
-        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE name ="+username, null);
+        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE Name ="+username, null);
         int carmodelIndex = a.getColumnIndex("Carmodel");
         a.moveToFirst();
         return a.getString(carmodelIndex);
 
     }
     public String tireModelLoaddata(String username){
-        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE name ="+username, null);
+        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE Name ="+username, null);
         int tiremodelIndex = a.getColumnIndex("Tiremodel");
         a.moveToFirst();
         return a.getString(tiremodelIndex);
     }
 
     public String tireYearLoaddata(String username){
-        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE name ="+username, null);
+        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE Name ="+username, null);
         int tireyearIndex = a.getColumnIndex("Tireyear");
         a.moveToFirst();
         return a.getString(tireyearIndex);
+    }
+
+    public String VINLoaddata(String username){
+        Cursor a = myDatabase.rawQuery("SELECT * FROM info WHERE Name ="+username, null);
+        int vinIndex = a.getColumnIndex("VIN");
+        a.moveToFirst();
+        return a.getString(vinIndex);
     }
 
 }
