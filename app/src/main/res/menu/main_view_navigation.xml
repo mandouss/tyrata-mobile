@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/n_item1"
+        android:title="Account Information"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/n_item2"
+        android:title="Add Car"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/n_item3"
+        android:title="Report Accident"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/n_item4"
+        android:title="Sign Out"
+        app:showAsAction="never"/>
+
+
+</menu>

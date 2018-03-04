@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.duke.ece651.tyrata.vehicle.Vehicle_Info">
+
+
+    <TextView
+        android:id="@+id/textView_make"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="70dp"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/label_make"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_model"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/label_model"
+        app:layout_constraintTop_toBottomOf="@+id/textView_make" />
+
+    <TextView
+        android:id="@+id/textView_year"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/label_year"
+        app:layout_constraintTop_toBottomOf="@+id/textView_model" />
+
+    <TextView
+        android:id="@+id/textView_vin"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/label_vin"
+        app:layout_constraintTop_toBottomOf="@+id/textView_year" />
+
+    <TextView
+        android:id="@+id/textView_tirenumber"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@+id/label_tirenumber"
+        app:layout_constraintTop_toBottomOf="@+id/textView_vin" />
+
+    <TextView
+        android:id="@+id/label_make"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="70dp"
+        android:text="Make: "
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_make"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/label_model"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Model： "
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_model"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_make" />
+
+    <TextView
+        android:id="@+id/label_year"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Year: "
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_year"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_model" />
+
+    <TextView
+        android:id="@+id/label_vin"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:text="VIN: "
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_vin"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_year" />
+
+    <TextView
+        android:id="@+id/label_tirenumber"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/label_vin"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Number of tires: "
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_vin" />
+
+    <Button
+        android:id="@+id/button_edit_vehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="switchToEdit"
+        android:text="Edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_tirenumber" />
+
+    <TextView
+        android:id="@+id/title_vehicle_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Information for the vehicle: "
+        android:textSize="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_left1"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="50dp"
+        android:text="left 1"
+        app:layout_constraintEnd_toStartOf="@+id/button_right1"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
+
+    <Button
+        android:id="@+id/button_left2"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="left 2"
+        app:layout_constraintEnd_toStartOf="@+id/button_right2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_left1" />
+
+    <Button
+        android:id="@+id/button_right1"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="50dp"
+        android:text="right 1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_left1"
+        app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
+
+    <Button
+        android:id="@+id/button_right2"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="right 2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_left2"
+        app:layout_constraintTop_toBottomOf="@+id/button_right1" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="10dp"
+        android:text="Tires: "
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_edit_vehicle" />
+
+    <Button
+        android:id="@+id/button_letf3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="left 3"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/button_right3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_left2" />
+
+    <Button
+        android:id="@+id/button_right3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="right 3"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_letf3"
+        app:layout_constraintTop_toBottomOf="@+id/button_right2" />
+
+</android.support.constraint.ConstraintLayout>
