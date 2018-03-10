@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.duke.ece651.tyrata.vehicle.Report_accident">
+    tools:context="edu.duke.ece651.tyrata.calibration.Report_accident">
 
     <Button
         android:id="@+id/report_submit"
