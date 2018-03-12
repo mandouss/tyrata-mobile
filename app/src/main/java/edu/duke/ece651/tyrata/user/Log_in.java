@@ -3,6 +3,7 @@ package edu.duke.ece651.tyrata.user;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import edu.duke.ece651.tyrata.MainActivity;
@@ -20,6 +21,7 @@ public class Log_in extends AppCompatActivity {
 
         startActivity(intent);
         // Do something in response to button
+        Log.i("a", "111");
     }
     public void switchto_register(View view) {
         Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
@@ -27,4 +29,6 @@ public class Log_in extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
+
+
 }
