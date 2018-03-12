@@ -11,10 +11,10 @@ import java.util.Calendar;
  */
 
 public class TireSnapshot extends Tire {
-    double mS11;
-    int mOdometerMileage;
-    Calendar mTimestamp; /* @TODO DateFormat might be a better type */
-    int mPressure;
+    private double mS11;
+    private int mOdometerMileage;
+    private Calendar mTimestamp; /* @TODO DateFormat might be a better type */
+    private double mPressure;
 
     /** Constructor
      *
@@ -24,7 +24,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(Tire tire, double s11, int odoMileage, Calendar timestamp, int pressure) {
+    public TireSnapshot(Tire tire, double s11, int odoMileage, Calendar timestamp, double pressure) {
         super(tire);
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -39,7 +39,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(double s11, int odoMileage, Calendar timestamp, int pressure) {
+    public TireSnapshot(double s11, int odoMileage, Calendar timestamp, double pressure) {
         super();
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -59,6 +59,33 @@ public class TireSnapshot extends Tire {
     public float calculateTreadThickness() {
         /* @TODO implement tread thickness calcualtion/formaul */
         return 0;
+    }
+
+    public float calculateEol() {
+        // @TODO
+        return 0;
+    }
+
+    public Calendar calculateReplaceTime() {
+        // @TODO
+
+        return null;
+    }
+
+    public boolean filterOutlier() {
+        // @TODO
+
+        return false;
+    }
+
+    public void storeSnapshot() {
+        // @TODO
+
+    }
+
+    public void processSnapshot() {
+        // @TODO
+
     }
 
     /* Getters and Setters */
@@ -86,11 +113,11 @@ public class TireSnapshot extends Tire {
         this.mTimestamp = mTimestamp;
     }
 
-    public int getPressure() {
+    public double getPressure() {
         return mPressure;
     }
 
-    public void setPressure(int mPressure) {
+    public void setPressure(double mPressure) {
         this.mPressure = mPressure;
     }
 }
