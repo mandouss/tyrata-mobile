@@ -11,6 +11,9 @@ public class Tire {
     String mManufacturer;
     String mModel;
     String mSku;
+    int mAxisRow;
+    char mAxisSide;
+    int mAxisIndex;
     String mLocation;
     double mS11Reference;
     int mOdometerMileageReference;
@@ -21,17 +24,21 @@ public class Tire {
      * @param manufacturer Manufacturer of the tire
      * @param model Model of the tire
      * @param sku SKU (Stock Keeping Unit) of the tire)
-     * @param location Location of the tire on the vehicle
+     * @param axisRow The axis/axle row number of the tire
+     * @param axisSide The axis/axle side of the tires )('L' for left, 'R' for right)
+     * @param axisIndex The index of the tire on the axis/axle (inner-most is 0)
      * @param s11Ref S11 measurement reference/baseline
      * @param odometerRef Odometer mileage reference/baseline
      * @param sensorId Paired sensor ID
      */
-    public Tire(String manufacturer, String model, String sku, String location,
-                double s11Ref, int odometerRef, String sensorId) {
+    public Tire(String manufacturer, String model, String sku, int axisRow, char axisSide,
+                int axisIndex, double s11Ref, int odometerRef, String sensorId) {
         this.mManufacturer = manufacturer;
         this.mModel = model;
         this.mSku = sku;
-        this.mLocation = location;
+        this.mAxisRow = axisRow;
+        this.mAxisSide = axisSide;
+        this.mAxisIndex = axisIndex;
         this.mS11Reference = s11Ref;
         this.mOdometerMileageReference = odometerRef;
         this.mSensorId = sensorId;
@@ -42,15 +49,35 @@ public class Tire {
      * @param tire Tire object to copy/clone
      */
     public Tire(Tire tire) {
-        this(tire.getManufacturer(), tire.getModel(), tire.getSku(), tire.getLocation(),
-                tire.getS11Reference(), tire.getOdometerMileageReference(), tire.getSensorId());
+        this(tire.getManufacturer(), tire.getModel(), tire.getSku(), tire.getAxisRow(),
+                tire.getAxisSide(), tire.getAxisIndex(), tire.getS11Reference(),
+                tire.getOdometerMileageReference(), tire.getSensorId());
     }
 
     /** Default constructor
      *
      */
     public Tire() {
-        this("", "", "", "", 0, 0, "");
+        this("", "", "", 0, 'S', 0, 0, 0, "");
+    }
+
+    public void reportAccident() {
+        // @TODO
+
+    }
+
+    public void calibrate() {
+        // @TODO
+
+    }
+
+    /** Return the location of the tire (e.g. Front Left)
+     *
+     * @return String describing the location of the tire on the car
+     */
+    public String getTireLocation() {
+        // @TODO use axis info to find location on car
+        return "";
     }
 
     /* Getters and Setters */
@@ -78,14 +105,29 @@ public class Tire {
         this.mSku = mSku;
     }
 
-    public String getLocation() {
-        return mLocation;
+    public int getAxisRow() {
+        return mAxisRow;
     }
 
-    public void setLocation(String mLocation) {
-        this.mLocation = mLocation;
+    public void setAxisRow(int mAxisRow) {
+        this.mAxisRow = mAxisRow;
     }
 
+    public char getAxisSide() {
+        return mAxisSide;
+    }
+
+    public void setAxisSide(char mAxisSide) {
+        this.mAxisSide = mAxisSide;
+    }
+
+    public int getAxisIndex() {
+        return mAxisIndex;
+    }
+
+    public void setAxisIndex(int mAxisIndex) {
+        this.mAxisIndex = mAxisIndex;
+    }
     public double getS11Reference() {
         return mS11Reference;
     }

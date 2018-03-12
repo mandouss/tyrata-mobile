@@ -14,6 +14,8 @@ public class Vehicle {
     private String mModel;
     private int mYear;
     private String mVin;
+    private int mNumAxis;
+    private int mNumTires;
     private ArrayList<Tire> mTires;
 
     /** Constructor
@@ -23,11 +25,13 @@ public class Vehicle {
      * @param year The year the car was produced
      * @param vin VIN (Vehicle Identification Number) of the car
      */
-    public Vehicle(String make, String model, int year, String vin) {
+    public Vehicle(String make, String model, int year, String vin, int numAxis, int numTires) {
         this.mMake = make;
         this.mModel = model;
         this.mYear = year;
         this.mVin = vin;
+        this.mNumAxis = numAxis;
+        this.mNumTires = numTires;
         this.mTires = new ArrayList<>();
     }
 
@@ -35,7 +39,7 @@ public class Vehicle {
      *
      */
     public Vehicle() {
-        this("", "", 0, "");
+        this("", "", 0, "", 0, 0);
     }
 
     /** Add a new tire to the car
@@ -53,6 +57,17 @@ public class Vehicle {
      */
     public boolean removeTire(Tire tire) {
         return this.mTires.remove(tire);
+    }
+
+
+    public void reportAccident() {
+        // @TODO
+
+    }
+
+    public void calibrate() {
+        // @TODO
+
     }
 
     /* Getters and Setters */
@@ -86,6 +101,22 @@ public class Vehicle {
 
     public void setVin(String mVin) {
         this.mVin = mVin;
+    }
+
+    public int getNumTires() {
+        return mNumTires;
+    }
+
+    public void setNumTires(int mNumTires) {
+        this.mNumTires = mNumTires;
+    }
+
+    public int getNumAxis() {
+        return mNumAxis;
+    }
+
+    public void setNumAxis(int mNumAxis) {
+        this.mNumAxis = mNumAxis;
     }
 
     public ArrayList<Tire> getTires() {

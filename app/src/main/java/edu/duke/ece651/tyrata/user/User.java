@@ -11,6 +11,7 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 public class User {
     public String mFirstName;
     public String mLastName;
+    public String mID;
     /* @TODO add more user attributes (e.g. login token/certification) */
     public ArrayList<Vehicle> mVehicles;
 
@@ -48,5 +49,39 @@ public class User {
      */
     public boolean removeVehicle(Vehicle vehicle) {
         return mVehicles.remove(vehicle);
+    }
+
+    public boolean register() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean login() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean logout() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean changePassword() {
+        // @TODO
+
+        return false;
+    }
+
+    public void sendFeedback() {
+        // @TODO
+
+    }
+
+    public void pushNotification() {
+        // @TODO
+
     }
 }
