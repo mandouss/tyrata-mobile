@@ -36,15 +36,16 @@
             android:parentActivityName=".user.Log_in" />
         <activity
             android:name=".calibration.Report_accident"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".communication.BluetoothActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".communication.BluetoothActivity" />
         <activity
             android:name=".display.TireInfo"
             android:parentActivityName=".display.Vehicle_Info" />
         <activity
             android:name=".calibration.TireInfoInput"
             android:parentActivityName=".display.TireInfo" />
-        <activity android:name=".communication.EmptyActivity"></activity>
+        <activity android:name=".communication.EmptyActivity" />
+        <activity android:name=".communication.BtDeviceListActivity"></activity>
     </application>
 
 </manifest>

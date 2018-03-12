@@ -10,7 +10,8 @@
         android:id="@+id/btn_s0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable BT"
+        android:onClick="deviceList"
+        android:text="Device List"
         tools:layout_editor_absoluteX="160dp"
         tools:layout_editor_absoluteY="38dp" />
 

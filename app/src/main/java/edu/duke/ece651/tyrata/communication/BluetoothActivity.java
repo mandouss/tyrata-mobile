@@ -57,6 +57,13 @@ public class BluetoothActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void deviceList(View view) {
+        Log.d(Common.LOG_TAG_BT_ACTIVITY, "deviceList()");
+        // Launch the DeviceListActivity to see devices and do scan
+        Intent serverIntent = new Intent(this, BtDeviceListActivity.class);
+        startActivityForResult(serverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
+    }
+
     public void pairedBluetooth(View view) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "pairedBluetooth()");
         BluetoothAPI.queryPairedDevicesBt();
