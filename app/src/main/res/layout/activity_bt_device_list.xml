@@ -3,27 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="edu.duke.ece651.tyrata.communication.BtDeviceListActivity">
+
         <TextView
             android:id="@+id/title_paired_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#666"
             android:paddingLeft="5dp"
-            android:text="Paired Devices"
+            android:text="@string/bt_title_paired_devices"
             android:textColor="#fff"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/paired_devices"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:stackFromBottom="true"
-            />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/title_new_devices"
@@ -31,23 +29,19 @@
             android:layout_height="wrap_content"
             android:background="#666"
             android:paddingLeft="5dp"
-            android:text="Other Available Devices"
+            android:text="@string/bt_title_other_devices"
             android:textColor="#fff"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/new_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:stackFromBottom="true"
-            />
+            android:layout_weight="2" />
 
         <Button
             android:id="@+id/button_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Scan for devices"
-            />
+            android:text="@string/bt_button_scan" />
 </LinearLayout>

@@ -66,7 +66,11 @@ class BluetoothAPI {
         }
     }
 
-    static void queryPairedDevicesBt() {
+    static Set<BluetoothDevice> getBtPairedDevices() {
+        return mBluetoothAdapter.getBondedDevices();
+    }
+
+    static void queryBtPairedDevices() {
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
         if (pairedDevices.size() > 0) {
@@ -80,7 +84,7 @@ class BluetoothAPI {
         }
     }
 
-    static void discoverDevicesBt(Activity activity) {
+    static void discoverBtDevices(Activity activity) {
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
             Log.d(Common.LOG_TAG_BT_API, "cancelDiscovery()");
@@ -119,6 +123,13 @@ class BluetoothAPI {
         */
     }
 
+    static void cancelBtDiscovery() {
+        // Make sure we're not doing discovery anymore
+        if (mBluetoothAdapter != null) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+    }
+
     static void acceptBt() {
         // Start the thread to listen on a BluetoothServerSocket
         if (mAcceptThread == null) {
@@ -130,12 +141,18 @@ class BluetoothAPI {
     }
 
     static void connectBt(BluetoothDevice device) {
+        Log.d(Common.LOG_TAG_BT_API, "ConnectThread() called");
         // Start the thread to connect with the given device
         if (mConnectThread == null) {
             mConnectThread = new ConnectThread(device);
             mConnectThread.start();
+        } else {
+            Log.d(Common.LOG_TAG_BT_API, "ConnectThread already exists");
         }
-        Log.d(Common.LOG_TAG_BT_API, "ConnectThread already exists");
+    }
+
+    static void connectBt(String deviceAddress) {
+        connectBt(mBluetoothAdapter.getRemoteDevice(deviceAddress));
     }
 
     /** Cancel all threads
@@ -190,6 +207,9 @@ class BluetoothAPI {
         }
     }
 
+    static String getDeviceName() {
+        return mBluetoothAdapter.getName();
+    }
 
     /**
      * This thread runs while listening for incoming connections. It behaves
@@ -372,7 +392,7 @@ class BluetoothAPI {
 
                 // Share the sent message with the UI activity.
                 Message writtenMsg = mHandler.obtainMessage(
-                        Common.MESSAGE_WRITE, bytes.length, -1, mmBuffer);
+                        Common.MESSAGE_WRITE, bytes.length, -1, bytes);
                 writtenMsg.sendToTarget();
             } catch (IOException e) {
                 Log.e(Common.LOG_TAG_BT_API, "Error occurred when sending data", e);
