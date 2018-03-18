@@ -1,11 +1,12 @@
 package edu.duke.ece651.tyrata.calibration;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.display.TireInfo;
 
@@ -34,9 +35,7 @@ public class TireInfoInput extends AppCompatActivity {
         String message_SKU = edit_SKU.getText().toString();
         intent.putExtra("tire_SKU", message_SKU);
 
-        EditText edit_odometer = (EditText) findViewById(R.id.edit_odometer);
-        String message_odometer = edit_odometer.getText().toString();
-        intent.putExtra("tire_odometer", message_odometer);
+//        Log.i("example", "HI");
 
         EditText edit_thickness = (EditText) findViewById(R.id.edit_thickness);
         String message_thickness = edit_thickness.getText().toString();

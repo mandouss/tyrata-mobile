@@ -8,12 +8,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.display.Vehicle_Info;
 
 public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
@@ -30,7 +30,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         dataList = new ArrayList<String>();
         dataList.add("4");
-        dataList.add("6");
+        dataList.add("10");
         dataList.add("18");
 
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataList);
@@ -54,7 +54,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     }
     public void saveMessage(View view) {
 
-        Intent intent = new Intent(this, edu.duke.ece651.tyrata.vehicle.Vehicle_Info.class);
+        Intent intent = new Intent(this, Vehicle_Info.class);
         EditText edit_make = (EditText) findViewById(R.id.edit_make);
         String message_make = edit_make.getText().toString();
         intent.putExtra("MAKE", message_make);
@@ -75,6 +75,20 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         intent.putExtra("VIN", message_vin);
 
         intent.putExtra("TIRENUMBER", tirenumber);
+
+        int num = Integer.parseInt(tirenumber);
+        int axis_num = 0;
+        if (num == 4) {
+            axis_num = 2;
+        }
+        else if(num == 10) {
+            axis_num = 3;
+        }
+        else if(num == 18){
+            axis_num = 5;
+        }
+        intent.putExtra("AXIS_NUM",axis_num);
+
         startActivity(intent);
 
         // Do something in response to button

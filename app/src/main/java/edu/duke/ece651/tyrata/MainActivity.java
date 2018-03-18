@@ -3,18 +3,16 @@ package edu.duke.ece651.tyrata;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import edu.duke.ece651.tyrata.datamanagement.Database;
-import edu.duke.ece651.tyrata.user.Log_in;
+import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.display.Vehicle_Info;
 
 public class MainActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
             textView_report.setVisibility(View.VISIBLE);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button
     }
     public void main_to_report() {
-        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.vehicle.Report_accident.class);
+        Intent intent = new Intent(MainActivity.this, Report_accident.class);
 
         startActivity(intent);
         // Do something in response to button
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button
     }
     public void main_to_vehicle_info(View view) {
-        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.vehicle.Vehicle_Info.class);
+        Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
 
         startActivity(intent);
         // Do something in response to button
