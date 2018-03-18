@@ -89,14 +89,7 @@ public class Vehicle_Info extends Activity {
         // 列表项组件Id 数组
         int[] to = { R.id.item_img, R.id.item_tire, R.id.item_location,
                 R.id.item_percent };
-        /**
-         * SimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to)
-         * context：activity界面类
-         * data 数组内容是map的集合数据
-         * resource 列表项文件
-         * from map key值数组
-         * to 列表项组件id数组      from与to一一对应，适配器绑定数据
-         */
+
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
@@ -124,22 +117,6 @@ public class Vehicle_Info extends Activity {
 
             }
         });
-        /**
-         * 长按
-         */
-        tire_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int arg2, long arg3) {
-                list.remove(arg2);
-                adapter.notifyDataSetChanged();// 更新列表数据
-                Toast.makeText(Vehicle_Info.this, "删除成功！", Toast.LENGTH_SHORT)
-                        .show();
-                return false;
-            }
-        });
-
     }
 
     private void calculate_location(int tirenum,int index){
@@ -171,10 +148,10 @@ public class Vehicle_Info extends Activity {
             }
         }
         if(side == 1){
-            axis_side = 'l';
+            axis_side = 'L';
         }
         else {
-            axis_side = 'r';
+            axis_side = 'R';
         }
         Log.i("axis", Character.toString(axis_side));
         Log.i("index", Integer.toString(axis_index));

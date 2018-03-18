@@ -102,13 +102,13 @@
         android:id="@+id/button_A4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:onClick="switchToEdit"
         android:text="Edit"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_AS11"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_S11" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/title"
@@ -149,20 +149,20 @@
         android:id="@+id/button_AS11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:onClick="switchToS11ODM"
         android:text="S11 and ODM"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_A4"
-        app:layout_constraintTop_toBottomOf="@+id/textView_S11" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_replace" />
 
     <TextView
         android:id="@+id/label_S11"
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        android:text="S11"
+        android:text="S11:"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView_S11"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,4 +177,50 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/label_S11"
         app:layout_constraintTop_toBottomOf="@+id/textView_odometer" />
+
+    <TextView
+        android:id="@+id/label_EDL"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="EOL:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_EOL"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_S11" />
+
+    <TextView
+        android:id="@+id/textView_EOL"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/label_EDL"
+        app:layout_constraintTop_toBottomOf="@+id/textView_S11" />
+
+    <TextView
+        android:id="@+id/textView_replace"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="18dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView_EOL" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="Replace before"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_replace"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_EDL" />
 </android.support.constraint.ConstraintLayout>

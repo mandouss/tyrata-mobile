@@ -61,6 +61,14 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_S11 = findViewById(R.id.textView_S11);
         textView_S11.setText(message_S11);
 
+        String message_EOL = "EOL from calculation";
+        TextView textView_EOL = findViewById(R.id.textView_EOL);
+        textView_EOL.setText(message_EOL);
+
+        String message_rep = "time to rep from calculation";
+        TextView textView_rep = findViewById(R.id.textView_replace);
+        textView_rep.setText(message_rep);
+
     }
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);

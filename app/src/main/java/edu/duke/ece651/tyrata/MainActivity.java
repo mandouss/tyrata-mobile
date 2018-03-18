@@ -7,13 +7,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import edu.duke.ece651.tyrata.calibration.Report_accident;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 
 public class MainActivity extends AppCompatActivity {
-
+    private ListView vehicle_list;
+    private List<Map<String, Object>> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +34,41 @@ public class MainActivity extends AppCompatActivity {
         if(message_report != ""){
             textView_report.setVisibility(View.VISIBLE);
         }
+
+        vehicle_list = (ListView) findViewById(R.id.vehicle_list);
+        initDataList(4);
+
+        String[] from = { "img", "vehicle number", "make","model", "year" };
+        // 列表项组件Id 数组
+        int[] to = { R.id.item_img, R.id.item_vehicle, R.id.item_make,R.id.item_model,
+                R.id.item_year };
+
+        final SimpleAdapter adapter = new SimpleAdapter(this, list,
+                R.layout.main_list_view_layout, from, to);
+
+        vehicle_list.setAdapter(adapter);
+        /**
+         * 单击
+         */
+        vehicle_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                Map<String, Object> map = list.get(arg2);
+
+                String str = "";
+                String str2="";
+                str += map.get("vehicle number");
+                for(int i=0;i<str.length();i++) {
+                    if (str.charAt(i) >= 48 && str.charAt(i) <= 57) {
+                        str2 += str.charAt(i);
+                    }
+                }
+                int vehicle_num = Integer.valueOf(str2);
+                main_to_vehicle_info();
+
+            }
+        });
     }
 
     @Override
@@ -32,6 +76,25 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_view_navigation, menu);
         return true;
+    }
+
+    private void initDataList(int number) {
+        //图片资源
+        int img[] ;
+        img = new int[number];
+        for(int i = 0;i < number; i++) {
+            img[i] = R.drawable.vehicle;
+        }
+        list = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < number; i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("img", img[i]);
+            map.put("vehicle number", "vehicle" + (i+1));
+            map.put("make", "make" );
+            map.put("model", "model" );
+            map.put("year", "1996");
+            list.add(map);
+        }
     }
 
     @Override
@@ -76,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
-    public void main_to_vehicle_info(View view) {
+    public void main_to_vehicle_info() {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
 
         startActivity(intent);

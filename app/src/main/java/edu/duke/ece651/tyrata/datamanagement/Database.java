@@ -55,7 +55,6 @@ public class Database extends AppCompatActivity {
         contentValues.put("EMAIL", email);
         contentValues.put("PHONE_NUMBER", phone);
         myDatabase.insert("USER", null, contentValues);
-
     }
 
 
