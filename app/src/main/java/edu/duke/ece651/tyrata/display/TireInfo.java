@@ -41,6 +41,10 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_Thickness = findViewById(R.id.textView_Thickness);
         textView_Thickness.setText(message_Thickness);
 
+        int axis_row = intent.getIntExtra("AXIS_ROW",0);
+        int axis_index = intent.getIntExtra("AXIS_INDEX",0);
+        char axis_side = intent.getCharExtra("AXIS_SIDE",'a');
+
     }
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
