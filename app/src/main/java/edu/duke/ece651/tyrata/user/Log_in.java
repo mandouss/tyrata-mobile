@@ -19,10 +19,10 @@ public class Log_in extends AppCompatActivity {
     public void switchto_main(View view) {
         Intent intent = new Intent(Log_in.this, MainActivity.class);
 
-        startActivity(intent);
         // Do something in response to button
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.createTable();
+        //Database.createTable();
+        startActivity(intent);
     }
     public void switchto_register(View view) {
         Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);

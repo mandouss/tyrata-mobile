@@ -61,6 +61,7 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_S11 = findViewById(R.id.textView_S11);
         textView_S11.setText(message_S11);
 
+
         String message_EOL = "EOL from calculation";
         TextView textView_EOL = findViewById(R.id.textView_EOL);
         textView_EOL.setText(message_EOL);

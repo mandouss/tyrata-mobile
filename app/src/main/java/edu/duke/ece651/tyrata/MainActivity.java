@@ -11,14 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
+import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.duke.ece651.tyrata.calibration.Report_accident;
-import edu.duke.ece651.tyrata.display.Vehicle_Info;
 
 public class MainActivity extends AppCompatActivity {
     private ListView vehicle_list;
@@ -119,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void main_to_addcar() {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
 
@@ -151,5 +148,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
-
 }

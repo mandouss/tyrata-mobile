@@ -89,7 +89,6 @@ public class Vehicle_Info extends Activity {
         // 列表项组件Id 数组
         int[] to = { R.id.item_img, R.id.item_tire, R.id.item_location,
                 R.id.item_percent };
-
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
