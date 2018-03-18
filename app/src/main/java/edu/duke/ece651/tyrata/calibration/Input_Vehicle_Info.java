@@ -30,7 +30,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         dataList = new ArrayList<String>();
         dataList.add("4");
-        dataList.add("6");
+        dataList.add("10");
         dataList.add("18");
 
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataList);
@@ -75,6 +75,20 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         intent.putExtra("VIN", message_vin);
 
         intent.putExtra("TIRENUMBER", tirenumber);
+
+        int num = Integer.parseInt(tirenumber);
+        int axis_num = 0;
+        if (num == 4) {
+            axis_num = 2;
+        }
+        else if(num == 10) {
+            axis_num = 3;
+        }
+        else if(num == 18){
+            axis_num = 5;
+        }
+        intent.putExtra("AXIS_NUM",axis_num);
+
         startActivity(intent);
 
         // Do something in response to button
