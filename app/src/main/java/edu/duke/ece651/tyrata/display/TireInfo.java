@@ -9,37 +9,45 @@ import android.widget.TextView;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
+import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.vehicle.Tire;
 
 public class TireInfo extends AppCompatActivity {
+    int axis_row;
+    int axis_index;
+    char axis_side;
+    String vin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info);
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Tire curr_tire = Database.getTire("sensorID");
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String message_make = intent.getStringExtra("tire_manufacturer");
-        if(message_make == null)
-            message_make = "Default MAKE";
+        String message_manufacturer = curr_tire.getManufacturer();
+        if(message_manufacturer == null)
+            message_manufacturer = "Default MAKE";
         TextView textView_manufacturer = findViewById(R.id.textView_manufacturer);
-        textView_manufacturer.setText(message_make);
+        textView_manufacturer.setText(message_manufacturer);
 
 
-        String message_model = intent.getStringExtra("tire_model");
+        String message_model = curr_tire.getModel();
         if(message_model == null)
             message_model = "Default MODEL";
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
 
-        String message_SKU = intent.getStringExtra("tire_SKU");
+        String message_SKU = curr_tire.getSku();
         if(message_SKU == null)
             message_SKU = "Default SKU";
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
-
+        //TODO: calculate thickness
         String message_Thickness = intent.getStringExtra("tire_thickness");
         if(message_Thickness == null)
             message_Thickness = "Default THICKNESS";
@@ -47,10 +55,10 @@ public class TireInfo extends AppCompatActivity {
         textView_Thickness.setText(message_Thickness);
 
 
-        int axis_row = intent.getIntExtra("AXIS_ROW",0);
-        int axis_index = intent.getIntExtra("AXIS_INDEX",0);
-        char axis_side = intent.getCharExtra("AXIS_SIDE",'a');
-
+        axis_row = intent.getIntExtra("AXIS_ROW",0);
+        axis_index = intent.getIntExtra("AXIS_INDEX",0);
+        axis_side = intent.getCharExtra("AXIS_SIDE",'a');
+        vin = intent.getStringExtra("VIN");
 
         /* @TODO: read S11 and odometer from database, sync with BT*/
         String message_Odometer = "odometer from BT";
@@ -73,6 +81,11 @@ public class TireInfo extends AppCompatActivity {
     }
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
+
+        intent.putExtra("axis_IDX", axis_index);
+        intent.putExtra("axis_ROW",axis_row);
+        intent.putExtra("axis_SIDE", axis_side);
+        intent.putExtra("VIN",vin);
 
         startActivity(intent);
     }

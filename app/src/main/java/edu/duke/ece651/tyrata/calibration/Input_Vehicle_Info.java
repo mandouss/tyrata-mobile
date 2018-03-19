@@ -92,7 +92,6 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         // Do something in response to button
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.createTable();
         Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
         startActivity(intent);
     }

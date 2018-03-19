@@ -16,7 +16,7 @@ public class Vehicle {
     private String mVin;
     private int mNumAxis;
     private int mNumTires;
-    private ArrayList<Tire> mTires;
+    public ArrayList<Tire> mTires;
 
     /** Constructor
      *

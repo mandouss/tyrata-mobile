@@ -8,16 +8,18 @@ package edu.duke.ece651.tyrata.vehicle;
  */
 
 public class Tire {
+    String mSensorId;
     String mManufacturer;
     String mModel;
     String mSku;
     int mAxisRow;
     char mAxisSide;
     int mAxisIndex;
-    String mLocation;
-    double mS11Reference;
-    int mOdometerMileageReference;
-    String mSensorId;
+    int INIT_SS_ID;
+    int CUR_SS_ID;
+//    double mS11Reference;
+//    int mOdometerMileageReference;
+
 
     /** Constructor
      *
@@ -27,21 +29,20 @@ public class Tire {
      * @param axisRow The axis/axle row number of the tire
      * @param axisSide The axis/axle side of the tires )('L' for left, 'R' for right)
      * @param axisIndex The index of the tire on the axis/axle (inner-most is 0)
-     * @param s11Ref S11 measurement reference/baseline
-     * @param odometerRef Odometer mileage reference/baseline
+     * s11Ref S11 measurement reference/baseline
+     * odometerRef Odometer mileage reference/baseline
      * @param sensorId Paired sensor ID
      */
-    public Tire(String manufacturer, String model, String sku, int axisRow, char axisSide,
-                int axisIndex, double s11Ref, int odometerRef, String sensorId) {
+    public Tire(String sensorId, String manufacturer, String model, String sku, int axisRow, char axisSide, int axisIndex, int INIT_SS, int CUR_SS) {
+        this.mSensorId = sensorId;
         this.mManufacturer = manufacturer;
         this.mModel = model;
         this.mSku = sku;
         this.mAxisRow = axisRow;
         this.mAxisSide = axisSide;
         this.mAxisIndex = axisIndex;
-        this.mS11Reference = s11Ref;
-        this.mOdometerMileageReference = odometerRef;
-        this.mSensorId = sensorId;
+        this.INIT_SS_ID = INIT_SS;
+        this.CUR_SS_ID = CUR_SS;
     }
 
     /** Constructor
@@ -49,16 +50,15 @@ public class Tire {
      * @param tire Tire object to copy/clone
      */
     public Tire(Tire tire) {
-        this(tire.getManufacturer(), tire.getModel(), tire.getSku(), tire.getAxisRow(),
-                tire.getAxisSide(), tire.getAxisIndex(), tire.getS11Reference(),
-                tire.getOdometerMileageReference(), tire.getSensorId());
+        this(tire.getSensorId(), tire.getManufacturer(), tire.getModel(), tire.getSku(), tire.getAxisRow(),
+                tire.getAxisSide(), tire.getAxisIndex(), tire.get_INIT_SS(), tire.get_CUR_SS());
     }
 
     /** Default constructor
      *
      */
     public Tire() {
-        this("", "", "", 0, 'S', 0, 0, 0, "");
+        this("", "", "", "", 0, 'S', 0, 0, 0);
     }
 
     public void reportAccident() {
@@ -125,24 +125,27 @@ public class Tire {
         return mAxisIndex;
     }
 
-    public void setAxisIndex(int mAxisIndex) {
-        this.mAxisIndex = mAxisIndex;
-    }
-    public double getS11Reference() {
-        return mS11Reference;
-    }
+    public int get_INIT_SS() {return INIT_SS_ID; };
 
-    public void setS11Reference(double mS11Reference) {
-        this.mS11Reference = mS11Reference;
-    }
+    public int get_CUR_SS() {return CUR_SS_ID; };
+//    public void setAxisIndex(int mAxisIndex) {
+//        this.mAxisIndex = mAxisIndex;
+//    }
+//    public double getS11Reference() {
+//        return mS11Reference;
+//    }
 
-    public int getOdometerMileageReference() {
-        return mOdometerMileageReference;
-    }
+//    public void setS11Reference(double mS11Reference) {
+//        this.mS11Reference = mS11Reference;
+//    }
 
-    public void setOdometerMileageReference(int mOdometerMileageReference) {
-        this.mOdometerMileageReference = mOdometerMileageReference;
-    }
+//    public int getOdometerMileageReference() {
+//        return mOdometerMileageReference;
+//    }
+
+//    public void setOdometerMileageReference(int mOdometerMileageReference) {
+//        this.mOdometerMileageReference = mOdometerMileageReference;
+//    }
 
     public String getSensorId() {
         return mSensorId;

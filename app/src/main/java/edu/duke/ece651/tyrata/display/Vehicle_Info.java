@@ -29,6 +29,7 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 public class Vehicle_Info extends Activity {
     private Integer buttonnumber = 0;
     private Vehicle curr_vehicle;
+    private String vin;
     private ListView tire_list;
     private List<Map<String, Object>> list;
     int axis_row = 0;
@@ -41,8 +42,10 @@ public class Vehicle_Info extends Activity {
         //getVehicle
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String vin = intent.getStringExtra("VIN");
+        vin = intent.getStringExtra("VIN");
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+
+        Database.testTireTable();
 
         curr_vehicle = Database.getVehicle(vin);
 
@@ -189,6 +192,7 @@ public class Vehicle_Info extends Activity {
         intent.putExtra("AXIS_ROW", axis_row);
         intent.putExtra("AXIS_INDEX",axis_index);
         intent.putExtra("AXIS_SIDE", axis_side);
+        intent.putExtra("VIN", vin);
 
         startActivity(intent);
         // Do something in response to button

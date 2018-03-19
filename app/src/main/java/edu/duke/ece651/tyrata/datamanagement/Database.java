@@ -1,5 +1,4 @@
 package edu.duke.ece651.tyrata.datamanagement;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import edu.duke.ece651.tyrata.user.User;
+import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
@@ -24,7 +24,6 @@ public class Database extends AppCompatActivity {
     public static SQLiteDatabase myDatabase;
 
     public static void createTable(){
-
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID VARCHAR, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
@@ -88,7 +87,6 @@ public class Database extends AppCompatActivity {
         contentValues.put("CUR_SS_ID", cur_ss_id);
         myDatabase.insert("TIRE", null, contentValues);
 
-
     }
 
     public static void storeSnapshot(int id, double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat ){
@@ -144,7 +142,7 @@ public class Database extends AppCompatActivity {
                 int year = vehicle_cursor.getInt(vehicle_cursor.getColumnIndex("YEAR"));
                 int axis_num = vehicle_cursor.getInt(vehicle_cursor.getColumnIndex("AXIS_NUM"));
                 int tire_num = vehicle_cursor.getInt(vehicle_cursor.getColumnIndex("TIRE_NUM"));
-                Vehicle curr_vehicle = new Vehicle(vin, make, model, year,axis_num,tire_num);
+                Vehicle curr_vehicle = new Vehicle(vin, make, model, year, axis_num, tire_num);
                 curr_user.mVehicles.add(curr_vehicle);
             }while(vehicle_cursor.moveToNext());
         }
@@ -152,6 +150,7 @@ public class Database extends AppCompatActivity {
         return curr_user;
     }
 
+    //TODO: from tireinfo page to vehicleinfo page, exception
     public static Vehicle getVehicle(String vin){
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
         c.moveToFirst();
@@ -160,14 +159,67 @@ public class Database extends AppCompatActivity {
         int year = c.getInt(c.getColumnIndex("YEAR"));
         int axis_num = c.getInt(c.getColumnIndex("AXIS_NUM"));
         int tire_num = c.getInt(c.getColumnIndex("TIRE_NUM"));
-        Vehicle curr_vehicle = new Vehicle(vin, make, model, year, axis_num,tire_num);
+        Vehicle curr_vehicle = new Vehicle(vin, make, model, year, axis_num, tire_num);
+        c.close();
+
+        Cursor tire_cursor = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = '"+vin+"'", null);
+        if (tire_cursor.moveToFirst()){
+            do{
+                String t_sensorId = tire_cursor.getString(tire_cursor.getColumnIndex("SENSOR_ID"));
+                String t_manufacturer = tire_cursor.getString(tire_cursor.getColumnIndex("MANUFACTURER"));
+                String t_model = tire_cursor.getString(tire_cursor.getColumnIndex("MODEL"));
+                String t_sku = tire_cursor.getString(tire_cursor.getColumnIndex("SKU"));
+                int t_row = tire_cursor.getInt(tire_cursor.getColumnIndex("AXIS_ROW"));
+                char t_side = tire_cursor.getString(tire_cursor.getColumnIndex("AXIS_SIDE")).charAt(0);
+                int t_index = tire_cursor.getInt(tire_cursor.getColumnIndex("AXIS_INDEX"));
+                int t_init = tire_cursor.getInt(tire_cursor.getColumnIndex("INIT_SS_ID"));
+                int t_curr = tire_cursor.getInt(tire_cursor.getColumnIndex("CUR_SS_ID"));
+
+                Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init, t_curr);
+                curr_vehicle.mTires.add(curr_tire);
+            }while(tire_cursor.moveToNext());
+        }
+        tire_cursor.close();
         return curr_vehicle;
     }
 
+    public static Tire getTire(String sersor_ID){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sersor_ID+"'", null);
+        c.moveToFirst();
+        String t_sensorId = c.getString(c.getColumnIndex("SENSOR_ID"));
+        String t_manufacturer = c.getString(c.getColumnIndex("MANUFACTURER"));
+        String t_model = c.getString(c.getColumnIndex("MODEL"));
+        String t_sku = c.getString(c.getColumnIndex("SKU"));
+        int t_row = c.getInt(c.getColumnIndex("AXIS_ROW"));
+        char t_side = c.getString(c.getColumnIndex("AXIS_SIDE")).charAt(0);
+        int t_index = c.getInt(c.getColumnIndex("AXIS_INDEX"));
+        int t_init = c.getInt(c.getColumnIndex("INIT_SS_ID"));
+        int t_curr = c.getInt(c.getColumnIndex("CUR_SS_ID"));
+        c.close();
+        Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init, t_curr);
+        return curr_tire;
+    }
 
     public static void testUserTable(){
-
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER", null);
+        c.moveToFirst();
+        Log.i("id", c.getString(0));
+        Log.i("name", c.getString(1));
+        Log.i("email", c.getString(2));
+        Log.i("phone", c.getString(3));
+
+        while(c.moveToNext()) {
+
+            Log.i("id", c.getString(0));
+            Log.i("name", c.getString(1));
+            Log.i("email", c.getString(2));
+            Log.i("phone", c.getString(3));
+        }
+
+    }
+
+    public static void testTireTable(){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE", null);
         c.moveToFirst();
         Log.i("id", c.getString(0));
         Log.i("name", c.getString(1));
