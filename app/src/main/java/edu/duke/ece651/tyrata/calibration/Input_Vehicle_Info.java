@@ -18,12 +18,14 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
     private List<String> dataList;
     private ArrayAdapter<String> adapter;
+    private int user_ID;
     String tirenumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
-
+        Intent intent = getIntent();
+        user_ID = intent.getIntExtra("userID", 0);
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
 
@@ -91,7 +93,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         // Do something in response to button
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.createTable();
-        Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), 2);
+        Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
         startActivity(intent);
     }
 }

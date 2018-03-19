@@ -23,10 +23,12 @@ import java.util.Map;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
+import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Vehicle_Info extends Activity {
     private Integer buttonnumber = 0;
-
+    private Vehicle curr_vehicle;
     private ListView tire_list;
     private List<Map<String, Object>> list;
     int axis_row = 0;
@@ -36,10 +38,15 @@ public class Vehicle_Info extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
-
+        //getVehicle
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String message_make = intent.getStringExtra("MAKE");
+        String vin = intent.getStringExtra("VIN");
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+
+        curr_vehicle = Database.getVehicle(vin);
+
+        String message_make = curr_vehicle.getMake();
         if(message_make == null){
             message_make = "";
         }
@@ -47,7 +54,7 @@ public class Vehicle_Info extends Activity {
         textView_make.setText(message_make);
 
 
-        String message_model = intent.getStringExtra("MODEL");
+        String message_model = curr_vehicle.getModel();
         if(message_model == null){
             message_model = "";
         }
@@ -55,7 +62,7 @@ public class Vehicle_Info extends Activity {
         textView_model.setText(message_model);
 
 
-        String message_year = intent.getStringExtra("YEAR");
+        String message_year = String.valueOf(curr_vehicle.getYear());
         if(message_year == null){
             message_year = "";
         }
@@ -63,24 +70,19 @@ public class Vehicle_Info extends Activity {
         textView_year.setText(message_year);
 
 
-        String message_vin = intent.getStringExtra("VIN");
-        if(message_vin == null){
-            message_vin = "";
-        }
         TextView textView_vin = findViewById(R.id.textView_vin);
-        textView_vin.setText(message_vin);
+        textView_vin.setText(vin);
 
-        String message_tirenumber = intent.getStringExtra("TIRENUMBER");
+        String message_tirenumber = String.valueOf(curr_vehicle.getNumTires()) ;
         if(message_tirenumber == null){
             message_tirenumber = "4";
         }
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
 
-        int axis_num = intent.getIntExtra("AXIS_NUM",0);
+        int axis_num = curr_vehicle.getNumAxis();
 
         buttonnumber=Integer.parseInt(message_tirenumber);
-
 
         tire_list = (ListView) findViewById(R.id.tire_list);
         initDataList(buttonnumber);
@@ -118,7 +120,7 @@ public class Vehicle_Info extends Activity {
         });
     }
 
-    private void calculate_location(int tirenum,int index){
+    private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
         if(tirenum == 4){
             axis_row = (index-1)/2+1;

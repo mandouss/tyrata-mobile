@@ -1,8 +1,10 @@
 package edu.duke.ece651.tyrata;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,7 +14,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
+import edu.duke.ece651.tyrata.user.User;
+import edu.duke.ece651.tyrata.vehicle.Vehicle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +28,28 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private ListView vehicle_list;
     private List<Map<String, Object>> list;
+    private int user_ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
+        user_ID = intent.getIntExtra("USER_ID", 0);
+        Log.i("In main", String.valueOf(user_ID));
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        User curr_user = Database.getUser(user_ID);
+
+        TextView textView_username = findViewById(R.id.textView_user);
+        textView_username.setText(curr_user.username);
+
+        TextView textView_email = findViewById(R.id.textView_email);
+        textView_email.setText(curr_user.email);
+
+        TextView textView_phonenum = findViewById(R.id.textView_phone);
+        textView_phonenum.setText(curr_user.phone);
+
+
+
         String message_report = intent.getStringExtra("REPORT");
         TextView textView_report = findViewById(R.id.main_notification);
         textView_report.setText(message_report);
@@ -35,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
-        initDataList(4);
 
-        String[] from = { "img", "vehicle number", "make","model", "year" };
+        initDataList(curr_user.mVehicles);
+
+        String[] from = { "img", "VIN", "make","model", "year" };
         // 列表项组件Id 数组
         int[] to = { R.id.item_img, R.id.item_vehicle, R.id.item_make,R.id.item_model,
                 R.id.item_year };
@@ -54,18 +78,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
                 Map<String, Object> map = list.get(arg2);
-
                 String str = "";
-                String str2="";
-                str += map.get("vehicle number");
-                for(int i=0;i<str.length();i++) {
-                    if (str.charAt(i) >= 48 && str.charAt(i) <= 57) {
-                        str2 += str.charAt(i);
-                    }
-                }
-                int vehicle_num = Integer.valueOf(str2);
-                main_to_vehicle_info();
-
+                str += map.get("VIN");
+                main_to_vehicle_info(str);
             }
         });
     }
@@ -77,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initDataList(int number) {
+    private void initDataList(ArrayList<Vehicle> vehicles) {
+        int number = vehicles.size();
         //图片资源
         int img[] ;
         img = new int[number];
@@ -88,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < number; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("img", img[i]);
-            map.put("vehicle number", "vehicle" + (i+1));
-            map.put("make", "make" );
-            map.put("model", "model" );
-            map.put("year", "1996");
+            map.put("VIN", vehicles.get(i).getVin());
+            map.put("make", "Make:" + vehicles.get(i).getMake() );
+            map.put("model", "Model:" + vehicles.get(i).getModel() );
+            map.put("year", "Year:" + String.valueOf(vehicles.get(i).getYear()));
             list.add(map);
         }
     }
@@ -101,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.n_item2:
-                main_to_addcar();
+                main_to_addcar(user_ID);
                 return true;
             case R.id.n_item3:
                 main_to_report();
@@ -118,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void main_to_addcar() {
+    public void main_to_addcar(int user_ID) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
+        intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
@@ -136,8 +153,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
-    public void main_to_vehicle_info() {
+    public void main_to_vehicle_info(String vin) {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
+        intent.putExtra("VIN", vin);
 
         startActivity(intent);
         // Do something in response to button
