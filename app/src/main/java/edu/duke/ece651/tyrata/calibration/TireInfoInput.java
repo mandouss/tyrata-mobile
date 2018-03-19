@@ -1,5 +1,9 @@
 package edu.duke.ece651.tyrata.calibration;
-
+/**
+ * This class has Bluetooth API
+ * @author De Lan
+ * Created by De Lan on 2/27/2018.
+ */
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;

@@ -7,6 +7,9 @@ package edu.duke.ece651.tyrata.vehicle;
  * Created by Saeed on 3/10/2018.
  */
 
+/**
+ * Updated by De Lan on 3/18/2018: within accordance with latest database design
+ */
 public class Tire {
     String mSensorId;
     String mManufacturer;

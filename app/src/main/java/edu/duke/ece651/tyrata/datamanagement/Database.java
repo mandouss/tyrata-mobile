@@ -11,6 +11,7 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
  * Created by Yuei on 3/4/18.
+ * Updated by De Lan on 3/18/2018: getUser(), getVehicle(), getTire()
  */
 
 public class Database extends AppCompatActivity {
@@ -124,6 +125,7 @@ public class Database extends AppCompatActivity {
         return true;
     }
 
+    /* Created by De Lan on 3/18/2018.*/
     public static User getUser(int user_id){
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE USER_ID = "+user_id+"", null);
         c.moveToFirst();
@@ -150,6 +152,7 @@ public class Database extends AppCompatActivity {
         return curr_user;
     }
 
+    /* Created by De Lan on 3/18/2018.*/
     //TODO: from tireinfo page to vehicleinfo page, exception
     public static Vehicle getVehicle(String vin){
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
@@ -182,7 +185,7 @@ public class Database extends AppCompatActivity {
         tire_cursor.close();
         return curr_vehicle;
     }
-
+    /* Created by De Lan on 3/18/2018.*/
     public static Tire getTire(String sersor_ID){
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sersor_ID+"'", null);
         c.moveToFirst();
@@ -218,6 +221,7 @@ public class Database extends AppCompatActivity {
 
     }
 
+    /* Created by De Lan on 3/18/2018.*/
     public static void testTireTable(){
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE", null);
         c.moveToFirst();

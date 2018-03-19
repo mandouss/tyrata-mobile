@@ -1,6 +1,10 @@
 package edu.duke.ece651.tyrata.display;
 
-
+/**
+ * This class has Bluetooth API
+ * @author De Lan
+ * Created by Alan on 2/27/2018.
+ */
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
