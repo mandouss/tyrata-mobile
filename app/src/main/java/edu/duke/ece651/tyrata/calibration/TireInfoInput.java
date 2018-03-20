@@ -1,6 +1,6 @@
 package edu.duke.ece651.tyrata.calibration;
 /**
- * This class has Bluetooth API
+ * This class is Tireinfo input page
  * @author De Lan
  * Created by De Lan on 2/27/2018.
  */

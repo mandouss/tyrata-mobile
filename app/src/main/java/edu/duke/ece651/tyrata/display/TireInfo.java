@@ -1,7 +1,7 @@
 package edu.duke.ece651.tyrata.display;
 
 /**
- * This class has Bluetooth API
+ * This class has Tireinfo display page
  * @author De Lan
  * Created by Alan on 2/27/2018.
  */
