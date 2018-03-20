@@ -31,9 +31,9 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:text="User:"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
         android:text="Email:"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/label_user_name" />
 
@@ -55,7 +55,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
         android:text="Phone:"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/label_user_email" />
 
@@ -64,8 +64,8 @@
         android:layout_width="140dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="25dp"
-        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/label_user_name"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,7 +75,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/label_user_email"
         app:layout_constraintTop_toBottomOf="@+id/textView_user" />
 
@@ -85,14 +85,14 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/label_user_phone"
         app:layout_constraintTop_toBottomOf="@+id/textView_email" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="169dp"
-        android:layout_height="160dp"
+        android:layout_width="144dp"
+        android:layout_height="145dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
