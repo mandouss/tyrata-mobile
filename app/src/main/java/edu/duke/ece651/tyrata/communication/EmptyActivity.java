@@ -48,4 +48,10 @@ public class EmptyActivity extends AppCompatActivity {
         Intent intent = new Intent(this, BluetoothActivity.class);
         startActivity(intent);
     }
+
+    public void goToHTTP(View view) {
+        Intent intent = new Intent(this, HttpActivity.class);
+        startActivity(intent);
+    }
+
 }
