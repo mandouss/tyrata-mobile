@@ -32,7 +32,8 @@ public class TireInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info);
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-
+        Tire curr_tire = Database.getTire("sensor1");
+        Database.myDatabase.close();
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         axis_row = intent.getIntExtra("AXIS_ROW",0);
@@ -40,7 +41,6 @@ public class TireInfo extends AppCompatActivity {
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
 
-        Tire curr_tire = Database.getTire("sensor1");
         if(curr_tire != null) {
             message_manufacturer = curr_tire.getManufacturer();
             message_model = curr_tire.getModel();

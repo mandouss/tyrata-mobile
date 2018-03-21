@@ -50,6 +50,7 @@ public class Vehicle_Info extends Activity {
         Database.testTireTable();
 
         curr_vehicle = Database.getVehicle(vin);
+        Database.myDatabase.close();
 
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);

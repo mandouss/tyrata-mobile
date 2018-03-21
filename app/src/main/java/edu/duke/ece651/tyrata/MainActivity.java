@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("In main", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         User curr_user = Database.getUser(user_ID);
+        Database.myDatabase.close();
 
         TextView textView_username = findViewById(R.id.textView_user);
         textView_username.setText(curr_user.username);
@@ -46,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView_phonenum = findViewById(R.id.textView_phone);
         textView_phonenum.setText(curr_user.phone);
-
-
 
         String message_report = intent.getStringExtra("REPORT");
         TextView textView_report = findViewById(R.id.main_notification);

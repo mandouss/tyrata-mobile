@@ -33,13 +33,14 @@ public class Log_in extends AppCompatActivity {
             int user_ID = Database.Userid(message_email);
             Log.i("exist", String.valueOf(user_ID));
             intent.putExtra("USER_ID",user_ID);
+            Database.myDatabase.close();
             startActivity(intent);
         }
         else{
             Log.i("exist", "No");
             email_not_exist();
         }
-
+        Database.myDatabase.close();
     }
     public void switchto_register(View view) {
         Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);

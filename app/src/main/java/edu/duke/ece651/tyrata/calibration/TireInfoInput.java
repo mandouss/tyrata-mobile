@@ -60,6 +60,7 @@ public class TireInfoInput extends AppCompatActivity {
         Log.i("VIN", vin);
 
         Database.storeTireData("sensor1", message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness),0, 0 );
+        Database.myDatabase.close();
         startActivity(intent);
     }
 }

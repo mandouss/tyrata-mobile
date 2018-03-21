@@ -38,6 +38,7 @@ public class Register extends AppCompatActivity {
         Database.createTable();
         Database.storeUserData(message_username, message_email, message_phone);
         Database.testUserTable();
+        Database.myDatabase.close();
         startActivity(intent);
     }
 }
