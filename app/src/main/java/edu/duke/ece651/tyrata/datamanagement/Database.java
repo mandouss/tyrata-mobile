@@ -65,7 +65,38 @@ public class Database extends AppCompatActivity {
 
     }
 
+    /* Created by Yue Li on 3/20/2018.*/
+    public static void updateUserInfo(Integer user_id, String name, String phonenum){
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("NAME", name);
+        contentValues.put("PHONE_NUMBER", phonenum);
+        myDatabase.update("USER", contentValues, "USER_ID = ?", new String[] { Integer.toString(user_id) });
+    }
 
+    public static void updateVehicleData(String vin, String carmodel, String carmake, int tireyear, int userid){
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("VIN", vin);
+        contentValues.put("MAKE", carmake);
+        contentValues.put("MODEL", carmodel);
+        contentValues.put("YEAR", tireyear);
+        myDatabase.update("VEHICLE", contentValues, "USER_ID = ?", new String[] { Integer.toString(userid) });
+    }
+
+    public static void updateTireData(String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index){
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("MANUFACTURER", manufacturer);
+        contentValues.put("MODEL", model);
+        contentValues.put("SKU", sku);
+        contentValues.put("AXIS_ROW", axis_row);
+        contentValues.put("AXIS_SIDE", axis_side);
+        contentValues.put("AXIS_INDEX", axis_index);
+        myDatabase.update("TIRE", contentValues, "VEHICLE_ID = ?", new String[] { vehicle_id });
+    }
+
+    /* Created by Yue Li on 3/16/2018.*/
     public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
         ContentValues contentValues = new ContentValues();
@@ -78,7 +109,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("USER_ID", userid);
         myDatabase.insert("VEHICLE", null, contentValues);
     }
-
+    /* Created by Yue Li on 3/16/2018.*/
     public static void storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id ){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
         ContentValues contentValues = new ContentValues();
@@ -96,7 +127,7 @@ public class Database extends AppCompatActivity {
         myDatabase.insert("TIRE", null, contentValues);
 
     }
-
+    /* Created by Yue Li on 3/16/2018.*/
     public static void storeSnapshot(int id, double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat ){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID))");
         ContentValues contentValues = new ContentValues();
@@ -222,6 +253,8 @@ public class Database extends AppCompatActivity {
             return null;
         }
     }
+
+
 
     public static void testUserTable(){
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER", null);
