@@ -25,7 +25,7 @@ public class TireInfoInput extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info_input);
-        Intent intent = new Intent();
+        Intent intent = getIntent();
 
         axis_row = intent.getIntExtra("axis_ROW",0);
         axis_index = intent.getIntExtra("axis_IDX",0);
@@ -34,17 +34,14 @@ public class TireInfoInput extends AppCompatActivity {
     }
     /** Called when the user taps the Submit button */
     public void saveMessage(View view) {
-
         Intent intent = new Intent(this, TireInfo.class);
         EditText edit_manufacturer = (EditText) findViewById(R.id.edit_manufacturer);
         String message_manufacturer = edit_manufacturer.getText().toString();
 //        intent.putExtra("tire_manufacturer", message_manufacturer);
 
-
         EditText edit_model = (EditText) findViewById(R.id.edit_model);
         String message_model = edit_model.getText().toString();
 //        intent.putExtra("tire_model", message_model);
-
 
         EditText edit_SKU = (EditText) findViewById(R.id.edit_SKU);
         String message_SKU = edit_SKU.getText().toString();
@@ -55,9 +52,14 @@ public class TireInfoInput extends AppCompatActivity {
         String message_thickness = edit_thickness.getText().toString();
 //        intent.putExtra("tire_thickness", message_thickness);
 
-
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeTireData("sensorID", message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, 0, 0 );
+        Log.i("NOTIFICATION","new store!!!");
+        Log.i("axis_ROW",String.valueOf(axis_row));
+        Log.i("axis_IDX", String.valueOf(axis_index));
+        Log.i("axis_SIDE", String.valueOf(axis_side));
+        Log.i("VIN", vin);
+
+        Database.storeTireData("sensor1", message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness),0, 0 );
         startActivity(intent);
     }
 }

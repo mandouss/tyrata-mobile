@@ -33,6 +33,8 @@ public class Register extends AppCompatActivity {
 
         // Do something in response to button
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        // For test, drop and create tables
+        Database.dropAllTable();
         Database.createTable();
         Database.storeUserData(message_username, message_email, message_phone);
         Database.testUserTable();

@@ -32,9 +32,10 @@ public class Vehicle_Info extends Activity {
     private String vin;
     private ListView tire_list;
     private List<Map<String, Object>> list;
-    int axis_row = 0;
-    char axis_side;
-    int axis_index = 0;
+    private int axis_row;
+    private char axis_side;
+    private int axis_index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,32 +44,26 @@ public class Vehicle_Info extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Log.i("In vehicle info page", vin);
 
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.testTireTable();
 
         curr_vehicle = Database.getVehicle(vin);
 
         String message_make = curr_vehicle.getMake();
-        if(message_make == null){
-            message_make = "";
-        }
         TextView textView_make = findViewById(R.id.textView_make);
         textView_make.setText(message_make);
 
 
         String message_model = curr_vehicle.getModel();
-        if(message_model == null){
-            message_model = "";
-        }
+
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
 
         String message_year = String.valueOf(curr_vehicle.getYear());
-        if(message_year == null){
-            message_year = "";
-        }
+
         TextView textView_year = findViewById(R.id.textView_year);
         textView_year.setText(message_year);
 
@@ -77,7 +72,7 @@ public class Vehicle_Info extends Activity {
         textView_vin.setText(vin);
 
         String message_tirenumber = String.valueOf(curr_vehicle.getNumTires()) ;
-        if(message_tirenumber == null){
+        if(message_tirenumber.equals("")){
             message_tirenumber = "4";
         }
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
@@ -118,7 +113,6 @@ public class Vehicle_Info extends Activity {
                 int tire_num = Integer.valueOf(str2);
                 calculate_location(buttonnumber,tire_num);
                 vehicle_to_tire();
-
             }
         });
     }
@@ -208,6 +202,4 @@ public class Vehicle_Info extends Activity {
                 .setNegativeButton("No", null)
                 .show();
     }
-
-
 }

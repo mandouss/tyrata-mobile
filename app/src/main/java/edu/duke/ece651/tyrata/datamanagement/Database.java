@@ -27,12 +27,18 @@ public class Database extends AppCompatActivity {
     public static void createTable(){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID VARCHAR, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID))");
     }
 
+    public static void dropAllTable(){
+        myDatabase.execSQL("DROP TABLE IF EXISTS TIRE");
+        myDatabase.execSQL("DROP TABLE IF EXISTS SNAPSHOT");
+        myDatabase.execSQL("DROP TABLE IF EXISTS VEHICLE");
+        myDatabase.execSQL("DROP TABLE IF EXISTS USER");
+    }
+
     public static void storeUserData(String name, String email, String phone){
-//        myDatabase.execSQL("DROP TABLE IF EXISTS USER");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         final String MY_QUERY = "SELECT MAX(USER_ID) FROM USER";
         Cursor c = myDatabase.rawQuery(MY_QUERY, null);
@@ -73,8 +79,8 @@ public class Database extends AppCompatActivity {
         myDatabase.insert("VEHICLE", null, contentValues);
     }
 
-    public static void storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, int init_ss_id, int cur_ss_id ){
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
+    public static void storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id ){
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
         ContentValues contentValues = new ContentValues();
         contentValues.put("SENSOR_ID", sensor_id);
         contentValues.put("MANUFACTURER", manufacturer);
@@ -84,6 +90,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("AXIS_ROW", axis_row);
         contentValues.put("AXIS_SIDE", axis_side);
         contentValues.put("AXIS_INDEX", axis_index);
+        contentValues.put("INIT_THICKNESS", init_thickness);
         contentValues.put("INIT_SS_ID", init_ss_id);
         contentValues.put("CUR_SS_ID", cur_ss_id);
         myDatabase.insert("TIRE", null, contentValues);
@@ -128,6 +135,9 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     public static User getUser(int user_id){
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE USER_ID = "+user_id+"", null);
+        if(c == null) {
+            return null;
+        }
         c.moveToFirst();
         String name = c.getString(c.getColumnIndex("NAME"));
         String email = c.getString(c.getColumnIndex("EMAIL"));
@@ -156,6 +166,9 @@ public class Database extends AppCompatActivity {
     //TODO: from tireinfo page to vehicleinfo page, exception
     public static Vehicle getVehicle(String vin){
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
+        if(c == null) {
+            return null;
+        }
         c.moveToFirst();
         String make = c.getString(c.getColumnIndex("MAKE"));
         String model = c.getString(c.getColumnIndex("MODEL"));
@@ -175,10 +188,11 @@ public class Database extends AppCompatActivity {
                 int t_row = tire_cursor.getInt(tire_cursor.getColumnIndex("AXIS_ROW"));
                 char t_side = tire_cursor.getString(tire_cursor.getColumnIndex("AXIS_SIDE")).charAt(0);
                 int t_index = tire_cursor.getInt(tire_cursor.getColumnIndex("AXIS_INDEX"));
+                double t_init_thickness = tire_cursor.getDouble(tire_cursor.getColumnIndex("INIT_THICKNESS"));
                 int t_init = tire_cursor.getInt(tire_cursor.getColumnIndex("INIT_SS_ID"));
                 int t_curr = tire_cursor.getInt(tire_cursor.getColumnIndex("CUR_SS_ID"));
 
-                Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init, t_curr);
+                Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init_thickness, t_init, t_curr);
                 curr_vehicle.mTires.add(curr_tire);
             }while(tire_cursor.moveToNext());
         }
@@ -188,56 +202,59 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     public static Tire getTire(String sersor_ID){
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sersor_ID+"'", null);
-        c.moveToFirst();
-        String t_sensorId = c.getString(c.getColumnIndex("SENSOR_ID"));
-        String t_manufacturer = c.getString(c.getColumnIndex("MANUFACTURER"));
-        String t_model = c.getString(c.getColumnIndex("MODEL"));
-        String t_sku = c.getString(c.getColumnIndex("SKU"));
-        int t_row = c.getInt(c.getColumnIndex("AXIS_ROW"));
-        char t_side = c.getString(c.getColumnIndex("AXIS_SIDE")).charAt(0);
-        int t_index = c.getInt(c.getColumnIndex("AXIS_INDEX"));
-        int t_init = c.getInt(c.getColumnIndex("INIT_SS_ID"));
-        int t_curr = c.getInt(c.getColumnIndex("CUR_SS_ID"));
-        c.close();
-        Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init, t_curr);
-        return curr_tire;
+
+        if(c.moveToFirst()){
+            String t_sensorId = c.getString(c.getColumnIndex("SENSOR_ID"));
+            String t_manufacturer = c.getString(c.getColumnIndex("MANUFACTURER"));
+            String t_model = c.getString(c.getColumnIndex("MODEL"));
+            String t_sku = c.getString(c.getColumnIndex("SKU"));
+            int t_row = c.getInt(c.getColumnIndex("AXIS_ROW"));
+            char t_side = c.getString(c.getColumnIndex("AXIS_SIDE")).charAt(0);
+            int t_index = c.getInt(c.getColumnIndex("AXIS_INDEX"));
+            double t_init_thickness = c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
+            int t_init = c.getInt(c.getColumnIndex("INIT_SS_ID"));
+            int t_curr = c.getInt(c.getColumnIndex("CUR_SS_ID"));
+            c.close();
+            Tire curr_tire = new Tire(t_sensorId, t_manufacturer, t_model, t_sku, t_row, t_side, t_index, t_init_thickness, t_init, t_curr);
+            return curr_tire;
+        }
+        else{
+            return null;
+        }
     }
 
     public static void testUserTable(){
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER", null);
-        c.moveToFirst();
-        Log.i("id", c.getString(0));
-        Log.i("name", c.getString(1));
-        Log.i("email", c.getString(2));
-        Log.i("phone", c.getString(3));
-
-        while(c.moveToNext()) {
-
-            Log.i("id", c.getString(0));
-            Log.i("name", c.getString(1));
-            Log.i("email", c.getString(2));
-            Log.i("phone", c.getString(3));
+        if(c.moveToFirst()) {
+            do {
+                Log.i("id", c.getString(0));
+                Log.i("name", c.getString(1));
+                Log.i("email", c.getString(2));
+                Log.i("phone", c.getString(3));
+            }while(c.moveToNext());
         }
-
+        else{
+            Log.i("testUserTable", "There is nothing in testUserTable");
+        }
+        c.close();
     }
 
     /* Created by De Lan on 3/18/2018.*/
     public static void testTireTable(){
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE", null);
-        c.moveToFirst();
-        Log.i("id", c.getString(0));
-        Log.i("name", c.getString(1));
-        Log.i("email", c.getString(2));
-        Log.i("phone", c.getString(3));
-
-        while(c.moveToNext()) {
-
-            Log.i("id", c.getString(0));
-            Log.i("name", c.getString(1));
-            Log.i("email", c.getString(2));
-            Log.i("phone", c.getString(3));
+        if(c.moveToFirst()) {
+            do {
+                Log.i("sensor_id", c.getString(0));
+                Log.i("manufacturer", c.getString(1));
+                Log.i("model", c.getString(2));
+                Log.i("sku", c.getString(3));
+                Log.i("vehicle_id", c.getString(6));
+            }while(c.moveToNext());
         }
-
+        else{
+            Log.i("testTireTable", "There is nothing in testTireTable");
+        }
+        c.close();
     }
 
 
