@@ -10,7 +10,7 @@ import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
- * Created by Yuei on 3/4/18.
+ * Created by Yue Li and Zijie Wang on 3/4/18.
  * Updated by De Lan on 3/18/2018: getUser(), getVehicle(), getTire()
  */
 
@@ -22,6 +22,7 @@ public class Database extends AppCompatActivity {
 
     }
 
+    /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
     public static void createTable(){
@@ -38,6 +39,7 @@ public class Database extends AppCompatActivity {
         myDatabase.execSQL("DROP TABLE IF EXISTS USER");
     }
 
+    /* Created by Zijie Wangon 3/4/2018. */
     public static void storeUserData(String name, String email, String phone){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         final String MY_QUERY = "SELECT MAX(USER_ID) FROM USER";
@@ -96,7 +98,7 @@ public class Database extends AppCompatActivity {
         myDatabase.update("TIRE", contentValues, "VEHICLE_ID = ?", new String[] { vehicle_id });
     }
 
-    /* Created by Yue Li on 3/16/2018.*/
+    /* Created by Zijie Wang on 3/16/2018.*/
     public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
         ContentValues contentValues = new ContentValues();
@@ -253,7 +255,6 @@ public class Database extends AppCompatActivity {
             return null;
         }
     }
-
 
 
     public static void testUserTable(){
