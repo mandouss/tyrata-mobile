@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dailyS11List>
+    <dailyS11>
+        <timestamp>2018-03-17</timestamp>
+        <mileage>1234</mileage>
+        <tire>
+            <sensorID>asd1234</sensorID>
+            <s11>-0.953</s11>
+            <pressure>23.4</pressure>
+        </tire>
+        <tire>
+            <sensorID>asd5678</sensorID>
+            <s11>-0.822</s11>
+            <pressure>24.9</pressure>
+        </tire>
+    </dailyS11>
+</dailyS11List>

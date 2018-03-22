@@ -1,5 +1,4 @@
 package edu.duke.ece651.tyrata.calibration;
-
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,29 +7,30 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 
 public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
     private List<String> dataList;
     private ArrayAdapter<String> adapter;
+    private int user_ID;
     String tirenumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
-
+        Intent intent = getIntent();
+        user_ID = intent.getIntExtra("userID", 0);
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
 
         dataList = new ArrayList<String>();
         dataList.add("4");
-        dataList.add("6");
+        dataList.add("10");
         dataList.add("18");
 
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataList);
@@ -75,8 +75,24 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         intent.putExtra("VIN", message_vin);
 
         intent.putExtra("TIRENUMBER", tirenumber);
-        startActivity(intent);
+
+        int num = Integer.parseInt(tirenumber);
+        int axis_num = 0;
+        if (num == 4) {
+            axis_num = 2;
+        }
+        else if(num == 10) {
+            axis_num = 3;
+        }
+        else if(num == 18){
+            axis_num = 5;
+        }
+        intent.putExtra("AXIS_NUM",axis_num);
 
         // Do something in response to button
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
+        Database.myDatabase.close();
+        startActivity(intent);
     }
 }
