@@ -6,16 +6,30 @@ package edu.duke.ece651.tyrata.display;
  * Created by Alan on 2/27/2018.
  */
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Tire;
+import lecho.lib.hellocharts.gesture.ContainerScrollType;
+import lecho.lib.hellocharts.gesture.ZoomType;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.model.Viewport;
+import lecho.lib.hellocharts.view.LineChartView;
 
 public class TireInfo extends AppCompatActivity {
     int axis_row;
@@ -26,6 +40,13 @@ public class TireInfo extends AppCompatActivity {
     String message_model;
     String message_SKU;
     String message_Thickness;
+
+    private LineChartView lineChart;
+
+    String[] date = {"10-22","11-22","12-22","1-22","6-22","5-23","5-22","6-22","5-23","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22"};//X轴的标注
+    int[] score= {50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20};//图表的数据点
+    private List<PointValue> mPointValues = new ArrayList<PointValue>();
+    private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +110,11 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_rep = findViewById(R.id.textView_replace);
         textView_rep.setText(message_rep);
 
+        lineChart = (LineChartView)findViewById(R.id.line_chart);
+        getAxisXLables();//获取x轴的标注
+        getAxisPoints();//获取坐标点
+        initLineChart();//初始化
+
     }
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
@@ -110,5 +136,80 @@ public class TireInfo extends AppCompatActivity {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
         startActivity(intent);
+    }
+
+    private void getAxisXLables(){
+        for (int i = 0; i < date.length; i++) {
+            mAxisXValues.add(new AxisValue(i).setLabel(date[i]));
+        }
+    }
+
+    private void getAxisPoints() {
+        for (int i = 0; i < score.length; i++) {
+            mPointValues.add(new PointValue(i, score[i]));
+        }
+    }
+
+    private void initLineChart(){
+        Line line = new Line(mPointValues).setColor(Color.parseColor("#FFCD41"));  //color of the line（orange）
+        List<Line> lines = new ArrayList<Line>();
+        line.setShape(ValueShape.CIRCLE);//shape of the dot on line  (circle) （three types ：ValueShape.SQUARE  ValueShape.CIRCLE  ValueShape.DIAMOND）
+        line.setCubic(false);//curve or broken line
+        line.setFilled(false);
+        line.setHasLabels(true);
+//      line.setHasLabelsOnlyForSelected(true);//点击数据坐标提示数据（设置了这个line.setHasLabels(true);就无效）
+        line.setHasLines(true);//whether have line
+        line.setHasPoints(true);
+        lines.add(line);
+        LineChartData data = new LineChartData();
+        data.setLines(lines);
+
+        //X axis
+        Axis axisX = new Axis();
+        axisX.setHasTiltedLabels(true);  //whether the x axis text is italic
+        axisX.setTextColor(Color.BLACK);  //text color
+        //axisX.setName("date");  //axis name
+        axisX.setTextSize(14);//text size
+        axisX.setMaxLabelChars(8); //最多几个X轴坐标，意思就是你的缩放让X轴上数据的个数7<=x<=mAxisXValues.length
+        axisX.setValues(mAxisXValues);  //填充X轴的坐标名称
+        data.setAxisXBottom(axisX); //x axis is at bottom
+        axisX.setHasLines(true); //x axis dividing rules
+
+
+        // Y axis
+        Axis axisY = new Axis();
+        axisY.setTextColor(Color.BLACK);
+        axisY.setName("Tire Thickness");
+        axisY.setTextSize(14);
+        data.setAxisYLeft(axisY);  //Y axis is on the left
+        axisY.setHasLines(true);
+
+        /*axisY.setMaxLabelChars(6);//max label length, for example 60
+        List<AxisValue> values = new ArrayList<>();
+        for(int i = 0; i < 100; i+= 10){
+            AxisValue value = new AxisValue(i);
+            String label = String.valueOf(i);
+            value.setLabel(label);
+            values.add(value);
+        }
+        axisY.setValues(values);*/
+
+
+
+
+        //设置行为属性，支持缩放、滑动以及平移
+        lineChart.setInteractive(true);
+        lineChart.setZoomType(ZoomType.HORIZONTAL);
+        lineChart.setMaxZoom((float) 2);//最大方法比例
+        lineChart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
+        lineChart.setLineChartData(data);
+        lineChart.setVisibility(View.VISIBLE);
+        /**注：下面的7，10只是代表一个数字去类比而已
+         * 当时是为了解决X轴固定数据个数。见（http://forum.xda-developers.com/tools/programming/library-hellocharts-charting-library-t2904456/page2）;
+         */
+        Viewport v = new Viewport(lineChart.getMaximumViewport());
+        v.left = 0;
+        v.right= 7;
+        lineChart.setCurrentViewport(v);
     }
 }
