@@ -16,7 +16,7 @@ public class Vehicle {
     private String mVin;
     private int mNumAxis;
     private int mNumTires;
-    private ArrayList<Tire> mTires;
+    public ArrayList<Tire> mTires;
 
     /** Constructor
      *
@@ -25,7 +25,7 @@ public class Vehicle {
      * @param year The year the car was produced
      * @param vin VIN (Vehicle Identification Number) of the car
      */
-    public Vehicle(String make, String model, int year, String vin, int numAxis, int numTires) {
+    public Vehicle(String vin, String make, String model, int year, int numAxis, int numTires) {
         this.mMake = make;
         this.mModel = model;
         this.mYear = year;
@@ -39,7 +39,7 @@ public class Vehicle {
      *
      */
     public Vehicle() {
-        this("", "", 0, "", 0, 0);
+        this("", "", "", 0, 0, 0);
     }
 
     /** Add a new tire to the car

@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,64 +23,65 @@ import java.util.Map;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
+import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Vehicle_Info extends Activity {
     private Integer buttonnumber = 0;
-
+    private Vehicle curr_vehicle;
+    private String vin;
     private ListView tire_list;
     private List<Map<String, Object>> list;
-    int axis_row = 0;
-    char axis_side;
-    int axis_index = 0;
+    private int axis_row;
+    private char axis_side;
+    private int axis_index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
-
+        //getVehicle
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String message_make = intent.getStringExtra("MAKE");
-        if(message_make == null){
-            message_make = "";
-        }
+        vin = intent.getStringExtra("VIN");
+        Log.i("In vehicle info page", vin);
+
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.testTireTable();
+
+        curr_vehicle = Database.getVehicle(vin);
+        Database.myDatabase.close();
+
+        String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);
         textView_make.setText(message_make);
 
 
-        String message_model = intent.getStringExtra("MODEL");
-        if(message_model == null){
-            message_model = "";
-        }
+        String message_model = curr_vehicle.getModel();
+
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
 
-        String message_year = intent.getStringExtra("YEAR");
-        if(message_year == null){
-            message_year = "";
-        }
+        String message_year = String.valueOf(curr_vehicle.getYear());
+
         TextView textView_year = findViewById(R.id.textView_year);
         textView_year.setText(message_year);
 
 
-        String message_vin = intent.getStringExtra("VIN");
-        if(message_vin == null){
-            message_vin = "";
-        }
         TextView textView_vin = findViewById(R.id.textView_vin);
-        textView_vin.setText(message_vin);
+        textView_vin.setText(vin);
 
-        String message_tirenumber = intent.getStringExtra("TIRENUMBER");
-        if(message_tirenumber == null){
+        String message_tirenumber = String.valueOf(curr_vehicle.getNumTires()) ;
+        if(message_tirenumber.equals("")){
             message_tirenumber = "4";
         }
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
 
-        int axis_num = intent.getIntExtra("AXIS_NUM",0);
+        int axis_num = curr_vehicle.getNumAxis();
 
         buttonnumber=Integer.parseInt(message_tirenumber);
-
 
         tire_list = (ListView) findViewById(R.id.tire_list);
         initDataList(buttonnumber);
@@ -88,14 +90,6 @@ public class Vehicle_Info extends Activity {
         // 列表项组件Id 数组
         int[] to = { R.id.item_img, R.id.item_tire, R.id.item_location,
                 R.id.item_percent };
-        /**
-         * SimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to)
-         * context：activity界面类
-         * data 数组内容是map的集合数据
-         * resource 列表项文件
-         * from map key值数组
-         * to 列表项组件id数组      from与to一一对应，适配器绑定数据
-         */
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
@@ -120,28 +114,11 @@ public class Vehicle_Info extends Activity {
                 int tire_num = Integer.valueOf(str2);
                 calculate_location(buttonnumber,tire_num);
                 vehicle_to_tire();
-
             }
         });
-        /**
-         * 长按
-         */
-        tire_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int arg2, long arg3) {
-                list.remove(arg2);
-                adapter.notifyDataSetChanged();// 更新列表数据
-                Toast.makeText(Vehicle_Info.this, "删除成功！", Toast.LENGTH_SHORT)
-                        .show();
-                return false;
-            }
-        });
-
     }
 
-    private void calculate_location(int tirenum,int index){
+    private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
         if(tirenum == 4){
             axis_row = (index-1)/2+1;
@@ -170,11 +147,14 @@ public class Vehicle_Info extends Activity {
             }
         }
         if(side == 1){
-            axis_side = 'l';
+            axis_side = 'L';
         }
         else {
-            axis_side = 'r';
+            axis_side = 'R';
         }
+        Log.i("axis", Character.toString(axis_side));
+        Log.i("index", Integer.toString(axis_index));
+        Log.i("row", Integer.toString(axis_row));
     }
 
 
@@ -207,6 +187,7 @@ public class Vehicle_Info extends Activity {
         intent.putExtra("AXIS_ROW", axis_row);
         intent.putExtra("AXIS_INDEX",axis_index);
         intent.putExtra("AXIS_SIDE", axis_side);
+        intent.putExtra("VIN", vin);
 
         startActivity(intent);
         // Do something in response to button
@@ -222,6 +203,4 @@ public class Vehicle_Info extends Activity {
                 .setNegativeButton("No", null)
                 .show();
     }
-
-
 }
