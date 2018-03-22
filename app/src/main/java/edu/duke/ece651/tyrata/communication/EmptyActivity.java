@@ -55,6 +55,11 @@ public class EmptyActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToHTTP(View view) {
+        Intent intent = new Intent(this, HttpActivity.class);
+        startActivity(intent);
+    }
+
     public void testParseXml(View view) {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         ArrayList<BluetoothXmlParser.DailyS11> list;
