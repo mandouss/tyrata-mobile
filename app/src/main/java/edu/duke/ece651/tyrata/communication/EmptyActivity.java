@@ -87,7 +87,7 @@ public class EmptyActivity extends AppCompatActivity {
     public void getTireSnapshotFromXml(View view) {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
-            TireSnapshot tireSnapshot = xmlParser.parseToTireSnaptshot(getResources().openRawResource(R.raw.xml_bluetooth_sample));
+            TireSnapshot tireSnapshot = xmlParser.parseToTireSnapshot(getResources().openRawResource(R.raw.xml_bluetooth_sample));
             String msg = "";
             if (tireSnapshot == null) {
                 msg = "Empty TireSnapshot...";

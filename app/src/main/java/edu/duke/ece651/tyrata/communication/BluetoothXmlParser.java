@@ -21,7 +21,7 @@ class BluetoothXmlParser {
     // We don't use namespaces
     private static final String ns = null;
 
-    TireSnapshot parseToTireSnaptshot(InputStream in) throws XmlPullParserException, IOException {
+    TireSnapshot parseToTireSnapshot(InputStream in) throws XmlPullParserException, IOException {
         TireSnapshot tireSnapshot = new TireSnapshot();
         ArrayList<DailyS11> dailyS11List = parse(in);
         if (!dailyS11List.isEmpty()) {
