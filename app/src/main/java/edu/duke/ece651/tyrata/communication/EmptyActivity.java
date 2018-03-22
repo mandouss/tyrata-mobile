@@ -11,8 +11,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.processing.GPStracker;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 public class EmptyActivity extends AppCompatActivity {
 
@@ -43,9 +50,59 @@ public class EmptyActivity extends AppCompatActivity {
         }
     }
 
-    /** Called when the user taps the Send button */
     public void goToBluetooth(View view) {
         Intent intent = new Intent(this, BluetoothActivity.class);
         startActivity(intent);
+    }
+
+    public void testParseXml(View view) {
+        BluetoothXmlParser xmlParser = new BluetoothXmlParser();
+        ArrayList<BluetoothXmlParser.DailyS11> list;
+        try {
+            list = xmlParser.parse(getResources().openRawResource(R.raw.xml_bluetooth_sample));
+            String msg = "";
+            if (list.isEmpty()) {
+                msg = "No DailyS11...";
+            } else {
+                BluetoothXmlParser.DailyS11 dailyS11 = list.get(0);
+                ArrayList<TireSnapshot> tires = dailyS11.mTires;
+                msg = "Timestamp: " + dailyS11.mTimestamp;
+                msg += ", Mileage: " + dailyS11.mMileage;
+                msg += ", Tire #1: " + tires.get(0).getSensorId();
+                msg += " S11: " + tires.get(0).getS11();
+                msg += " Pressure: " + tires.get(0).getPressure();
+                msg += ", Tire #2: " + tires.get(1).getSensorId();
+                msg += " S11: " + tires.get(1).getS11();
+                msg += " Pressure: " + tires.get(1).getPressure();
+            }
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getTireSnapshotFromXml(View view) {
+        BluetoothXmlParser xmlParser = new BluetoothXmlParser();
+        try {
+            TireSnapshot tireSnapshot = xmlParser.parseToTireSnapshot(getResources().openRawResource(R.raw.xml_bluetooth_sample));
+            String msg = "";
+            if (tireSnapshot == null) {
+                msg = "Empty TireSnapshot...";
+            } else {
+                msg = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
+                msg += ", S11: " + tireSnapshot.getS11();
+                msg += " Pressure: " + tireSnapshot.getPressure();
+                msg += ", Mileage: " + tireSnapshot.getOdometerMileage();
+                msg += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+            }
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
