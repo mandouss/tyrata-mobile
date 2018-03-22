@@ -18,4 +18,15 @@
     <string name="edit_vehicle_model">Enter the model of vehicle</string>
     <string name="edit_vehicle_year">Enter the year of vehicle</string>
     <string name="edit_vehicle_vin">Enter the VIN of vehicle</string>
+
+    <!-- Strings related to http test -->
+    <string name="welcome_message">Welcome to Network Connect!
+        Click FETCH to fetch the first 500 characters of raw HTML from www.google.com.
+    </string>
+    <string name="fetch_text">Fetch</string>
+    <string name="clear_text">Clear</string>
+    <string name="connection_error">Connection error.</string>
+    <string name="fetch_cancelled">Fetch cancelled.</string>
+
+
 </resources>

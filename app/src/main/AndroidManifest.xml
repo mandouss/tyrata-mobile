@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,15 +40,16 @@
             android:parentActivityName=".user.Log_in" />
         <activity
             android:name=".calibration.Report_accident"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".communication.BluetoothActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".communication.BluetoothActivity" />
         <activity
             android:name=".display.TireInfo"
             android:parentActivityName=".display.Vehicle_Info" />
         <activity
             android:name=".calibration.TireInfoInput"
             android:parentActivityName=".display.TireInfo" />
-        <activity android:name=".communication.EmptyActivity"></activity>
+        <activity android:name=".communication.EmptyActivity" />
+        <activity android:name=".communication.HttpActivity"></activity>
     </application>
 
 </manifest>

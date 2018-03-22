@@ -1,6 +1,9 @@
 package edu.duke.ece651.tyrata.vehicle;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * This class is a TireSnapshot object
@@ -86,6 +89,31 @@ public class TireSnapshot extends Tire {
     public void processSnapshot() {
         // @TODO
 
+    }
+
+    /**
+     * Convert/Parse String with format "2018-03-22" (or "year-month-day") to Calendar object
+     * @param date String with date formatted as "2018-03-22" (or "year-month-day")
+     * @return Calendar object of parsed date
+     */
+    public static Calendar convertStringToCalendar(String date) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+            cal.setTime(sdf.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    /**
+     * Convert/Parse Calendar object to String with format "2018-03-22" (or "year-month-day")
+     * @param cal Calendar object
+     * @return String with date formatted as "2018-03-22" (or "year-month-day")
+     */
+    public static String convertCalendarToString(Calendar cal) {
+        return cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
     }
 
     /* Getters and Setters */
