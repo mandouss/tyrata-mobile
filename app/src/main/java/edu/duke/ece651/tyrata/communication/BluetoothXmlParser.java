@@ -21,6 +21,22 @@ class BluetoothXmlParser {
     // We don't use namespaces
     private static final String ns = null;
 
+    TireSnapshot parseToTireSnaptshot(InputStream in) throws XmlPullParserException, IOException {
+        TireSnapshot tireSnapshot = new TireSnapshot();
+        ArrayList<DailyS11> dailyS11List = parse(in);
+        if (!dailyS11List.isEmpty()) {
+            DailyS11 dailyS11 = dailyS11List.get(0);
+            ArrayList<TireSnapshot> tires = dailyS11.mTires;
+            if (!tires.isEmpty()) {
+                tireSnapshot = tires.get(0);
+                tireSnapshot.setTimestamp(TireSnapshot.convertStringToCalendar(dailyS11.mTimestamp));
+                tireSnapshot.setOdometerMileage(dailyS11.mMileage);
+            }
+        }
+
+        return tireSnapshot;
+    }
+
     /**
      * Parse XML-format data received through Bluetooth
      * @param in InputStream containing XML-format data

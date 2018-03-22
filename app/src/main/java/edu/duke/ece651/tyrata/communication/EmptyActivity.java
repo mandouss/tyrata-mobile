@@ -83,4 +83,26 @@ public class EmptyActivity extends AppCompatActivity {
         }
 
     }
+
+    public void getTireSnapshotFromXml(View view) {
+        BluetoothXmlParser xmlParser = new BluetoothXmlParser();
+        try {
+            TireSnapshot tireSnapshot = xmlParser.parseToTireSnaptshot(getResources().openRawResource(R.raw.xml_bluetooth_sample));
+            String msg = "";
+            if (tireSnapshot == null) {
+                msg = "Empty TireSnapshot...";
+            } else {
+                msg = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
+                msg += ", S11: " + tireSnapshot.getS11();
+                msg += " Pressure: " + tireSnapshot.getPressure();
+                msg += ", Mileage: " + tireSnapshot.getOdometerMileage();
+                msg += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+            }
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
