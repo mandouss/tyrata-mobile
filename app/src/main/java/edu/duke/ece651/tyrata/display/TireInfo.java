@@ -164,24 +164,37 @@ public class TireInfo extends AppCompatActivity {
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
-        //坐标轴
-        Axis axisX = new Axis(); //X轴
-        axisX.setHasTiltedLabels(true);  //X坐标轴字体是斜的显示还是直的，true是斜的显示
-        axisX.setTextColor(Color.BLACK);  //设置字体颜色
-        //axisX.setName("date");  //表格名称
-        axisX.setTextSize(10);//设置字体大小
+        //X axis
+        Axis axisX = new Axis();
+        axisX.setHasTiltedLabels(true);  //whether the x axis text is italic
+        axisX.setTextColor(Color.BLACK);  //text color
+        //axisX.setName("date");  //axis name
+        axisX.setTextSize(14);//text size
         axisX.setMaxLabelChars(8); //最多几个X轴坐标，意思就是你的缩放让X轴上数据的个数7<=x<=mAxisXValues.length
         axisX.setValues(mAxisXValues);  //填充X轴的坐标名称
-        data.setAxisXBottom(axisX); //x 轴在底部
-        //data.setAxisXTop(axisX);  //x 轴在顶部
-        axisX.setHasLines(true); //x 轴分割线
+        data.setAxisXBottom(axisX); //x axis is at bottom
+        axisX.setHasLines(true); //x axis dividing rules
 
-        // Y轴是根据数据的大小自动设置Y轴上限(在下面我会给出固定Y轴数据个数的解决方案)
-        Axis axisY = new Axis();  //Y轴
-        axisY.setName("");//y轴标注
-        axisY.setTextSize(10);//设置字体大小
-        data.setAxisYLeft(axisY);  //Y轴设置在左边
-        //data.setAxisYRight(axisY);  //y轴设置在右边
+
+        // Y axis
+        Axis axisY = new Axis();
+        axisY.setTextColor(Color.BLACK);
+        axisY.setName("Tire Thickness");
+        axisY.setTextSize(14);
+        data.setAxisYLeft(axisY);  //Y axis is on the left
+        axisY.setHasLines(true);
+
+        /*axisY.setMaxLabelChars(6);//max label length, for example 60
+        List<AxisValue> values = new ArrayList<>();
+        for(int i = 0; i < 100; i+= 10){
+            AxisValue value = new AxisValue(i);
+            String label = String.valueOf(i);
+            value.setLabel(label);
+            values.add(value);
+        }
+        axisY.setValues(values);*/
+
+
 
 
         //设置行为属性，支持缩放、滑动以及平移
