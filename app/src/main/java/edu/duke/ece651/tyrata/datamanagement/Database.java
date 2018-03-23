@@ -222,9 +222,8 @@ public class Database extends AppCompatActivity {
     }
 
     /* Created by De Lan on 3/18/2018.*/
-    public static Tire getTire(String sersor_ID){
-        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sersor_ID+"'", null);
-
+    public static Tire getTire(int axis_row, int axis_index, char axis_side, String vin){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = '"+vin+"' and AXIS_ROW = "+axis_row+" and AXIS_INDEX = "+axis_index+" and AXIS_SIDE = '"+axis_side+"'", null);
         if(c.moveToFirst()){
             String t_sensorId = c.getString(c.getColumnIndex("SENSOR_ID"));
             String t_manufacturer = c.getString(c.getColumnIndex("MANUFACTURER"));
@@ -241,6 +240,7 @@ public class Database extends AppCompatActivity {
             return curr_tire;
         }
         else{
+            Log.i("getTire", "the tire not found!!!");
             return null;
         }
     }

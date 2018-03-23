@@ -45,7 +45,7 @@ public class Vehicle_Info extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
-        user_id = intent.getIntExtra("userID", 0);
+        user_id = intent.getIntExtra("userID", 1);
         Log.i("In vehicle info, VIN:", vin);
         Log.i("In vehicle info, user:", String.valueOf(user_id));
 

@@ -36,7 +36,7 @@ public class TireInfoInput extends AppCompatActivity {
         // switched from tire edit
         // @TODO add deletion button
         String sensor_id = intent.getStringExtra("SENSOR_ID");
-        if(sensor_id != null && !sensor_id.equals("Default sensorID")) {
+        if(sensor_id != null && !sensor_id.equals("Need sensorID")) {
             Log.i("Tire Input edit", sensor_id);
             EditText textView_sensor = findViewById(R.id.edit_sensor_ID);
             textView_sensor.setText(sensor_id);
@@ -80,6 +80,10 @@ public class TireInfoInput extends AppCompatActivity {
             }
             Database.storeTireData(message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
             Database.myDatabase.close();
+            intent.putExtra("AXIS_ROW", axis_row);
+            intent.putExtra("AXIS_INDEX",axis_index);
+            intent.putExtra("AXIS_SIDE", axis_side);
+            intent.putExtra("VIN", vin);
             startActivity(intent);
         }
         catch (Exception e){

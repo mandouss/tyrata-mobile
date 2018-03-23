@@ -53,15 +53,16 @@ public class TireInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info);
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Tire curr_tire = Database.getTire("sensor1");
-        Database.myDatabase.close();
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         axis_row = intent.getIntExtra("AXIS_ROW",0);
         axis_index = intent.getIntExtra("AXIS_INDEX",0);
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
+
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vin);
+        Database.myDatabase.close();
 
         if(curr_tire != null) {
             message_manufacturer = curr_tire.getManufacturer();
@@ -72,29 +73,29 @@ public class TireInfo extends AppCompatActivity {
         }
 
         if(message_manufacturer == null)
-            message_manufacturer = "Default manufacturer";
+            message_manufacturer = "Need manufacturer";
         TextView textView_manufacturer = findViewById(R.id.textView_manufacturer);
         textView_manufacturer.setText(message_manufacturer);
 
         if(message_sensorID == null)
-            message_sensorID = "Default sensorID";
+            message_sensorID = "Need sensorID";
         TextView textView_sensorID = findViewById(R.id.textView_sensorID);
         textView_sensorID.setText(message_sensorID);
 
         if(message_model == null)
-            message_model = "Default MODEL";
+            message_model = "Need MODEL";
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
         if(message_SKU == null)
-            message_SKU = "Default SKU";
+            message_SKU = "Need SKU";
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
         //TODO: calculate thickness
 
         if(message_Thickness == null)
-            message_Thickness = "Default THICKNESS";
+            message_Thickness = "Need init THICKNESS";
         TextView textView_Thickness = findViewById(R.id.textView_thickness);
         textView_Thickness.setText(message_Thickness);
 
