@@ -1,158 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.duke.ece651.tyrata.display.TireInfo">
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2">
 
-    <TextView
-        android:id="@+id/textView_manufacturer"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="80dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/label_manufacturer"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_columnSpan="2"
+            android:text="Information for the tire: "
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_model"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/label_model"
-        app:layout_constraintTop_toBottomOf="@+id/textView_manufacturer" />
+        <TextView
+            android:id="@+id/label_manufacturer"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Manufacturer: "
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_manufacturer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_SKU"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/label_SKU"
-        app:layout_constraintTop_toBottomOf="@+id/textView_model"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/textView_manufacturer"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_manufacturer"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_odometer"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/label_odometer"
-        app:layout_constraintTop_toBottomOf="@+id/textView_SKU" />
+        <TextView
+            android:id="@+id/label_model"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Model： "
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_model"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_manufacturer" />
 
-    <TextView
-        android:id="@+id/label_manufacturer"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="80dp"
-        android:text="Manufacturer: "
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView_manufacturer"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView_model"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_model"
+            app:layout_constraintTop_toBottomOf="@+id/textView_manufacturer" />
 
-    <TextView
-        android:id="@+id/label_model"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="Model： "
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView_model"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_manufacturer" />
+        <TextView
+            android:id="@+id/label_SKU"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="SKU: "
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_SKU"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_model" />
 
+        <TextView
+            android:id="@+id/textView_SKU"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/label_SKU"
+            app:layout_constraintTop_toBottomOf="@+id/textView_model"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/label_SKU"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="SKU: "
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView_SKU"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_model" />
+        <TextView
+            android:id="@+id/label_thickness"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Thickness: "
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_thickness"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_SKU" />
 
-    <TextView
-        android:id="@+id/label_odometer"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="Odometer: "
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView_odometer"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_SKU" />
+        <TextView
+            android:id="@+id/textView_thickness"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/label_thickness"
+            app:layout_constraintTop_toBottomOf="@+id/textView_SKU" />
 
-    <Button
-        android:id="@+id/button_A4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="switchToEdit"
-        android:text="Edit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_AS11"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Thickness" />
+        <TextView
+            android:id="@+id/label_odometer"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Odometer:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_odometer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_thickness" />
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:text="Information for the tire: "
-        android:textSize="30sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView_odometer"
+            android:layout_width="250dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_odometer"
+            app:layout_constraintTop_toBottomOf="@+id/textView_thickness" />
 
-    <TextView
-        android:id="@+id/label_thickness"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="Thickness"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView_Thickness"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_odometer" />
+        <TextView
+            android:id="@+id/label_S11"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="S11:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_S11"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_odometer" />
 
-    <TextView
-        android:id="@+id/textView_Thickness"
-        android:layout_width="250dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="30dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/label_thickness"
-        app:layout_constraintTop_toBottomOf="@+id/textView_odometer" />
+        <TextView
+            android:id="@+id/textView_S11"
+            android:layout_width="250dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/label_S11"
+            app:layout_constraintTop_toBottomOf="@+id/textView_odometer" />
 
-    <Button
-        android:id="@+id/button_AS11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ref S11"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_A4"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Thickness" />
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/label_EOL"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="EOL:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_EOL"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_S11" />
+
+        <TextView
+            android:id="@+id/textView_EOL"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_EDL"
+            app:layout_constraintTop_toBottomOf="@+id/textView_S11" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Replace before"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_replace"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_EOL" />
+
+        <TextView
+            android:id="@+id/textView_replace"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView_EOL" />
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/line_chart"
+            android:layout_width="fill_parent"
+            android:layout_columnSpan="2"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="18dp"
+            android:layout_height="300dp"/>
+
+        <Button
+            android:id="@+id/button_A4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:onClick="switchToEdit"
+            android:text="Edit"
+            app:layout_constraintEnd_toStartOf="@+id/button_AS11"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <Button
+            android:id="@+id/button_AS11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:onClick="switchToS11ODM"
+            android:text="S11 and ODM"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_A4"
+            app:layout_constraintTop_toBottomOf="@+id/textView_replace" />
+
+    </GridLayout>
+</ScrollView>

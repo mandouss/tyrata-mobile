@@ -9,19 +9,22 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
  */
 
 public class User {
-    public String mFirstName;
-    public String mLastName;
+    public String username;
+    public String email;
+    public String phone;
     /* @TODO add more user attributes (e.g. login token/certification) */
     public ArrayList<Vehicle> mVehicles;
 
     /** Constructor
      *
-     * @param first User first name
-     * @param last User last name
+     * @param name User  name
+     * @param email User email
+     * @param number User phone number
      */
-    public User(String first, String last) {
-        this.mFirstName = first;
-        this.mLastName = last;
+    public User(String name, String email, String number) {
+        this.username = name;
+        this.email = email;
+        this.phone = number;
         /* @TODO include the rest of the attributes here */
         this.mVehicles = new ArrayList<>();
     }
@@ -30,7 +33,7 @@ public class User {
      *
      */
     public User() {
-        this("", "");
+        this("", "", "");
     }
 
     /** Add new vehicle to user
@@ -48,5 +51,39 @@ public class User {
      */
     public boolean removeVehicle(Vehicle vehicle) {
         return mVehicles.remove(vehicle);
+    }
+
+    public boolean register() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean login() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean logout() {
+        // @TODO
+
+        return false;
+    }
+
+    public boolean changePassword() {
+        // @TODO
+
+        return false;
+    }
+
+    public void sendFeedback() {
+        // @TODO
+
+    }
+
+    public void pushNotification() {
+        // @TODO
+
     }
 }

@@ -21,7 +21,7 @@
         android:id="@+id/Manufacturer"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="Manufacturer: "
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_manufacturer"
@@ -33,7 +33,7 @@
         android:id="@+id/Model"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="Model: "
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_model"
@@ -45,7 +45,7 @@
         android:id="@+id/SKU"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="SKU: "
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_SKU"
@@ -53,23 +53,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Model" />
 
-    <TextView
-        android:id="@+id/odometer"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:text="Odometer: "
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_odometer"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SKU" />
-
     <EditText
         android:id="@+id/edit_manufacturer"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Type in Manufacturer"
         android:inputType="textLongMessage"
@@ -82,7 +70,7 @@
         android:id="@+id/edit_model"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Type in Model"
         android:inputType="textPersonName"
@@ -97,7 +85,7 @@
         android:id="@+id/edit_SKU"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Type in SKU"
         android:inputType="textPersonName"
@@ -105,19 +93,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/SKU"
         app:layout_constraintTop_toBottomOf="@+id/edit_model" />
-
-    <EditText
-        android:id="@+id/edit_odometer"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:hint="Type in Odometer"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/odometer"
-        app:layout_constraintTop_toBottomOf="@+id/edit_SKU" />
 
     <Button
         android:id="@+id/button_A5"
@@ -135,27 +110,27 @@
         android:id="@+id/thickness"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="Thickness"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_thickness"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/odometer" />
+        app:layout_constraintTop_toBottomOf="@+id/SKU" />
 
     <EditText
         android:id="@+id/edit_thickness"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="Type in the tire thickness between 5mm and 15mm"
+        android:hint="Thickness (5mm-15mm)"
         android:inputType="textPersonName"
-        android:textSize="10sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/thickness"
-        app:layout_constraintTop_toBottomOf="@+id/edit_odometer" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_SKU" />
 
 
 </android.support.constraint.ConstraintLayout>

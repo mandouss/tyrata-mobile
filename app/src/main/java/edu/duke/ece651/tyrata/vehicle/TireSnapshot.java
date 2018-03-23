@@ -1,6 +1,9 @@
 package edu.duke.ece651.tyrata.vehicle;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * This class is a TireSnapshot object
@@ -11,10 +14,10 @@ import java.util.Calendar;
  */
 
 public class TireSnapshot extends Tire {
-    double mS11;
-    int mOdometerMileage;
-    Calendar mTimestamp; /* @TODO DateFormat might be a better type */
-    int mPressure;
+    private double mS11;
+    private int mOdometerMileage;
+    private Calendar mTimestamp; /* @TODO DateFormat might be a better type */
+    private double mPressure;
 
     /** Constructor
      *
@@ -24,7 +27,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(Tire tire, double s11, int odoMileage, Calendar timestamp, int pressure) {
+    public TireSnapshot(Tire tire, double s11, int odoMileage, Calendar timestamp, double pressure) {
         super(tire);
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -39,7 +42,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(double s11, int odoMileage, Calendar timestamp, int pressure) {
+    public TireSnapshot(double s11, int odoMileage, Calendar timestamp, double pressure) {
         super();
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -59,6 +62,58 @@ public class TireSnapshot extends Tire {
     public float calculateTreadThickness() {
         /* @TODO implement tread thickness calcualtion/formaul */
         return 0;
+    }
+
+    public float calculateEol() {
+        // @TODO
+        return 0;
+    }
+
+    public Calendar calculateReplaceTime() {
+        // @TODO
+
+        return null;
+    }
+
+    public boolean filterOutlier() {
+        // @TODO
+
+        return false;
+    }
+
+    public void storeSnapshot() {
+        // @TODO
+
+    }
+
+    public void processSnapshot() {
+        // @TODO
+
+    }
+
+    /**
+     * Convert/Parse String with format "2018-03-22" (or "year-month-day") to Calendar object
+     * @param date String with date formatted as "2018-03-22" (or "year-month-day")
+     * @return Calendar object of parsed date
+     */
+    public static Calendar convertStringToCalendar(String date) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+            cal.setTime(sdf.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    /**
+     * Convert/Parse Calendar object to String with format "2018-03-22" (or "year-month-day")
+     * @param cal Calendar object
+     * @return String with date formatted as "2018-03-22" (or "year-month-day")
+     */
+    public static String convertCalendarToString(Calendar cal) {
+        return cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
     }
 
     /* Getters and Setters */
@@ -86,11 +141,11 @@ public class TireSnapshot extends Tire {
         this.mTimestamp = mTimestamp;
     }
 
-    public int getPressure() {
+    public double getPressure() {
         return mPressure;
     }
 
-    public void setPressure(int mPressure) {
+    public void setPressure(double mPressure) {
         this.mPressure = mPressure;
     }
 }

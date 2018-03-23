@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -46,6 +50,7 @@
             android:parentActivityName=".display.TireInfo" />
         <activity android:name=".communication.EmptyActivity" />
         <activity android:name=".communication.BluetoothDeviceListActivity"></activity>
+        <activity android:name=".communication.HttpActivity"></activity>
     </application>
 
 </manifest>
