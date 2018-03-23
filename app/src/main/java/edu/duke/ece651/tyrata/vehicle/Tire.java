@@ -90,6 +90,10 @@ public class Tire {
         return mManufacturer;
     }
 
+    public String getSensor() {
+        return mSensorId;
+    }
+
     public void setManufacturer(String mManufacturer) {
         this.mManufacturer = mManufacturer;
     }

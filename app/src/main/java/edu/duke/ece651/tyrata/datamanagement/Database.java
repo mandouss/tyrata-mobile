@@ -270,7 +270,10 @@ public class Database extends AppCompatActivity {
                 Log.i("manufacturer", c.getString(1));
                 Log.i("model", c.getString(2));
                 Log.i("sku", c.getString(3));
-                Log.i("vehicle_id", c.getString(6));
+                Log.i("vehicle_id", c.getString(4));
+                Log.i("axis_row", c.getString(5));
+                Log.i("axis_side", c.getString(6));
+                Log.i("axis_index", c.getString(7));
             }while(c.moveToNext());
         }
         else{

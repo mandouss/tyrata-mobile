@@ -46,8 +46,8 @@ public class Vehicle_Info extends Activity {
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
         user_id = intent.getIntExtra("userID", 0);
-        Log.i("In vehicle info page", vin);
-        Log.i("In vehicle info page", String.valueOf(user_id));
+        Log.i("In vehicle info, VIN:", vin);
+        Log.i("In vehicle info, user:", String.valueOf(user_id));
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.testTireTable();

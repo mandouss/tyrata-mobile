@@ -5,7 +5,6 @@ package edu.duke.ece651.tyrata.calibration;
  * Created by De Lan on 2/27/2018.
  */
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,14 +47,18 @@ public class TireInfoInput extends AppCompatActivity {
         EditText edit_thickness = (EditText) findViewById(R.id.edit_thickness);
         String message_thickness = edit_thickness.getText().toString();
 
+        EditText edit_sensorID = (EditText) findViewById(R.id.edit_sensor_ID);
+        String message_sensorID = edit_sensorID.getText().toString();
+
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Log.i("tire input","new store!!!");
         Log.i("axis_ROW",String.valueOf(axis_row));
         Log.i("axis_IDX", String.valueOf(axis_index));
         Log.i("axis_SIDE", String.valueOf(axis_side));
+        Log.i("sensor_ID", message_sensorID);
         Log.i("VIN", vin);
 
-        Database.storeTireData("sensor1", message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness),0, 0 );
+        Database.storeTireData(message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness),0, 0 );
         Database.myDatabase.close();
         startActivity(intent);
     }

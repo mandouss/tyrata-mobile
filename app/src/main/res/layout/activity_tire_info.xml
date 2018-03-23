@@ -49,6 +49,31 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/label_sensorID"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:text="Sensor ID:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView_sensorID"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_sensorID"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/label_sensorID"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
             android:id="@+id/label_model"
             android:layout_width="120dp"
             android:layout_height="40dp"
@@ -196,7 +221,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView_S11" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/label_rep"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
@@ -217,7 +242,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintStart_toEndOf="@+id/label_rep"
             app:layout_constraintTop_toBottomOf="@+id/textView_EOL" />
 
         <lecho.lib.hellocharts.view.LineChartView
@@ -239,7 +264,7 @@
             app:layout_constraintEnd_toStartOf="@+id/button_AS11"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/label_rep" />
 
         <Button
             android:id="@+id/button_AS11"

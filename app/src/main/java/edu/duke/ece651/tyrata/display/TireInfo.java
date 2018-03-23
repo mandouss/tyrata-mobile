@@ -37,6 +37,7 @@ public class TireInfo extends AppCompatActivity {
     char axis_side;
     String vin;
     String message_manufacturer;
+    String message_sensorID;
     String message_model;
     String message_SKU;
     String message_Thickness;
@@ -64,15 +65,21 @@ public class TireInfo extends AppCompatActivity {
 
         if(curr_tire != null) {
             message_manufacturer = curr_tire.getManufacturer();
+            message_sensorID = curr_tire.getSensor();
             message_model = curr_tire.getModel();
             message_SKU = curr_tire.getSku();
             message_Thickness = String.valueOf(curr_tire.get_INIT_THICK());
         }
 
         if(message_manufacturer == null)
-            message_manufacturer = "Default MAKE";
+            message_manufacturer = "Default manufacturer";
         TextView textView_manufacturer = findViewById(R.id.textView_manufacturer);
         textView_manufacturer.setText(message_manufacturer);
+
+        if(message_sensorID == null)
+            message_sensorID = "Default sensorID";
+        TextView textView_sensorID = findViewById(R.id.textView_sensorID);
+        textView_sensorID.setText(message_sensorID);
 
         if(message_model == null)
             message_model = "Default MODEL";
