@@ -2,11 +2,14 @@ package edu.duke.ece651.tyrata.calibration;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import edu.duke.ece651.tyrata.R;
@@ -25,6 +28,17 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         setContentView(R.layout.activity_input__vehicle__info);
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 0);
+        // If this page is switched from vehicle edit
+        String vin = intent.getStringExtra("VIN");
+        if(vin != null) {
+            Log.i("Vehicle Input edit", vin);
+            EditText textView_vin = findViewById(R.id.edit_vin);
+            textView_vin.setText(vin);
+            textView_vin.setKeyListener(null);
+        }else{
+            Log.i("Vehicle Input add_car", "add_car");
+        }
+
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
         dataList = new ArrayList<String>();

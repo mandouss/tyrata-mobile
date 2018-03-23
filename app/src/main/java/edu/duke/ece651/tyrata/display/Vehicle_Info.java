@@ -180,6 +180,7 @@ public class Vehicle_Info extends Activity {
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
         intent.putExtra("userID", user_id);
+        intent.putExtra("VIN", vin);
         startActivity(intent);
         // Do something in response to button
     }
