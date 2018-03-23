@@ -78,8 +78,12 @@ public class TireInfoInput extends AppCompatActivity {
                 msg = "The initial tire thickness need to between 5mm and 15mm!";
                 throw new IOException();
             }
-            Database.storeTireData(TireInfoInput.this, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
+            boolean storeTire = Database.storeTireData(TireInfoInput.this, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
             Database.myDatabase.close();
+            if(!storeTire){
+                msg = "The Sensor ID already exists!";
+                throw new IOException();
+            }
             intent.putExtra("AXIS_ROW", axis_row);
             intent.putExtra("AXIS_INDEX",axis_index);
             intent.putExtra("AXIS_SIDE", axis_side);
