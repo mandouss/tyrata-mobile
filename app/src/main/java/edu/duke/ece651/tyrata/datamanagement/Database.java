@@ -1,10 +1,19 @@
 package edu.duke.ece651.tyrata.datamanagement;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
+
+import java.io.IOError;
+import java.io.IOException;
+
+import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.calibration.TireInfoInput;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
@@ -90,7 +99,7 @@ public class Database extends AppCompatActivity {
     }
 
     // Updated by Yue Li and De Lan on 3/22/2018
-    public static void storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id ){
+    public static void storeTireData(Activity a, String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id ){
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN), FOREIGN KEY(INIT_SS_ID)REFERENCES SNAPSHOT(ID), FOREIGN KEY(CUR_SS_ID)REFERENCES SNAPSHOT(ID))");
         ContentValues contentValues = new ContentValues();
         contentValues.put("MANUFACTURER", manufacturer);
@@ -105,17 +114,29 @@ public class Database extends AppCompatActivity {
         // Update or insert
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
         if(c != null && c.moveToFirst()){
-            Log.i("In database","update tire");
-            c.close();
-            myDatabase.update("TIRE", contentValues, "SENSOR_ID = ? and VEHICLE_ID = ?", new String[] {sensor_id, vehicle_id});
-        }else{
+            try {
+                Cursor posQuery = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = '" + vehicle_id + "' and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
+                if (posQuery != null && posQuery.moveToFirst()) {
+                    Log.i("In database", "update tire succeeds!");
+                    posQuery.close();
+                    c.close();
+                    myDatabase.update("TIRE", contentValues, "SENSOR_ID = ? and VEHICLE_ID = ?", new String[]{sensor_id, vehicle_id});
+                } else {
+                    Log.i("In database", "update tire fails, sensorID exists!");
+                    throw new Exception();
+                }
+            }
+            catch(Exception e) {
+                DatabaseNotification(a);
+            }
+        }
+        else{
             contentValues.put("SENSOR_ID", sensor_id);
             contentValues.put("VEHICLE_ID", vehicle_id);
             Log.i("In database","insert tire");
             c.close();
             myDatabase.insertOrThrow("TIRE", null, contentValues);
         }
-
     }
 
     public static void storeSnapshot(int id, double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat ){
@@ -282,7 +303,12 @@ public class Database extends AppCompatActivity {
         c.close();
     }
 
-
-
+    private static void DatabaseNotification(Activity a){
+        new AlertDialog.Builder(a)
+                .setTitle("NOTIFICATION")
+                .setMessage("The Sennsor ID already exists!")
+                .setPositiveButton("Yes", null)
+                .show();
+    }
 }
 
