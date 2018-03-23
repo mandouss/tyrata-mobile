@@ -86,11 +86,11 @@ public class TireInfoInput extends AppCompatActivity {
             if(msg == null) {
                 msg = "Please type in valid information!";
             }
-            storeexception(msg);
+            notification(msg);
         }
     }
 
-    private void storeexception(String msg){
+    private void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
                 .setMessage(msg)
