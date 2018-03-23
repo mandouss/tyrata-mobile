@@ -27,7 +27,6 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         user_ID = intent.getIntExtra("userID", 0);
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
-
         dataList = new ArrayList<String>();
         dataList.add("4");
         dataList.add("10");

@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     public void main_to_vehicle_info(String vin) {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
+        intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button

@@ -30,6 +30,7 @@ public class Vehicle_Info extends Activity {
     private Integer buttonnumber = 0;
     private Vehicle curr_vehicle;
     private String vin;
+    private int user_id;
     private ListView tire_list;
     private List<Map<String, Object>> list;
     private int axis_row;
@@ -44,7 +45,9 @@ public class Vehicle_Info extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
+        user_id = intent.getIntExtra("userID", 0);
         Log.i("In vehicle info page", vin);
+        Log.i("In vehicle info page", String.valueOf(user_id));
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.testTireTable();
@@ -58,13 +61,11 @@ public class Vehicle_Info extends Activity {
 
 
         String message_model = curr_vehicle.getModel();
-
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
 
         String message_year = String.valueOf(curr_vehicle.getYear());
-
         TextView textView_year = findViewById(R.id.textView_year);
         textView_year.setText(message_year);
 
@@ -178,7 +179,7 @@ public class Vehicle_Info extends Activity {
 
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
-
+        intent.putExtra("userID", user_id);
         startActivity(intent);
         // Do something in response to button
     }
