@@ -130,6 +130,7 @@ public class TireInfo extends AppCompatActivity {
         intent.putExtra("axis_ROW", axis_row);
         intent.putExtra("axis_SIDE", axis_side);
         intent.putExtra("VIN",vin);
+        intent.putExtra("SENSOR_ID",message_sensorID);
 
         Log.i("NOTIFICATION","Tireinfo");
         Log.i("axis_ROW",String.valueOf(axis_row));

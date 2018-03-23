@@ -4,12 +4,14 @@ package edu.duke.ece651.tyrata.calibration;
  * @author De Lan
  * Created by De Lan on 2/27/2018.
  */
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import java.io.IOException;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
@@ -19,6 +21,7 @@ public class TireInfoInput extends AppCompatActivity {
     int axis_index;
     char axis_side;
     String vin;
+    String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,17 @@ public class TireInfoInput extends AppCompatActivity {
         axis_index = intent.getIntExtra("axis_IDX",0);
         axis_side = intent.getCharExtra("axis_SIDE",'a');
         vin = intent.getStringExtra("VIN");
+        // switched from tire edit
+        // @TODO add deletion button
+        String sensor_id = intent.getStringExtra("SENSOR_ID");
+        if(sensor_id != null && !sensor_id.equals("Default sensorID")) {
+            Log.i("Tire Input edit", sensor_id);
+            EditText textView_sensor = findViewById(R.id.edit_sensor_ID);
+            textView_sensor.setText(sensor_id);
+            textView_sensor.setKeyListener(null);
+        }else{
+            Log.i("Vehicle Input add_car", "add_car");
+        }
     }
     /** Called when the user taps the Submit button */
     public void saveMessage(View view) {
@@ -58,8 +72,29 @@ public class TireInfoInput extends AppCompatActivity {
         Log.i("sensor_ID", message_sensorID);
         Log.i("VIN", vin);
 
-        Database.storeTireData(message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness),0, 0 );
-        Database.myDatabase.close();
-        startActivity(intent);
+        try {
+            Double thickness = Double.parseDouble(message_thickness);
+            if(thickness < 5.0 || thickness > 15.0){
+                msg = "The initial tire thickness need to between 5mm and 15mm!";
+                throw new IOException();
+            }
+            Database.storeTireData(message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
+            Database.myDatabase.close();
+            startActivity(intent);
+        }
+        catch (Exception e){
+            if(msg == null) {
+                msg = "Please type in valid information!";
+            }
+            storeexception(msg);
+        }
+    }
+
+    private void storeexception(String msg){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage(msg)
+                .setPositiveButton("Yes", null)
+                .show();
     }
 }

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.n_item2:
-                main_to_addcar(user_ID);
+                main_to_addcar();
                 return true;
             case R.id.n_item3:
                 main_to_report();
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void main_to_addcar(int user_ID) {
+    public void main_to_addcar() {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
         intent.putExtra("userID", user_ID);
 

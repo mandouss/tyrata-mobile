@@ -61,7 +61,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("NAME", name);
         contentValues.put("EMAIL", email);
         contentValues.put("PHONE_NUMBER", phone);
-        myDatabase.insert("USER", null, contentValues);
+        myDatabase.insertOrThrow("USER", null, contentValues);
 
     }
 
@@ -85,7 +85,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("VIN", vin);
             Log.i("In database","insert vehicle");
             c.close();
-            myDatabase.insert("VEHICLE", null, contentValues);
+            myDatabase.insertOrThrow("VEHICLE", null, contentValues);
         }
     }
 
@@ -113,7 +113,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("VEHICLE_ID", vehicle_id);
             Log.i("In database","insert tire");
             c.close();
-            myDatabase.insert("TIRE", null, contentValues);
+            myDatabase.insertOrThrow("TIRE", null, contentValues);
         }
 
     }
@@ -133,7 +133,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("TIME_TO_REPLACEMENT", time_to_replacement);
         contentValues.put("LONG", longitutde);
         contentValues.put("LAT", lat);
-        myDatabase.insert("SNAPSHOT", null, contentValues);
+        myDatabase.insertOrThrow("SNAPSHOT", null, contentValues);
     }
     // TODO: SQL injection
     public static int Userid(String email){
@@ -156,7 +156,7 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     public static User getUser(int user_id){
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE USER_ID = "+user_id+"", null);
-        if(c == null) {
+        if(!c.moveToFirst()) {
             return null;
         }
         c.moveToFirst();
