@@ -2,12 +2,8 @@ package edu.duke.ece651.tyrata.communication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -57,7 +53,7 @@ public class BluetoothActivity extends AppCompatActivity {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "discoverBluetooth()");
 
         // Launch the DeviceListActivity to see devices and do scan
-        Intent serverIntent = new Intent(this, BtDeviceListActivity.class);
+        Intent serverIntent = new Intent(this, BluetoothDeviceListActivity.class);
         startActivityForResult(serverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
     }
 
@@ -72,7 +68,7 @@ public class BluetoothActivity extends AppCompatActivity {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "connectBluetooth()");
         Bundle extras = data.getExtras();
         if (extras != null) {
-            String address = extras.getString(BtDeviceListActivity.EXTRA_DEVICE_ADDRESS);
+            String address = extras.getString(BluetoothDeviceListActivity.EXTRA_DEVICE_ADDRESS);
             Log.d(Common.LOG_TAG_BT_ACTIVITY, "Connecting to " + address);
             Toast.makeText(getApplicationContext(),
                     "Connecting to " + address, Toast.LENGTH_LONG).show();

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="edu.duke.ece651.tyrata.communication.BtDeviceListActivity">
+    tools:context="edu.duke.ece651.tyrata.communication.BluetoothDeviceListActivity">
 
         <TextView
             android:id="@+id/title_paired_devices"

@@ -45,7 +45,7 @@
             android:name=".calibration.TireInfoInput"
             android:parentActivityName=".display.TireInfo" />
         <activity android:name=".communication.EmptyActivity" />
-        <activity android:name=".communication.BtDeviceListActivity"></activity>
+        <activity android:name=".communication.BluetoothDeviceListActivity"></activity>
     </application>
 
 </manifest>

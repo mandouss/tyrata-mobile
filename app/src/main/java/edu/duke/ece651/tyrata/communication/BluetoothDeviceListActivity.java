@@ -33,7 +33,7 @@ import edu.duke.ece651.tyrata.R;
  * Resources:
  *  https://developer.android.com/samples/BluetoothChat/index.html
  */
-public class BtDeviceListActivity extends AppCompatActivity {
+public class BluetoothDeviceListActivity extends AppCompatActivity {
     /**
      * Return Intent extra
      */
