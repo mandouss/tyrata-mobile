@@ -19,6 +19,15 @@
     <string name="edit_vehicle_year">Enter the year of vehicle</string>
     <string name="edit_vehicle_vin">Enter the VIN of vehicle</string>
 
+    <!--  DeviceListActivity -->
+    <string name="bt_scanning">scanning for devices...</string>
+    <string name="bt_select_device">select a device to connect</string>
+    <string name="bt_none_paired">No devices have been paired</string>
+    <string name="bt_none_found">No devices found</string>
+    <string name="bt_title_paired_devices">Paired Devices</string>
+    <string name="bt_title_other_devices">Other Available Devices</string>
+    <string name="bt_button_scan">Scan for devices</string>
+
     <!-- Strings related to http test -->
     <string name="welcome_message">Welcome to Network Connect!
         Click FETCH to fetch the first 500 characters of raw HTML from www.google.com.

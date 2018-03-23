@@ -1,12 +1,9 @@
 package edu.duke.ece651.tyrata.communication;
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -34,14 +31,6 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
-        // Register for broadcasts when discovery is started/finish or device is discovered.
-        Log.v(Common.LOG_TAG_BT_ACTIVITY, "Registering receiver...");
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(mReceiver, filter);
-
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
         BluetoothAPI.enableBt(this, mHandler);
@@ -53,23 +42,19 @@ public class BluetoothActivity extends AppCompatActivity {
 
         BluetoothAPI.disableBt();
         BluetoothAPI.closeBtConnection();
-
-        unregisterReceiver(mReceiver);
     }
 
     public void pairedBluetooth(View view) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "pairedBluetooth()");
-        BluetoothAPI.queryPairedDevicesBt();
+        BluetoothAPI.queryBtPairedDevices();
     }
 
     public void discoverBluetooth(View view) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "discoverBluetooth()");
 
-        // Indicate scanning in the title
-        setProgressBarIndeterminateVisibility(true);
-        setTitle("Discovering Bluetooth Devices");
-
-        BluetoothAPI.discoverDevicesBt(this);
+        // Launch the DeviceListActivity to see devices and do scan
+        Intent serverIntent = new Intent(this, BluetoothDeviceListActivity.class);
+        startActivityForResult(serverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
     }
 
     public void acceptBluetooth(View view) {
@@ -79,20 +64,26 @@ public class BluetoothActivity extends AppCompatActivity {
 
     }
 
-    public void connectBluetooth(View view) {
+    public void connectBluetooth(Intent data) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "connectBluetooth()");
-
-        if(mBluetoothDevice != null) {
-            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Connecting to device " + mBluetoothDevice);
-            BluetoothAPI.connectBt(mBluetoothDevice);
+        Bundle extras = data.getExtras();
+        if (extras != null) {
+            String address = extras.getString(BluetoothDeviceListActivity.EXTRA_DEVICE_ADDRESS);
+            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Connecting to " + address);
+            Toast.makeText(getApplicationContext(),
+                    "Connecting to " + address, Toast.LENGTH_LONG).show();
+            BluetoothAPI.connectBt(address);
         }
-        else
-            Log.d(Common.LOG_TAG_BT_ACTIVITY, "No device to connect to...");
-
+        else {
+            Log.w(Common.LOG_TAG_BT_ACTIVITY, "No device selected to connect to");
+            Toast.makeText(getApplicationContext(),
+                    "No device selected to connect to", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void sendMsg(View view) {
-        BluetoothAPI.write("Test".getBytes());
+        String msg = "Message sent from " + BluetoothAPI.getDeviceName();
+        BluetoothAPI.write(msg.getBytes());
     }
 
     @Override
@@ -117,43 +108,18 @@ public class BluetoothActivity extends AppCompatActivity {
                 else if (resultCode == RESULT_OK) {
                     Log.v(Common.LOG_TAG_BT_ACTIVITY, "Location access granted");
                     //@todo this is not tested. Might not work here
-                    BluetoothAPI.discoverDevicesBt(this);
+                    BluetoothAPI.discoverBtDevices(this);
+                }
+                break;
+            case Common.REQUEST_CONNECT_BT_DEVICE:
+                if (resultCode == Activity.RESULT_OK) {
+                    connectBluetooth(data);
                 }
                 break;
             default:
                 Log.w(Common.LOG_TAG_BT_ACTIVITY, "Unknown REQUEST_CODE " + requestCode);
         }
     }
-
-    // Create a BroadcastReceiver for ACTION_FOUND.
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive");
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device
-                // Get the BluetoothDevice object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    Log.v(Common.LOG_TAG_BT_ACTIVITY, "New Device (not paired)");
-                }
-                Log.v(Common.LOG_TAG_BT_ACTIVITY, "Device name: " + device.getName() + ", " +
-                        "MAC address: " + device.getAddress());
-                if(device.getName() != null && device.getName().equalsIgnoreCase("GT-N7100")) {
-                    Log.d(Common.LOG_TAG_BT_ACTIVITY, "Found device " + device.getName());
-                    mBluetoothDevice = device;
-                }
-            }
-            else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive DISCOVERY_STARTED");
-                setProgressBarIndeterminateVisibility(true);
-            }
-            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.v(Common.LOG_TAG_BT_ACTIVITY, "BroadcastReceiver onReceive DISCOVERY_FINISHED");
-                setProgressBarIndeterminateVisibility(false);
-            }
-        }
-    };
 
     /**
      * The Handler that gets information back from the BluetoothChatService

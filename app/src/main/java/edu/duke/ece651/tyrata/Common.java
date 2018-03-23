@@ -14,6 +14,7 @@ public class Common {
     // Defines constants for logger keywords/tags
     public static final String LOG_TAG_BT_API = "BluetoothAPI";
     public static final String LOG_TAG_BT_ACTIVITY = "BluetoothActivity";
+    public static final String LOG_TAG_BT_DEVICE_LIST_ACTIVITY = "BtDeviceListActivity";
 
     // Defines constants for bundle keywords/tags
     public static final String DEVICE_NAME = "device_name";
@@ -32,6 +33,7 @@ public class Common {
     // Defines constants for Activity result return
     public static final int REQUEST_ENABLE_BT = 1;
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
+    public static final int REQUEST_CONNECT_BT_DEVICE = 3;
 
 
     /* GLOBAL VARIABLES */
