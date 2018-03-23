@@ -104,11 +104,11 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             startActivity(intent);
         }
         catch(Exception e){
-            storeexception();
+            notification();
         }
     }
 
-    private void storeexception(){
+    private void notification(){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
                 .setMessage("Please type in valid information!")
