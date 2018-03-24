@@ -41,6 +41,10 @@ public class TireInfo extends AppCompatActivity {
     String message_model;
     String message_SKU;
     String message_Thickness;
+    String message_S11;
+    String message_Odometer;
+    String message_EOL;
+    String message_rep;
 
     private LineChartView lineChart;
 
@@ -69,7 +73,11 @@ public class TireInfo extends AppCompatActivity {
             message_sensorID = curr_tire.getSensor();
             message_model = curr_tire.getModel();
             message_SKU = curr_tire.getSku();
-            message_Thickness = String.valueOf(curr_tire.get_INIT_THICK());
+            message_Thickness = String.valueOf(curr_tire.get_CURR_THCK());
+            message_S11 = String.valueOf(curr_tire.getS11());
+            message_Odometer = String.valueOf(curr_tire.getOdometer());
+            message_EOL = curr_tire.getEOL();
+            message_rep = curr_tire.getRepTime();
         }
 
         if(message_manufacturer == null)
@@ -101,20 +109,23 @@ public class TireInfo extends AppCompatActivity {
 
 
         /* @TODO: read S11 and odometer from database, sync with BT*/
-        String message_Odometer = "odometer from BT";
-        TextView textView_Odometer = findViewById(R.id.textView_odometer);
-        textView_Odometer.setText(message_Odometer);
-
-        String message_S11 = "S11 from BT";
+        if(message_S11 == null)
+            message_S11 = "S11 from BT";
         TextView textView_S11 = findViewById(R.id.textView_S11);
         textView_S11.setText(message_S11);
 
+        if(message_Odometer == null)
+            message_Odometer = "odometer from BT";
+        TextView textView_Odometer = findViewById(R.id.textView_odometer);
+        textView_Odometer.setText(message_Odometer);
 
-        String message_EOL = "EOL from calculation";
+        if(message_EOL == null)
+            message_EOL = "EOL from calculation";
         TextView textView_EOL = findViewById(R.id.textView_EOL);
         textView_EOL.setText(message_EOL);
 
-        String message_rep = "time to rep from calculation";
+        if(message_rep == null)
+            message_rep = "time to rep from calculation";
         TextView textView_rep = findViewById(R.id.textView_replace);
         textView_rep.setText(message_rep);
 
