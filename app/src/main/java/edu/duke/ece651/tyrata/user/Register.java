@@ -54,7 +54,7 @@ public class Register extends AppCompatActivity {
     private void notification(){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
-                .setMessage("The email already exists!")
+                .setMessage("The email is already registered!")
                 .setPositiveButton("Yes", null)
                 .show();
     }
