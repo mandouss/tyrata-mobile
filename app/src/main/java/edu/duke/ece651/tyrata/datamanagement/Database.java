@@ -111,12 +111,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("MANUFACTURER", manufacturer);
         contentValues.put("MODEL", model);
         contentValues.put("SKU", sku);
-        contentValues.put("AXIS_ROW", axis_row);
-        contentValues.put("AXIS_SIDE", axis_side);
-        contentValues.put("AXIS_INDEX", axis_index);
         contentValues.put("INIT_THICKNESS", init_thickness);
-        contentValues.put("INIT_SS_ID", init_ss_id);
-        contentValues.put("CUR_SS_ID", cur_ss_id);
         // Update or insert
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '" + sensor_id + "'", null);
         if (c != null && c.moveToFirst()) {
@@ -135,6 +130,11 @@ public class Database extends AppCompatActivity {
         } else {
             contentValues.put("SENSOR_ID", sensor_id);
             contentValues.put("VEHICLE_ID", vehicle_id);
+            contentValues.put("AXIS_ROW", axis_row);
+            contentValues.put("AXIS_SIDE", axis_side);
+            contentValues.put("AXIS_INDEX", axis_index);
+            contentValues.put("INIT_SS_ID", init_ss_id);
+            contentValues.put("CUR_SS_ID", cur_ss_id);
             Log.i("In database", "insert tire");
             c.close();
             myDatabase.insertOrThrow("TIRE", null, contentValues);
