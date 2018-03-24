@@ -6,23 +6,37 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
+
+import static java.lang.System.in;
 
 /**
  * Example Activity using Bluetooth API
@@ -35,6 +49,7 @@ public class BluetoothActivity extends AppCompatActivity {
     /* GLOBAL VARIABLES */
     private BluetoothDevice mBluetoothDevice; // device to connect to
     private TextView mTextView;
+    private String mXmlStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,7 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
 
         mTextView = findViewById(R.id.textView_s0_bt);
+        mTextView.setMovementMethod(new ScrollingMovementMethod());
 
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
@@ -117,6 +133,59 @@ public class BluetoothActivity extends AppCompatActivity {
         mTextView.setText(msg);
     }
 
+    public void processMsg(String msg) {
+        // Create/Update XML string
+        if (msg.startsWith("<?xml")) {
+            // beginning of XML data
+            mXmlStream = msg;
+
+        } else {
+            // middle of XML data
+            mXmlStream += msg;
+        }
+
+        displayMsg(mXmlStream);
+        try {
+            // construct an InputStream from XML string
+            InputStream in = new ByteArrayInputStream(mXmlStream.getBytes("UTF-8"));
+            // Validate XML format
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            dBuilder.parse(in);
+            // No exceptions/errors --> valid XML format
+            Toast.makeText(getApplicationContext(), "Received XML data! Parsing...",
+                    Toast.LENGTH_SHORT).show();
+            displayMsg(mXmlStream);
+            // parse the message
+            BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
+            TireSnapshot tireSnapshot = btXmlParser.parseToTireSnapshot(in);
+            String info;
+            if (tireSnapshot == null)
+                info = "Failed to parse message received...";
+            else {
+                info = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
+                info += ", S11: " + tireSnapshot.getS11();
+                info += " Pressure: " + tireSnapshot.getPressure();
+                info += ", Mileage: " + tireSnapshot.getOdometerMileage();
+                info += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+            }
+            Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+        } catch (SAXException e) {
+            // Parsing XML failed (invalid XML file)
+            // Invalid --> assume incomplete and wait for rest of data
+            Toast.makeText(getApplicationContext(), "Received part XML data. Waiting for more...",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "onActivityResult with code " + requestCode);
@@ -164,38 +233,14 @@ public class BluetoothActivity extends AppCompatActivity {
             switch (msg.what) {
                 case Common.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    displayMsg(readMessage);
-//                    Log.d(Common.LOG_TAG_BT_ACTIVITY,
-//                            "Received msg with " + readMessage.length() + " Bytes");
-//                    Toast.makeText(getApplicationContext(), "Msg read: "
-//                            + readMessage, Toast.LENGTH_LONG).show();
-
-                    // construct an InputStream from the valid bytes in the buffer
-                    InputStream in = new ByteArrayInputStream(readBuf);
-
-                    // parse the message
-                    BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
-                    try {
-                        TireSnapshot tireSnapshot = btXmlParser.parseToTireSnapshot(in);
-                        String info;
-                        if (tireSnapshot == null)
-                            info = "Failed to parse message received...";
-                        else {
-                            info = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
-                            info += ", S11: " + tireSnapshot.getS11();
-                            info += " Pressure: " + tireSnapshot.getPressure();
-                            info += ", Mileage: " + tireSnapshot.getOdometerMileage();
-                            info += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
-                        }
-                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    // construct a string from the valid bytes in the msg
+                    String msgStr = new String(readBuf, 0, msg.arg1);
+                    Toast.makeText(getApplicationContext(), msgStr.length()
+                            + " Bytes read ", Toast.LENGTH_SHORT).show();
+                    displayMsg(msgStr);
+                    processMsg(msgStr);
                     break;
+
                 case Common.MESSAGE_WRITE:
 //                    byte[] writeBuf = (byte[]) msg.obj;
 //                    // construct a string from the buffer

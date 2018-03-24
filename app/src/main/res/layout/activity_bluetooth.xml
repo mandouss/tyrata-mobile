@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="edu.duke.ece651.tyrata.communication.BluetoothActivity">
 
     <Button
         android:id="@+id/btn_s1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="pairedBluetooth"
         android:text="Paired Devices"
@@ -18,7 +19,7 @@
 
     <Button
         android:id="@+id/btn_s2"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
@@ -30,7 +31,7 @@
 
     <Button
         android:id="@+id/btn_s3"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="acceptBluetooth"
         android:text="Accept BT"
@@ -40,7 +41,7 @@
 
     <Button
         android:id="@+id/btn_s4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CONNECT BT"
         android:visibility="gone"
@@ -49,7 +50,7 @@
 
     <Button
         android:id="@+id/btn_s5"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="sendMsg"
         android:text="SEND MSG"
@@ -57,19 +58,26 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_s4"
         tools:layout_editor_absoluteX="160dp" />
 
-    <TextView
-        android:id="@+id/textView_s0_bt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Received message will appear here!"
-        android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s5" />
+    <ScrollView
+        android:id="@+id/SCROLLER_ID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView_s0_bt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:maxLines="1000"
+            android:scrollbars="vertical"
+            android:text="Received message will appear here!"
+            android:textSize="8sp" />
+    </ScrollView>
+
+
+</LinearLayout>
