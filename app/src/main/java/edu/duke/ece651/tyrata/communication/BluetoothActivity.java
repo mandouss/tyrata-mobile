@@ -10,10 +10,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 /**
  * Example Activity using Bluetooth API
@@ -25,11 +34,14 @@ public class BluetoothActivity extends AppCompatActivity {
 
     /* GLOBAL VARIABLES */
     private BluetoothDevice mBluetoothDevice; // device to connect to
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
+
+        mTextView = findViewById(R.id.textView_s0_bt);
 
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
@@ -71,7 +83,7 @@ public class BluetoothActivity extends AppCompatActivity {
             String address = extras.getString(BluetoothDeviceListActivity.EXTRA_DEVICE_ADDRESS);
             Log.d(Common.LOG_TAG_BT_ACTIVITY, "Connecting to " + address);
             Toast.makeText(getApplicationContext(),
-                    "Connecting to " + address, Toast.LENGTH_LONG).show();
+                    "Connecting to " + address, Toast.LENGTH_SHORT).show();
             BluetoothAPI.connectBt(address);
         }
         else {
@@ -82,8 +94,27 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     public void sendMsg(View view) {
-        String msg = "Message sent from " + BluetoothAPI.getDeviceName();
-        BluetoothAPI.write(msg.getBytes());
+        Log.d(Common.LOG_TAG_BT_ACTIVITY, "sendMsg()");
+        InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        try {
+            while ((nRead = in.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Sending message...");
+            BluetoothAPI.write(buffer.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void displayMsg(String msg) {
+        mTextView.setText(msg);
     }
 
     @Override
@@ -135,20 +166,48 @@ public class BluetoothActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d(Common.LOG_TAG_BT_ACTIVITY, readMessage);
-                    Toast.makeText(getApplicationContext(), "Msg read: "
-                            + readMessage, Toast.LENGTH_LONG).show();
+                    displayMsg(readMessage);
+//                    Log.d(Common.LOG_TAG_BT_ACTIVITY,
+//                            "Received msg with " + readMessage.length() + " Bytes");
+//                    Toast.makeText(getApplicationContext(), "Msg read: "
+//                            + readMessage, Toast.LENGTH_LONG).show();
+
+                    // construct an InputStream from the valid bytes in the buffer
+                    InputStream in = new ByteArrayInputStream(readBuf);
+
+                    // parse the message
+                    BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
+                    try {
+                        TireSnapshot tireSnapshot = btXmlParser.parseToTireSnapshot(in);
+                        String info;
+                        if (tireSnapshot == null)
+                            info = "Failed to parse message received...";
+                        else {
+                            info = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
+                            info += ", S11: " + tireSnapshot.getS11();
+                            info += " Pressure: " + tireSnapshot.getPressure();
+                            info += ", Mileage: " + tireSnapshot.getOdometerMileage();
+                            info += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+                        }
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case Common.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf, 0, msg.arg1);
-                    Log.d(Common.LOG_TAG_BT_ACTIVITY, writeMessage);
-                    Toast.makeText(getApplicationContext(), "Msg written: "
-                            + writeMessage, Toast.LENGTH_LONG).show();
+//                    byte[] writeBuf = (byte[]) msg.obj;
+//                    // construct a string from the buffer
+//                    String writeMessage = new String(writeBuf, 0, msg.arg1);
+//                    Log.d(Common.LOG_TAG_BT_ACTIVITY, writeMessage);
+//                    Toast.makeText(getApplicationContext(), "Msg written: "
+//                            + writeMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
+                                    + " Bytes!", Toast.LENGTH_LONG).show();
                     break;
                 case Common.MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), "Toast Msg", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
                     break;
                 case Common.MESSAGE_DEVICE_NAME:
                     // save the connected device's name

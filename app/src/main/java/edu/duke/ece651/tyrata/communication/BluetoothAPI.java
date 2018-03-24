@@ -360,7 +360,8 @@ class BluetoothAPI {
 
         public void run() {
             Log.i(Common.LOG_TAG_BT_API, "BEGIN ConnectedThread");
-            mmBuffer = new byte[1024];
+            // @TODO change byte array size to max required
+            mmBuffer = new byte[65536];
             int numBytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs.
