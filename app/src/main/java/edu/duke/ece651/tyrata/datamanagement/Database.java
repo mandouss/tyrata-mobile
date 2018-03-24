@@ -180,6 +180,7 @@ public class Database extends AppCompatActivity {
             Log.i("In updateTireSSID", sensor_ID+"The sensor_ID is not found in TIRE!");
             return false;
         }
+        sensorExist.close();
 
         Cursor curr = myDatabase.rawQuery("SELECT MAX(ID) FROM SNAPSHOT WHERE TIRE_ID = '"+sensor_ID+"'", null);
         Cursor init = myDatabase.rawQuery("SELECT MIN(ID) FROM SNAPSHOT WHERE TIRE_ID = '"+sensor_ID+"'", null);
@@ -202,22 +203,17 @@ public class Database extends AppCompatActivity {
     }
 
     // TODO: SQL injection
-    public static int Userid(String email) {
+    /* Updated by Yue Li and De Lan on 3/24/2018 */
+    public static int getUserID(String email) {
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '" + email + "'", null);
-        c.moveToFirst();
-        int res = c.getInt(c.getColumnIndex("USER_ID"));
+        int res = -1;
+        if(c != null && c.moveToFirst()) {
+            res = c.getInt(c.getColumnIndex("USER_ID"));
+            c.close();
+        }
         return res;
     }
 
-    public static boolean Userexist(String email) {
-        Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '" + email + "'", null);
-        if (c.getCount() <= 0) {
-            c.close();
-            return false;
-        }
-        c.close();
-        return true;
-    }
 
     /* Created by De Lan on 3/18/2018.*/
     public static User getUser(int user_id) {
@@ -276,6 +272,7 @@ public class Database extends AppCompatActivity {
         return curr_vehicle;
     }
 
+    /* Created by De Lan on 3/18/2018.*/
     public static Tire tireHelper(Cursor c){
         String t_sensorId = c.getString(c.getColumnIndex("SENSOR_ID"));
         String t_manufacturer = c.getString(c.getColumnIndex("MANUFACTURER"));
