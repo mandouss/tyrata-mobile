@@ -47,29 +47,37 @@ public class Database extends AppCompatActivity {
         myDatabase.execSQL("DROP TABLE IF EXISTS USER");
     }
 
-    public static void storeUserData(String name, String email, String phone) {
+    /* Updated by De Lan on 3/24/2018 */
+    public static boolean storeUserData(String name, String email, String phone) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
-        final String MY_QUERY = "SELECT MAX(USER_ID) FROM USER";
-        Cursor c = myDatabase.rawQuery(MY_QUERY, null);
-        int user_id = 0;
-        try {
-            if (c.getCount() > 0) {
-                Log.i("Notify", "I'm in storeUserData.");
-                c.moveToFirst();
-                user_id = c.getInt(0);
-                user_id += 1;
-            }
-        } catch (Exception e) {
-            Log.i("storeUserData", e.getMessage());
+        Cursor emailCursor = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '"+email+"'", null);
+        if(emailCursor != null && emailCursor.moveToFirst()){
+            emailCursor.close();
+            return true;
         }
-        c.close();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("USER_ID", user_id);
-        contentValues.put("NAME", name);
-        contentValues.put("EMAIL", email);
-        contentValues.put("PHONE_NUMBER", phone);
-        myDatabase.insertOrThrow("USER", null, contentValues);
-
+        else {
+            final String MY_QUERY = "SELECT MAX(USER_ID) FROM USER";
+            Cursor c = myDatabase.rawQuery(MY_QUERY, null);
+            int user_id = 0;
+            try {
+                if (c.getCount() > 0) {
+                    Log.i("Notify", "I'm in storeUserData.");
+                    c.moveToFirst();
+                    user_id = c.getInt(0);
+                    user_id += 1;
+                }
+            } catch (Exception e) {
+                Log.i("storeUserData", e.getMessage());
+            }
+            c.close();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("USER_ID", user_id);
+            contentValues.put("NAME", name);
+            contentValues.put("EMAIL", email);
+            contentValues.put("PHONE_NUMBER", phone);
+            myDatabase.insertOrThrow("USER", null, contentValues);
+            return false;
+        }
     }
 
     // Updated by Yue Li and De Lan on 3/22/2018
