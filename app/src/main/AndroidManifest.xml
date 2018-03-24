@@ -20,8 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:parentActivityName=".user.Log_in" />
+            android:name=".MainActivity"/>
+            <!--android:parentActivityName=".user.Log_in" />-->
         <activity android:name=".user.Log_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,24 +30,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".calibration.Input_Vehicle_Info"
-            android:parentActivityName=".MainActivity" />
+            android:name=".calibration.Input_Vehicle_Info"/>
+            <!--android:parentActivityName=".MainActivity" />-->
         <activity
-            android:name=".display.Vehicle_Info"
-            android:parentActivityName=".MainActivity" />
+            android:name=".display.Vehicle_Info"/>
+            <!--android:parentActivityName=".MainActivity" />-->
         <activity
             android:name=".user.Register"
             android:parentActivityName=".user.Log_in" />
         <activity
-            android:name=".calibration.Report_accident"
-            android:parentActivityName=".MainActivity" />
+            android:name=".calibration.Report_accident"/>
+            <!--android:parentActivityName=".MainActivity" />-->
         <activity android:name=".communication.BluetoothActivity" />
         <activity
-            android:name=".display.TireInfo"
-            android:parentActivityName=".display.Vehicle_Info" />
+            android:name=".display.TireInfo"/>
+            <!--android:parentActivityName=".display.Vehicle_Info" />-->
         <activity
-            android:name=".calibration.TireInfoInput"
-            android:parentActivityName=".display.TireInfo" />
+            android:name=".calibration.TireInfoInput"/>
+            <!--android:parentActivityName=".display.TireInfo" />-->
         <activity android:name=".communication.EmptyActivity" />
         <activity android:name=".communication.HttpActivity"></activity>
     </application>

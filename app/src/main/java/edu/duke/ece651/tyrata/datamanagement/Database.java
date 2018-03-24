@@ -222,6 +222,18 @@ public class Database extends AppCompatActivity {
         return res;
     }
 
+    /* Updated by De Lan on 3/24/2018 */
+    public static int getVinUserID(String vin){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
+        int res = -1;
+        if(c != null && c.moveToFirst()) {
+            res = c.getInt(c.getColumnIndex("USER_ID"));
+            c.close();
+        }
+        return res;
+
+    }
+
 
     /* Created by De Lan on 3/18/2018.*/
     public static User getUser(int user_id) {

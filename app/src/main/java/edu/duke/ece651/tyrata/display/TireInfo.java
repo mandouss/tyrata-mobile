@@ -151,10 +151,10 @@ public class TireInfo extends AppCompatActivity {
         Log.i("VIN", vin);
         startActivity(intent);
     }
-    //TODO: call BT to for S11 and ODM ref
-    public void switchToS11ODM(View view) {
-        Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
+    public void BackToVehicle(View view) {
+        Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
+        intent.putExtra("VIN", vin);
         startActivity(intent);
     }
 

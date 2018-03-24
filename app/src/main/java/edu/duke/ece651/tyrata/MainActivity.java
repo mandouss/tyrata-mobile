@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         textView_phonenum.setText(curr_user.phone);
 
         String message_report = intent.getStringExtra("REPORT");
-        if(message_report != null){
+        if(message_report != null && !message_report.equals("")){
             message_report = "User Report:\n" + message_report;
             TextView textView_report = findViewById(R.id.main_notification);
             textView_report.setText(message_report);
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     public void main_to_vehicle_info(String vin) {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
-        intent.putExtra("userID", user_ID);
+//        intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button

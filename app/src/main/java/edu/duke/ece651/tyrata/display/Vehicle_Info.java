@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -45,15 +46,15 @@ public class Vehicle_Info extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
-        user_id = intent.getIntExtra("userID", 1);
-        Log.i("In vehicle info, VIN:", vin);
-        Log.i("In vehicle info, user:", String.valueOf(user_id));
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.testTireTable();
-
+        user_id = Database.getVinUserID(vin);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
+
+        Log.i("In vehicle info, VIN:", vin);
+        Log.i("In vehicle info, user:", String.valueOf(user_id));
 
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);
@@ -175,6 +176,12 @@ public class Vehicle_Info extends Activity {
             map.put("percent", "96%");
             list.add(map);
         }
+    }
+
+    public void BackToMain(View view) {
+        Intent intent = new Intent(Vehicle_Info.this, MainActivity.class);
+        intent.putExtra("USER_ID", user_id);
+        startActivity(intent);
     }
 
     public void switchToEdit(View view) {

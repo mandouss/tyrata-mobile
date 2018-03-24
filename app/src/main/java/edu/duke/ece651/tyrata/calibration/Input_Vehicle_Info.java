@@ -30,7 +30,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
         Intent intent = getIntent();
-        user_ID = intent.getIntExtra("userID", 0);
+        user_ID = intent.getIntExtra("userID", 1);
         // If this page is switched from vehicle edit
         String vin = intent.getStringExtra("VIN");
         if(vin != null) {
