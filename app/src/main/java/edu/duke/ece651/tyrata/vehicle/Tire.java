@@ -19,10 +19,14 @@ public class Tire {
     char mAxisSide;
     int mAxisIndex;
     double minit_thickness;
+    double mcurr_thickness;
     int INIT_SS_ID;
     int CUR_SS_ID;
-//    double mS11Reference;
-//    int mOdometerMileageReference;
+    double mS11;
+    double mOdometer;
+    String meol;
+    String mrepTime;
+
 
 
     /** Constructor
@@ -37,7 +41,8 @@ public class Tire {
      * odometerRef Odometer mileage reference/baseline
      * @param sensorId Paired sensor ID
      */
-    public Tire(String sensorId, String manufacturer, String model, String sku, int axisRow, char axisSide, int axisIndex, double init_thickness, int INIT_SS, int CUR_SS) {
+    public Tire(String sensorId, String manufacturer, String model, String sku, int axisRow, char axisSide, int axisIndex,
+                double init_thickness, double curr_thickness, int INIT_SS, int CUR_SS, double s11, double odometer, String eol, String repTime) {
         this.mSensorId = sensorId;
         this.mManufacturer = manufacturer;
         this.mModel = model;
@@ -46,8 +51,13 @@ public class Tire {
         this.mAxisSide = axisSide;
         this.mAxisIndex = axisIndex;
         this.minit_thickness = init_thickness;
+        this.mcurr_thickness = curr_thickness;
         this.INIT_SS_ID = INIT_SS;
         this.CUR_SS_ID = CUR_SS;
+        this.mS11 = s11;
+        this.mOdometer = odometer;
+        this.meol = eol;
+        this.mrepTime = repTime;
     }
 
     /** Constructor
@@ -56,14 +66,15 @@ public class Tire {
      */
     public Tire(Tire tire) {
         this(tire.getSensorId(), tire.getManufacturer(), tire.getModel(), tire.getSku(), tire.getAxisRow(),
-                tire.getAxisSide(), tire.getAxisIndex(), tire.get_INIT_THICK(), tire.get_INIT_SS(), tire.get_CUR_SS());
+                tire.getAxisSide(), tire.getAxisIndex(), tire.get_INIT_THICK(), tire.get_CURR_THCK(), tire.get_INIT_SS(),
+                tire.get_CUR_SS(),tire.getS11(),tire.getOdometer(),tire.getEOL(),tire.getRepTime());
     }
 
     /** Default constructor
      *
      */
     public Tire() {
-        this("", "", "", "", 0, 'S', 0, 0, 0, 0);
+        this("", "", "", "", 0, 'S', 0, 0, 0, 0, 0, 0, 0, "", "");
     }
 
     public void reportAccident() {
@@ -88,6 +99,10 @@ public class Tire {
     /* Getters and Setters */
     public String getManufacturer() {
         return mManufacturer;
+    }
+
+    public String getSensor() {
+        return mSensorId;
     }
 
     public void setManufacturer(String mManufacturer) {
@@ -132,9 +147,21 @@ public class Tire {
 
     public double get_INIT_THICK(){ return minit_thickness; }
 
-    public int get_INIT_SS() {return INIT_SS_ID; };
+    public double get_CURR_THCK() { return mcurr_thickness; }
 
-    public int get_CUR_SS() {return CUR_SS_ID; };
+    public int get_INIT_SS() {return INIT_SS_ID; }
+
+    public int get_CUR_SS() {return CUR_SS_ID; }
+
+    public double getS11() { return mS11;}
+
+    public double getOdometer() { return mOdometer;}
+
+    public String getEOL() { return meol;}
+
+    public String getRepTime() { return mrepTime;}
+
+
 //    public void setAxisIndex(int mAxisIndex) {
 //        this.mAxisIndex = mAxisIndex;
 //    }

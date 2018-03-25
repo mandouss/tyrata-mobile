@@ -1,15 +1,19 @@
 package edu.duke.ece651.tyrata.communication;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import edu.duke.ece651.tyrata.datamanagement.Database;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,7 +34,8 @@ public class EmptyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_empty);
     }
 
-    public void getGPS(View view) {
+    public ArrayList<Double> getGPS(View view) {
+        ArrayList<Double> ans = new ArrayList<>();
         // Check for location permission
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -45,10 +50,13 @@ public class EmptyActivity extends AppCompatActivity {
         GPStracker g = new GPStracker(getApplicationContext());
         Location l = g.getLocation();
         if (l != null) {
-            double lat = l.getLatitude();
-            double lon = l.getLongitude();
+            Double lat = l.getLatitude();
+            Double lon = l.getLongitude();
+            ans.add(lat);
+            ans.add(lon);
             Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
         }
+        return ans;
     }
 
     public void goToBluetooth(View view) {
@@ -90,10 +98,51 @@ public class EmptyActivity extends AppCompatActivity {
 
     }
 
+    /* Updated by Zijie and Yue on 3/24/2018. */
     public void getTireSnapshotFromXml(View view) {
+        ArrayList<Double> GPS = getGPS(view);
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
             TireSnapshot tireSnapshot = xmlParser.parseToTireSnapshot(getResources().openRawResource(R.raw.xml_bluetooth_sample));
+
+            double s11 = tireSnapshot.getS11();
+            String timestamp = TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+            double mileage = tireSnapshot.getOdometerMileage();
+            double pressure = tireSnapshot.getPressure();
+            String tire_id = tireSnapshot.getSensorId();
+            //Log.i("sensorid", tire_id);
+
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            //Database.testTireTable();
+            double init_thickness =  Database.getInitThickness(tire_id); //init_thickness
+            Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
+            double thickness = init_thickness;
+            String eol = Double.toString((init_thickness - 3) * 5000);
+            String time_to_replacement = timestamp;
+            double longitutde = GPS.get(0);
+            double lat = GPS.get(1);
+            if(c != null && c.moveToFirst()) {
+
+                //double init_thickness = Database.getInitThickness(tire_id);
+                double init_mS11 = c.getDouble(c.getColumnIndex("s11"));
+                thickness = tireSnapshot.calculateTreadThickness(init_mS11, init_thickness);
+                eol = Double.toString((thickness - 3) * 5000);
+                time_to_replacement = timestamp;
+                //longitutde = GPS.get(0);
+                //lat = GPS.get(1);
+                c.close();
+
+            }
+            //Log.i("eol", eol);
+
+            Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, false, thickness, eol, time_to_replacement, longitutde, lat);
+            boolean sensorExist = Database.updateTireSSID(tire_id);
+            if(!sensorExist){
+                throw new IOException();
+            }
+            Database.testSnapTable();
+            Database.myDatabase.close();
+
             String msg = "";
             if (tireSnapshot == null) {
                 msg = "Empty TireSnapshot...";
@@ -106,8 +155,11 @@ public class EmptyActivity extends AppCompatActivity {
             }
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         } catch (XmlPullParserException e) {
+            notification(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
+            notification(msg);
             e.printStackTrace();
         }
     }
@@ -121,5 +173,11 @@ public class EmptyActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    private void notification(String msg){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage(msg)
+                .setPositiveButton("Yes", null)
+                .show();
     }
 }
