@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import edu.duke.ece651.tyrata.datamanagement.Database;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -20,7 +22,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.R;
-import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.processing.GPStracker;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
@@ -96,6 +97,7 @@ public class EmptyActivity extends AppCompatActivity {
 
     }
 
+    /* Updated by Zijie and Yue on 3/24/2018. */
     public void getTireSnapshotFromXml(View view) {
         ArrayList<Double> GPS = getGPS(view);
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
@@ -107,14 +109,31 @@ public class EmptyActivity extends AppCompatActivity {
             double mileage = tireSnapshot.getOdometerMileage();
             double pressure = tireSnapshot.getPressure();
             String tire_id = tireSnapshot.getSensorId();
-            //@TODO: calculate thickness, eol, time_to_replacement referring to tire init thickness
-            double thickness = 6.0;
-            String eol = timestamp;
-            String time_to_replacement = eol;
-            double longitutde = GPS.get(0);
-            double lat = GPS.get(1);
+            //Log.i("sensorid", tire_id);
 
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            //Database.testTireTable();
+            double init_thickness =  Database.getInitThickness(tire_id); //init_thickness
+            Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
+            double thickness = init_thickness;
+            String eol = Double.toString((init_thickness - 3) * 5000);
+            String time_to_replacement = timestamp;
+            double longitutde = GPS.get(0);
+            double lat = GPS.get(1);
+            if(c != null && c.moveToFirst()) {
+
+                //double init_thickness = Database.getInitThickness(tire_id);
+                double init_mS11 = c.getDouble(c.getColumnIndex("s11"));
+                thickness = tireSnapshot.calculateTreadThickness(init_mS11, init_thickness);
+                eol = Double.toString((thickness - 3) * 5000);
+                time_to_replacement = timestamp;
+                //longitutde = GPS.get(0);
+                //lat = GPS.get(1);
+                c.close();
+
+            }
+            //Log.i("eol", eol);
+
             Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, false, thickness, eol, time_to_replacement, longitutde, lat);
             boolean sensorExist = Database.updateTireSSID(tire_id);
             if(!sensorExist){

@@ -19,7 +19,7 @@ import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
- * Created by Yuei on 3/4/18.
+ * Created by Yue Li and Zijie Wang on 3/4/18.
  * Updated by De Lan on 3/18/2018: getUser(), getVehicle(), getTire()
  */
 
@@ -31,6 +31,7 @@ public class Database extends AppCompatActivity {
 
     }
 
+    /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
     public static void createTable() {
@@ -47,6 +48,7 @@ public class Database extends AppCompatActivity {
         myDatabase.execSQL("DROP TABLE IF EXISTS USER");
     }
 
+    /* Created by Yue Li and Zijie Wang on 3/4/2018. */
     /* Updated by De Lan on 3/24/2018 */
     public static boolean storeUserData(String name, String email, String phone) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
@@ -80,7 +82,7 @@ public class Database extends AppCompatActivity {
         }
     }
 
-    // Updated by Yue Li and De Lan on 3/22/2018
+
     public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
         ContentValues contentValues = new ContentValues();
@@ -140,6 +142,40 @@ public class Database extends AppCompatActivity {
             myDatabase.insertOrThrow("TIRE", null, contentValues);
         }
         return true;
+    }
+
+    /* Created by Zijie Wang on 3/24/2018. */
+    public static double getInitThickness(String sensor_id) {
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '" + sensor_id + "'", null);
+        if(c != null && c.moveToFirst()){
+            Double ans = c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
+            c.close();
+            return ans;
+        }
+        else {
+            Log.i("In database", "Sensor id not found");
+            return 0;
+        }
+    }
+
+    public static double[] getThickness(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '" + sensor_id + "'", null);
+        double[] x = new double[60];
+        int i = 0;
+        if (c.moveToFirst()) {
+            do {
+                x[i] = c.getDouble(c.getColumnIndex("THICKNESS"));
+                i++;
+
+            } while (c.moveToNext());
+            x[i] = -1;
+            c.close();
+            return x;
+        }
+        else {
+            Log.i("snapshotTable", "There is nothing in snapshotTable");
+            return null;
+        }
     }
 
     // Updated by De Lan on 03/23/2018
@@ -324,7 +360,7 @@ public class Database extends AppCompatActivity {
     }
 
 
-    /* Created by De Lan on 3/18/2018.*/
+
     /* Updated by De Lan on 3/24/2018 */
     public static Tire getTire(int axis_row, int axis_index, char axis_side, String vin) {
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = '" + vin + "' and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
@@ -338,6 +374,8 @@ public class Database extends AppCompatActivity {
         }
     }
 
+    /* Created by YUE LI on 3/18/2018.*/
+    /* Created by ZIJIE WANG on 3/18/2018.*/
     public static void testUserTable() {
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER", null);
         if (c.moveToFirst()) {
