@@ -18,6 +18,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.processing.GPStracker;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
@@ -104,6 +105,17 @@ public class EmptyActivity extends AppCompatActivity {
                 msg += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
             }
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getDatabaseFromXml(View view) {
+        ServerXmlParser xmlParser = new ServerXmlParser();
+        try {
+            xmlParser.parse_server(getResources().openRawResource(R.raw.xml_get_from_server_sample));
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
