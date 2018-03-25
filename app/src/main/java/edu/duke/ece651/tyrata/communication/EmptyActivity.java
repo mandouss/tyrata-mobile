@@ -122,16 +122,12 @@ public class EmptyActivity extends AppCompatActivity {
             double longitutde = GPS.get(0);
             double lat = GPS.get(1);
             if(c != null && c.moveToFirst()) {
-
-                //double init_thickness = Database.getInitThickness(tire_id);
-                double init_mS11 = c.getDouble(c.getColumnIndex("s11"));
+                double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                 thickness = tireSnapshot.calculateTreadThickness(init_mS11, init_thickness);
                 eol = Double.toString((thickness - 3) * 5000);
                 time_to_replacement = timestamp;
-                //longitutde = GPS.get(0);
-                //lat = GPS.get(1);
                 c.close();
-
+                Log.i("Check eol", eol);
             }
             //Log.i("eol", eol);
 
