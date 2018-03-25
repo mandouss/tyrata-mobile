@@ -30,9 +30,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
+
 
 /**
  * Implementation of headless Fragment that runs an AsyncTask to fetch data from the network.
@@ -218,10 +219,10 @@ public class NetworkFragment extends Fragment {
          */
         private String downloadUrl(URL url) throws IOException {
             InputStream stream = null;
-            HttpsURLConnection connection = null;
+            HttpURLConnection connection = null;
             String result = null;
             try {
-                connection = (HttpsURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 // Timeout for reading InputStream arbitrarily set to 3000ms.
                 connection.setReadTimeout(3000);
                 // Timeout for connection.connect() arbitrarily set to 3000ms.
@@ -235,7 +236,7 @@ public class NetworkFragment extends Fragment {
                 connection.connect();
                 publishProgress(DownloadCallback.Progress.CONNECT_SUCCESS);
                 int responseCode = connection.getResponseCode();
-                if (responseCode != HttpsURLConnection.HTTP_OK) {
+                if (responseCode != HttpURLConnection.HTTP_OK) {
                     throw new IOException("HTTP error code: " + responseCode);
                 }
                 // Retrieve the response body as an InputStream.
