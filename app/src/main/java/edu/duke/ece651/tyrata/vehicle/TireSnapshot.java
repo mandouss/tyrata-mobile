@@ -67,7 +67,7 @@ public class TireSnapshot extends Tire {
         return init_thickness - 12.50 * (mS11 - init_mS11);
     }
 
-    public float calculateEol() {
+    public double calculateEol() {
         // @TODO
 
         return 0;

@@ -112,25 +112,27 @@ public class EmptyActivity extends AppCompatActivity {
             //Log.i("sensorid", tire_id);
 
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-            Database.testTireTable();
+            //Database.testTireTable();
             double init_thickness =  Database.getInitThickness(tire_id); //init_thickness
             Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
-            double thickness = 9;
-            String eol = timestamp;
-            String time_to_replacement = eol;
+            double thickness = init_thickness;
+            String eol = Double.toString((init_thickness - 3) * 5000);
+            String time_to_replacement = timestamp;
             double longitutde = GPS.get(0);
             double lat = GPS.get(1);
             if(c != null && c.moveToFirst()) {
 
-                double init_mS11 = Database.getInitThickness(tire_id);
+                //double init_thickness = Database.getInitThickness(tire_id);
+                double init_mS11 = c.getDouble(c.getColumnIndex("s11"));
                 thickness = tireSnapshot.calculateTreadThickness(init_mS11, init_thickness);
-                eol = timestamp;
-                time_to_replacement = eol;
+                eol = Double.toString((thickness - 3) * 5000);
+                time_to_replacement = timestamp;
                 //longitutde = GPS.get(0);
                 //lat = GPS.get(1);
                 c.close();
 
             }
+            //Log.i("eol", eol);
 
             Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, false, thickness, eol, time_to_replacement, longitutde, lat);
             boolean sensorExist = Database.updateTireSSID(tire_id);
