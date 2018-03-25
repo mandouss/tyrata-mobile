@@ -1,5 +1,5 @@
 package edu.duke.ece651.tyrata.communication;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Xml;
@@ -11,34 +11,32 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import edu.duke.ece651.tyrata.datamanagement.Database;
-import static android.content.Context.MODE_PRIVATE;
-import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
-import static edu.duke.ece651.tyrata.datamanagement.Database.myDatabase;
+//import static edu.duke.ece651.tyrata.datamanagement.Database.myDatabase;
 
 /**
  * Created by yangm on 2018/3/24.
  */
 
-public class ServerXmlParser {
+public class ServerXmlParser extends AppCompatActivity {
     private static final String ns = null;
 
-    public void parse_server(InputStream in) throws XmlPullParserException, IOException {
-        parse(in);
+    public void parse_server(InputStream in, Context context) throws XmlPullParserException, IOException {
+        parse(in, context);
     }
 
-    private void parse(InputStream in) throws XmlPullParserException, IOException {
+    private void parse(InputStream in, Context context) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            readFeed(parser);
+            readFeed(parser, context);
         } finally {
             in.close();
         }
     }
 
-    private void readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private void readFeed(XmlPullParser parser, Context context) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "download");
         while(parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -47,16 +45,16 @@ public class ServerXmlParser {
             String name = parser.getName();
             switch(name){
                 case "user":
-                    readuser(parser);
+                    readuser(parser,context);
                     break;
                 case"vehicle":
-                    readvehicle(parser);
+                    readvehicle(parser, context);
                     break;
                 case "tire":
-                    readtire(parser);
+                    readtire(parser,context);
                     break;
                 case "sanpshot":
-                    readsnapshot(parser);
+                    readsnapshot(parser,context);
                     break;
                 default:
                     skip(parser);
@@ -65,7 +63,7 @@ public class ServerXmlParser {
         }
     }
 
-    private void readuser(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private void readuser(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "user");
         int user_id = 0;
         String username="";
@@ -95,17 +93,16 @@ public class ServerXmlParser {
                     break;
             }
         }
-        myDatabase = SQLiteDatabase.openOrCreateDatabase("TyrataData", null);
-        // For test, drop and create tables
+        Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.createTable();
         Database.storeUserData(username, email, phone);
         Database.testUserTable();
-        myDatabase.close();
+        Database.myDatabase.close();
     }
 
 
 
-    private void readvehicle(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private void readvehicle(XmlPullParser parser, Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "vehicle");
         String make = "";
         String model = "";
@@ -147,12 +144,14 @@ public class ServerXmlParser {
                     break;
             }
         }
-        Database.myDatabase = SQLiteDatabase.openOrCreateDatabase("TyrataData",  null);
-        Database.storeVehicleData(vin, make, model, year, axis_num,tire_num,user_id );
-        myDatabase.close();
+
+        Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.storeVehicleData(vin, make, model, year, axis_num, tire_num, user_id);
+        Database.myDatabase.close();
+
     }
 
-    private void readtire(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private void readtire(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "tire");
         String sensorId = "";
         String manufacturer = "";
@@ -209,12 +208,13 @@ public class ServerXmlParser {
                     break;
             }
         }
-        myDatabase = SQLiteDatabase.openOrCreateDatabase("TyrataData",   null);
-        Database.storeTireData(sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness,INIT_SS_ID, CUR_SS_ID );
+        Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.storeTireData(sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
         Database.myDatabase.close();
+
     }
 
-    private void readsnapshot(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private void readsnapshot(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "snapshot");
         Integer id = 0;
         Double s11 = 0.0;
@@ -275,9 +275,11 @@ public class ServerXmlParser {
                     break;
             }
         }
-        myDatabase = SQLiteDatabase.openOrCreateDatabase("TyrataData",   null);
-        Database.storeSnapshot(id,s11,timestamp,mileage,pressure,tire_id,outlier,thickness,eol,time_to_replacement,longitutde,lat );
+
+        Database.myDatabase = context.openOrCreateDatabase("TyrataData", 0, null);
+        Database.storeSnapshot(id, s11, timestamp, mileage, pressure, tire_id, outlier, thickness, eol, time_to_replacement, longitutde, lat);
         Database.myDatabase.close();
+
     }
 
     private String readcontent(XmlPullParser parser,String label) throws IOException, XmlPullParserException {

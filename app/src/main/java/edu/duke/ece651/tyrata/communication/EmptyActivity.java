@@ -115,7 +115,7 @@ public class EmptyActivity extends AppCompatActivity {
     public void getDatabaseFromXml(View view) {
         ServerXmlParser xmlParser = new ServerXmlParser();
         try {
-            xmlParser.parse_server(getResources().openRawResource(R.raw.xml_get_from_server_sample));
+            xmlParser.parse_server(getResources().openRawResource(R.raw.xml_get_from_server_sample), getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {

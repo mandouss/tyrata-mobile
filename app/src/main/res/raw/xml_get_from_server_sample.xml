@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <download>
-    <!--<user>
-        <user_id>5</user_id>
-        <name>ming</name>
+    <user>
+        <user_id>2</user_id>
+        <name>ming2</name>
         <email>163</email>
         <phone_number>1234567</phone_number>
-    </user>-->
+    </user>
     <vehicle>
-        <vin>vin1</vin>
+        <vin>vin1-1</vin>
         <make>make1</make>
         <model>model1</model>
         <year>2016</year>
@@ -16,7 +16,7 @@
         <user_id>1</user_id>
     </vehicle>
     <vehicle>
-        <vin>vin2</vin>
+        <vin>vin1-2</vin>
         <make>make2</make>
         <model>model2</model>
         <year>2013</year>
@@ -24,12 +24,39 @@
         <tire_num>18</tire_num>
         <user_id>1</user_id>
     </vehicle>
+    <vehicle>
+        <vin>vin2-1</vin>
+        <make>make2</make>
+        <model>model2</model>
+        <year>2013</year>
+        <axis_num>5</axis_num>
+        <tire_num>18</tire_num>
+        <user_id>2</user_id>
+    </vehicle>
+    <vehicle>
+        <vin>vin2-2</vin>
+        <make>make2</make>
+        <model>model2</model>
+        <year>2013</year>
+        <axis_num>5</axis_num>
+        <tire_num>18</tire_num>
+        <user_id>2</user_id>
+    </vehicle>
+    <vehicle>
+        <vin>vin2-3</vin>
+        <make>make2</make>
+        <model>model2</model>
+        <year>2013</year>
+        <axis_num>5</axis_num>
+        <tire_num>18</tire_num>
+        <user_id>2</user_id>
+    </vehicle>
     <tire>
         <sensor_id>1</sensor_id>
         <manufacturer>manufacture1</manufacturer>
         <model>model1</model>
         <sku>sku1</sku>
-        <vehicle_id>vin1</vehicle_id>
+        <vehicle_id>vin1-1</vehicle_id>
         <axis_row>1</axis_row>
         <axis_side>L</axis_side>
         <axis_index>1</axis_index>
@@ -42,13 +69,13 @@
         <manufacturer>manufacture2</manufacturer>
         <model>model2</model>
         <sku>sku2</sku>
-        <vehicle_id>vin2</vehicle_id>
+        <vehicle_id>vin1-1</vehicle_id>
         <axis_row>1</axis_row>
         <axis_side>R</axis_side>
         <axis_index>1</axis_index>
         <init_ss_id>1</init_ss_id>
         <cur_ss_id>3</cur_ss_id>
-        <init_thickness>14.9</init_thickness>
+        <init_thickness>14</init_thickness>
     </tire>
     <snapshot>
         <id>1</id>
