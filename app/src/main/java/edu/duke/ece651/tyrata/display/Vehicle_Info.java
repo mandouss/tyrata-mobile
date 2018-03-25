@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -80,6 +81,21 @@ public class Vehicle_Info extends Activity {
         }
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
+
+        ImageView imageView= (ImageView) findViewById(R.id.image_vehicle);
+        if(curr_vehicle.getNumTires() == 4){
+            imageView.setImageResource(R.drawable.four_wheel);
+        }
+        else if(curr_vehicle.getNumTires() == 10){
+            imageView.setImageResource(R.drawable.ten_wheel);
+        }
+        else if(curr_vehicle.getNumTires() == 18){
+            imageView.setImageResource(R.drawable.eighteen_wheel);
+        }
+        else{
+            imageView.setImageResource(R.drawable.four_wheel);
+        }
+
 
         int axis_num = curr_vehicle.getNumAxis();
 
