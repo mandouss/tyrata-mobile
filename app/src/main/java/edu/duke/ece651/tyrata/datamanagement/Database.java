@@ -148,8 +148,9 @@ public class Database extends AppCompatActivity {
     public static double getInitThickness(String sensor_id) {
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '" + sensor_id + "'", null);
         if(c != null && c.moveToFirst()){
+            Double ans = c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
             c.close();
-            return c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
+            return ans;
         }
         else {
             Log.i("In database", "Sensor id not found");

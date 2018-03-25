@@ -61,7 +61,7 @@ public class TireSnapshot extends Tire {
     }
 
     /* @TODO implement processing and calcualtion methods here */
-
+    /* Updated by Zijie and Yue on 3/24/2018. */
     public double calculateTreadThickness(double init_mS11, double init_thickness) {
         /* implement tread thickness calcualtion/formaul */
         return init_thickness - 12.50 * (mS11 - init_mS11);
@@ -96,6 +96,7 @@ public class TireSnapshot extends Tire {
 
     }
 
+    /*Create by Zijie on 3/23/2018.*/
     public void LinearRegression(String sensor_id) {
         int MAXN = 60;
         int n = 0;

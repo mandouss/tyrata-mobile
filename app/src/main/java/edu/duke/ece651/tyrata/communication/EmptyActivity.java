@@ -97,6 +97,7 @@ public class EmptyActivity extends AppCompatActivity {
 
     }
 
+    /* Updated by Zijie and Yue on 3/24/2018. */
     public void getTireSnapshotFromXml(View view) {
         ArrayList<Double> GPS = getGPS(view);
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
@@ -108,10 +109,12 @@ public class EmptyActivity extends AppCompatActivity {
             double mileage = tireSnapshot.getOdometerMileage();
             double pressure = tireSnapshot.getPressure();
             String tire_id = tireSnapshot.getSensorId();
+            //Log.i("sensorid", tire_id);
 
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            Database.testTireTable();
             double init_thickness =  Database.getInitThickness(tire_id); //init_thickness
-            Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT", null);
+            Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
             double thickness = 9;
             String eol = timestamp;
             String time_to_replacement = eol;
