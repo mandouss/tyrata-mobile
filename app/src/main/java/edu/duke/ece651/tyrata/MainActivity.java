@@ -1,6 +1,10 @@
 package edu.duke.ece651.tyrata;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import edu.duke.ece651.tyrata.calibration.Report_accident;
 import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
@@ -28,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView vehicle_list;
     private List<Map<String, Object>> list;
     private int user_ID;
+
+    int notificationID = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         initDataList(curr_user.mVehicles);
 
         String[] from = { "img", "VIN", "make","model", "year" };
-        // 列表项组件Id 数组
         int[] to = { R.id.item_img, R.id.item_vehicle, R.id.item_make,R.id.item_model,
                 R.id.item_year };
 
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         vehicle_list.setAdapter(adapter);
         /**
-         * 单击
+         * click
          */
         vehicle_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -166,5 +172,44 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent);
         // Do something in response to button
+    }
+
+    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
+        Intent i = new Intent(this, TireInfo.class);
+        i.putExtra("notificationID", notificationID);
+        i.putExtra("AXIS_ROW", axis_row);
+        i.putExtra("AXIS_INDEX",axis_index);
+        i.putExtra("AXIS_SIDE", axis_side);
+        i.putExtra("VIN", vin);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, i, 0);
+        NotificationManager nm = (NotificationManager) getSystemService
+                (NOTIFICATION_SERVICE);
+        String id = "my_channel_01";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        CharSequence name = "my_channel";
+        NotificationChannel mChannel = new NotificationChannel(id, name,importance);
+        mChannel.enableLights(true);
+        nm.createNotificationChannel(mChannel);
+        int tire_index;
+
+        String notification_content = "Your tire_index of vehicle "+vin+" need to be replaced.";
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, id)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("NOTIFICATION:")
+                .setContentText(notification_content)
+                .addAction(R.mipmap.ic_launcher, "See the details",
+                        pendingIntent);
+
+        assert nm != null;
+        nm.notify(notificationID, notifBuilder.build());
+    }
+
+    public void onClick(View view) {
+        String notification_vin = "abcd";
+        int notification_axis_row = 1;
+        int notification_axis_index = 1;
+        char notification_axis_side = 'L';
+        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
     }
 }
