@@ -1,6 +1,12 @@
 package edu.duke.ece651.tyrata.vehicle;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+import edu.duke.ece651.tyrata.datamanagement.Database;
+import android.database.sqlite.SQLiteDatabase;
+
 
 /**
  * This class is a TireSnapshot object
@@ -56,15 +62,17 @@ public class TireSnapshot extends Tire {
 
     /* @TODO implement processing and calcualtion methods here */
 
-    public float calculateTreadThickness() {
-        /* @TODO implement tread thickness calcualtion/formaul */
-        return 0;
+    public double calculateTreadThickness(double init_mS11, double init_thickness) {
+        /* implement tread thickness calcualtion/formaul */
+        return init_thickness - 12.50 * (mS11 - init_mS11);
     }
 
     public float calculateEol() {
         // @TODO
+
         return 0;
     }
+
 
     public Calendar calculateReplaceTime() {
         // @TODO
@@ -86,6 +94,65 @@ public class TireSnapshot extends Tire {
     public void processSnapshot() {
         // @TODO
 
+    }
+
+    public void LinearRegression(String sensor_id) {
+        int MAXN = 60;
+        int n = 0;
+        double[] y = new double[MAXN];
+
+        // first pass: read in data, compute xbar and ybar
+        double sumx = 0.0, sumy = 0.0, sumx2 = 0.0;
+        Database.myDatabase = SQLiteDatabase.openOrCreateDatabase("TyrataData", null);
+        double[] x = Database.getThickness(sensor_id);
+        if (x != null) {
+            while (x[n] != -1) {
+                y[n] = n;
+                sumx += x[n];
+                sumx2 += x[n] * x[n];
+                sumy += y[n];
+                n++;
+            }
+            double xbar = sumx / n;
+            double ybar = sumy / n;
+
+            // second pass: compute summary statistics
+            double xxbar = 0.0, yybar = 0.0, xybar = 0.0;
+            for (int i = 0; i < n; i++) {
+                xxbar += (x[i] - xbar) * (x[i] - xbar);
+                yybar += (y[i] - ybar) * (y[i] - ybar);
+                xybar += (x[i] - xbar) * (y[i] - ybar);
+            }
+            double beta1 = xybar / xxbar;
+            double beta0 = ybar - beta1 * xbar;
+            //y = beta1 * x + beta0
+            Database.myDatabase.close();
+        }
+    }
+
+    /**
+     * Convert/Parse String with format "2018-03-22" (or "year-month-day") to Calendar object
+     * @param date String with date formatted as "2018-03-22" (or "year-month-day")
+     * @return Calendar object of parsed date
+     */
+    public static Calendar convertStringToCalendar(String date) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+            cal.setTime(sdf.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    /**
+     * Convert/Parse Calendar object to String with format "2018-03-22" (or "year-month-day")
+     * @param cal Calendar object
+     * @return String with date formatted as "2018-03-22" (or "year-month-day")
+     */
+    public static String convertCalendarToString(Calendar cal) {
+        return cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH);
     }
 
     /* Getters and Setters */

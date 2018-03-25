@@ -49,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
         textView_phonenum.setText(curr_user.phone);
 
         String message_report = intent.getStringExtra("REPORT");
-        TextView textView_report = findViewById(R.id.main_notification);
-        textView_report.setText(message_report);
-        if(message_report != ""){
+        if(message_report != null){
+            message_report = "User Report:\n" + message_report;
+            TextView textView_report = findViewById(R.id.main_notification);
+            textView_report.setText(message_report);
             textView_report.setVisibility(View.VISIBLE);
         }
 
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.n_item2:
-                main_to_addcar(user_ID);
+                main_to_addcar();
                 return true;
             case R.id.n_item3:
                 main_to_report();
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void main_to_addcar(int user_ID) {
+    public void main_to_addcar() {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
         intent.putExtra("userID", user_ID);
 
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void main_to_report() {
         Intent intent = new Intent(MainActivity.this, Report_accident.class);
+        intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
@@ -154,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     public void main_to_vehicle_info(String vin) {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
+        intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
