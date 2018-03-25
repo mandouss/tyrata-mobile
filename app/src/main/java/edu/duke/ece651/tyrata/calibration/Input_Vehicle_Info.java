@@ -1,14 +1,20 @@
 package edu.duke.ece651.tyrata.calibration;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
@@ -24,9 +30,19 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
         Intent intent = getIntent();
-        user_ID = intent.getIntExtra("userID", 0);
-        spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
+        user_ID = intent.getIntExtra("userID", 1);
+        // If this page is switched from vehicle edit
+        String vin = intent.getStringExtra("VIN");
+        if(vin != null) {
+            Log.i("Vehicle Input edit", vin);
+            EditText textView_vin = findViewById(R.id.edit_vin);
+            textView_vin.setText(vin);
+            textView_vin.setKeyListener(null);
+        }else{
+            Log.i("Vehicle Input add_car", "add_car");
+        }
 
+        spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
         dataList = new ArrayList<String>();
         dataList.add("4");
@@ -54,27 +70,18 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     }
     public void saveMessage(View view) {
 
-        Intent intent = new Intent(this, Vehicle_Info.class);
+        Intent intent = new Intent(this, MainActivity.class);
         EditText edit_make = (EditText) findViewById(R.id.edit_make);
         String message_make = edit_make.getText().toString();
-        intent.putExtra("MAKE", message_make);
-
 
         EditText edit_model = (EditText) findViewById(R.id.edit_model);
         String message_model = edit_model.getText().toString();
-        intent.putExtra("MODEL", message_model);
-
 
         EditText edit_year = (EditText) findViewById(R.id.edit_year);
         String message_year = edit_year.getText().toString();
-        intent.putExtra("YEAR", message_year);
-
 
         EditText edit_vin = (EditText) findViewById(R.id.edit_vin);
         String message_vin = edit_vin.getText().toString();
-        intent.putExtra("VIN", message_vin);
-
-        intent.putExtra("TIRENUMBER", tirenumber);
 
         int num = Integer.parseInt(tirenumber);
         int axis_num = 0;
@@ -87,12 +94,25 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         else if(num == 18){
             axis_num = 5;
         }
-        intent.putExtra("AXIS_NUM",axis_num);
 
         // Do something in response to button
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
-        Database.myDatabase.close();
-        startActivity(intent);
+        try {
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
+            Database.myDatabase.close();
+            intent.putExtra("USER_ID", user_ID);
+            startActivity(intent);
+        }
+        catch(Exception e){
+            notification();
+        }
+    }
+
+    private void notification(){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage("Please type in valid information!")
+                .setPositiveButton("Yes", null)
+                .show();
     }
 }

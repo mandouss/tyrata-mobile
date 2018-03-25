@@ -33,7 +33,7 @@
         android:id="@+id/Model"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:text="Model: "
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_model"
@@ -45,7 +45,7 @@
         android:id="@+id/SKU"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:text="SKU: "
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_SKU"
@@ -70,7 +70,7 @@
         android:id="@+id/edit_model"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Type in Model"
         android:inputType="textPersonName"
@@ -85,7 +85,7 @@
         android:id="@+id/edit_SKU"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Type in SKU"
         android:inputType="textPersonName"
@@ -104,33 +104,59 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_thickness" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_sensor_ID" />
 
     <TextView
         android:id="@+id/thickness"
         android:layout_width="120dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
-        android:text="Thickness"
+        android:layout_marginTop="30dp"
+        android:text="Thickness:"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_thickness"
+        app:layout_constraintEnd_toStartOf="@+id/edit_sensor_ID"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/SKU" />
 
     <EditText
+        android:id="@+id/edit_sensor_ID"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="Type in Sensor ID"
+        android:inputType="textPersonName"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sensor_id"
+        app:layout_constraintTop_toBottomOf="@+id/edit_thickness" />
+
+    <EditText
         android:id="@+id/edit_thickness"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Thickness (5mm-15mm)"
-        android:inputType="textPersonName"
+        android:inputType="numberDecimal"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/thickness"
         app:layout_constraintTop_toBottomOf="@+id/edit_SKU" />
+
+    <TextView
+        android:id="@+id/sensor_id"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Sensor ID:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/edit_sensor_ID"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/thickness" />
 
 
 </android.support.constraint.ConstraintLayout>
