@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -85,8 +86,11 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_manufacturer = findViewById(R.id.textView_manufacturer);
         textView_manufacturer.setText(message_manufacturer);
 
-        if(message_sensorID == null)
+        if(message_sensorID == null){
             message_sensorID = "Need sensorID";
+            Button DeleteTire = findViewById(R.id.button_ADeteleTire);
+            DeleteTire.setVisibility(View.INVISIBLE);
+        }
         TextView textView_sensorID = findViewById(R.id.textView_sensorID);
         textView_sensorID.setText(message_sensorID);
 
@@ -156,6 +160,13 @@ public class TireInfo extends AppCompatActivity {
         Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
         startActivity(intent);
+    }
+
+    public void DeleteTire(View view) {
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.deleteTire(message_sensorID);
+        Database.myDatabase.close();
+        BackToVehicle(view);
     }
 
     private void getAxisXLables(){

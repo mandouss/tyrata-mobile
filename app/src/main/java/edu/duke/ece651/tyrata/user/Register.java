@@ -38,7 +38,7 @@ public class Register extends AppCompatActivity {
             Database.dropAllTable();
             Database.createTable();
             boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
-            Database.testUserTable();
+
             Database.myDatabase.close();
             if (!emailExist) {
                 startActivity(intent);

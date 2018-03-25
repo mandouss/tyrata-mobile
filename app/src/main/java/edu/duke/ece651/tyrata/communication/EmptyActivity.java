@@ -113,7 +113,6 @@ public class EmptyActivity extends AppCompatActivity {
             //Log.i("sensorid", tire_id);
 
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-            //Database.testTireTable();
             double init_thickness =  Database.getInitThickness(tire_id); //init_thickness
             Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
             double thickness = init_thickness;
@@ -136,7 +135,6 @@ public class EmptyActivity extends AppCompatActivity {
             if(!sensorExist){
                 throw new IOException();
             }
-            Database.testSnapTable();
             Database.myDatabase.close();
 
             String msg = "";

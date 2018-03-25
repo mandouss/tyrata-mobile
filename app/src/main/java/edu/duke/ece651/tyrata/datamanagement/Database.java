@@ -36,9 +36,10 @@ public class Database extends AppCompatActivity {
 
     public static void createTable() {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID VARCHAR, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN))");
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID VARCHAR, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID) REFERENCES USER(USER_ID))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID) REFERENCES VEHICLE(VIN) ON DELETE CASCADE)");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID) REFERENCES TIRE(SENSOR_ID) ON DELETE CASCADE)");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ACCIDENT_ID INT, DESCRIPTION VARCHAR, USER_ID INT, FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID) ON DELETE CASCADE, PRIMARY KEY(ACCIDENT_ID))");
     }
 
     public static void dropAllTable() {
@@ -46,6 +47,7 @@ public class Database extends AppCompatActivity {
         myDatabase.execSQL("DROP TABLE IF EXISTS SNAPSHOT");
         myDatabase.execSQL("DROP TABLE IF EXISTS VEHICLE");
         myDatabase.execSQL("DROP TABLE IF EXISTS USER");
+        myDatabase.execSQL("DROP TABLE IF EXISTS ACCIDENT");
     }
 
     /* Created by Yue Li and Zijie Wang on 3/4/2018. */
@@ -84,7 +86,7 @@ public class Database extends AppCompatActivity {
 
 
     public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid) {
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID) ON DELETE CASCADE)");
         ContentValues contentValues = new ContentValues();
         contentValues.put("MAKE", carmake);
         contentValues.put("MODEL", carmodel);
@@ -108,7 +110,7 @@ public class Database extends AppCompatActivity {
 
     // Updated by Yue Li and De Lan on 3/22/2018
     public static boolean storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id) {
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(SENSOR_ID VARCHAR, MANUFACTURER VARCHAR, MODEL VARCHAR, SKU VARCHAR, VEHICLE_ID VARCHAR, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, PRIMARY KEY(SENSOR_ID), FOREIGN KEY(VEHICLE_ID)REFERENCES VEHICLE(VIN) ON DELETE CASCADE)");
         ContentValues contentValues = new ContentValues();
         contentValues.put("MANUFACTURER", manufacturer);
         contentValues.put("MODEL", model);
@@ -180,7 +182,7 @@ public class Database extends AppCompatActivity {
 
     // Updated by De Lan on 03/23/2018
     public static void storeSnapshot(double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat) {
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID))");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID) ON DELETE CASCADE)");
         // avoid duplication
         Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIMESTAMP = '"+timestamp+"' and TIRE_ID = '"+tire_id+"'", null);
         if(c != null && c.moveToFirst()){
@@ -215,6 +217,14 @@ public class Database extends AppCompatActivity {
         contentValues.put("LONG", longitutde);
         contentValues.put("LAT", lat);
         myDatabase.insertOrThrow("SNAPSHOT", null, contentValues);
+    }
+
+    public static void storeAccident(String record, int userid) {
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ACCIDENT_ID INT, DESCRIPTION VARCHAR, USER_ID INT, FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID) ON DELETE CASCADE, PRIMARY KEY(ACCIDENT_ID))");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("DESCRIPTION", record);
+        contentValues.put("USER_ID", userid);
+        myDatabase.insert("ACCIDENT", null, contentValues);
     }
 
     // Added by De Lan on 03/23/2018
@@ -374,13 +384,26 @@ public class Database extends AppCompatActivity {
         }
     }
 
+    public static void deleteVehicle(String vin){
+        String del = "DELETE FROM VEHICLE WHERE VIN = '" + vin + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
+    }
+
+
+    public static void deleteTire(String sensor_ID ) {
+        String del = "DELETE FROM TIRE WHERE SENSOR_ID = '" + sensor_ID + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
+    }
+
     /* Created by YUE LI on 3/18/2018.*/
     /* Created by ZIJIE WANG on 3/18/2018.*/
     public static void testUserTable() {
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER", null);
         if (c.moveToFirst()) {
             do {
-                Log.i("id", c.getString(0));
+                Log.i("USER_id", c.getString(0));
                 Log.i("name", c.getString(1));
                 Log.i("email", c.getString(2));
                 Log.i("phone", c.getString(3));
@@ -391,12 +414,32 @@ public class Database extends AppCompatActivity {
         c.close();
     }
 
+    /* Created by De Lan on 3/25/2018.*/
+    public static void testVehicleTable() {//VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT
+        Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE", null);
+        if (c.moveToFirst()) {
+            do {
+                Log.i("VEHICLE_vin", c.getString(0));
+                Log.i("make", c.getString(1));
+                Log.i("model", c.getString(2));
+                Log.i("year", c.getString(3));
+                Log.i("axis_num", c.getString(4));
+                Log.i("tire_num", c.getString(5));
+                Log.i("user_id", c.getString(6));
+            } while (c.moveToNext());
+        } else {
+            Log.i("testVehicleTable", "There is nothing in testVehicleTable");
+        }
+        c.close();
+    }
+
+
     /* Created by De Lan on 3/18/2018.*/
     public static void testTireTable() {
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE", null);
         if (c.moveToFirst()) {
             do {
-                Log.i("sensor_id", c.getString(0));
+                Log.i("TIRE_sensor_id", c.getString(0));
                 Log.i("manufacturer", c.getString(1));
                 Log.i("model", c.getString(2));
                 Log.i("sku", c.getString(3));
@@ -432,7 +475,7 @@ public class Database extends AppCompatActivity {
                 Log.i("lat", c.getString(11));
             } while (c.moveToNext());
         } else {
-            Log.i("testSnapTable", "There is nothing in testTireTable");
+            Log.i("testSnapTable", "There is nothing in testSnapTable");
         }
         c.close();
     }

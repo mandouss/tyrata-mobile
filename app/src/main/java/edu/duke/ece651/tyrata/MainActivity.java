@@ -43,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
         user_ID = intent.getIntExtra("USER_ID", 0);
         Log.i("In main", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        // test functions
+        Database.testUserTable();
+        Database.testVehicleTable();
+        Database.testTireTable();
+        Database.testSnapTable();
+
         User curr_user = Database.getUser(user_ID);
         Database.myDatabase.close();
 

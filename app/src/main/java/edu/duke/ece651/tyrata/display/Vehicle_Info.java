@@ -49,7 +49,7 @@ public class Vehicle_Info extends Activity {
         vin = intent.getStringExtra("VIN");
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.testTireTable();
+
         user_id = Database.getVinUserID(vin);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
@@ -218,8 +218,13 @@ public class Vehicle_Info extends Activity {
         // Do something in response to button
     }
     public void delete_vehicle(View view){
-        showExitDialog02();
+        //showExitDialog02();
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Database.deleteVehicle(vin);
+        Database.myDatabase.close();
+        BackToMain(view);
     }
+
     private void showExitDialog02(){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
