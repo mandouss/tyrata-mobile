@@ -173,6 +173,8 @@ public class EmptyActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
     private void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

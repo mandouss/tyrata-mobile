@@ -277,7 +277,7 @@ public class ServerXmlParser extends AppCompatActivity {
         }
 
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", 0, null);
-        Database.storeSnapshot(id, s11, timestamp, mileage, pressure, tire_id, outlier, thickness, eol, time_to_replacement, longitutde, lat);
+        Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, outlier, thickness, eol, time_to_replacement, longitutde, lat);
         Database.myDatabase.close();
 
     }
