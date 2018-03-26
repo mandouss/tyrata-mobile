@@ -16,11 +16,11 @@ which is 96% of Android devices on market.
 * Storage activity (local store and load)
 * Bluetooth activity (discover, connect, and transmit/receive)
 * GPS activity (get device GPS)
-* 
+* HTTP activity (send/receive data to/from the database)
 
 ## Communications
 * The app communicates with the simulator through bluetooth
 * The app communicates with the database through HTTP
 * The message uses XML format, details for the message format can be found:
-  Bluetooth: https://docs.google.com/document/d/19h3uDUiwvbqEmfie1sN9KuPJ4GxLfGlR5GvPxORzuBs/edit?usp=sharing
-  HTTP: https://docs.google.com/document/d/1m62Nkwoneb2JllnBDGVYYLbOiGOqPR6h3vGn0bQhrZc/edit?usp=sharing
+*     Bluetooth: https://docs.google.com/document/d/19h3uDUiwvbqEmfie1sN9KuPJ4GxLfGlR5GvPxORzuBs/edit?usp=sharing
+*     HTTP: https://docs.google.com/document/d/1m62Nkwoneb2JllnBDGVYYLbOiGOqPR6h3vGn0bQhrZc/edit?usp=sharing
