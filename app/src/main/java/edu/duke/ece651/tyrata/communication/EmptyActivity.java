@@ -174,12 +174,12 @@ public class EmptyActivity extends AppCompatActivity {
         try {
             ArrayList<TireSnapshot> tireSnapshotList = xmlParser.parseToTireSnapshotList(
                     getResources().openRawResource(R.raw.xml_bluetooth_sample));
-            if (tireSnapshotList.isEmpty()){
+            if (tireSnapshotList.isEmpty()) {
                 Toast.makeText(getApplicationContext(),
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
-            for (int i=0; i<tireSnapshotList.size(); i++) {
+            for (int i = 0; i < tireSnapshotList.size(); i++) {
                 String info = "Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId();
                 info += "\nS11: " + tireSnapshotList.get(i).getS11();
                 info += "\nPressure: " + tireSnapshotList.get(i).getPressure();
@@ -192,6 +192,7 @@ public class EmptyActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
 
     private void notification(String msg){
