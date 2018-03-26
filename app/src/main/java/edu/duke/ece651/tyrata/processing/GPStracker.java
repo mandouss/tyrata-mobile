@@ -1,7 +1,11 @@
 package edu.duke.ece651.tyrata.processing;
 
 /**
- * Created by admin on 3/4/2018.
+ * Created by Cheng on 3/4/2018.
+ */
+
+/**@citation: The GPS code of this project is from a Youtube Andriod GPS Tutorial, which can be found at:
+ *https://www.youtube.com/watch?v=Xb0DTCR1H0s
  */
 
 import android.content.Context;
@@ -18,7 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 /**
- * Created by admin on 3/3/2018.
+ * Created by Cheng on 3/3/2018.
  */
 
 public class GPStracker implements LocationListener {

@@ -59,4 +59,13 @@
         android:text="Get TireSnapshot List"
         app:layout_constraintTop_toBottomOf="@+id/btn_s2_xml"
         tools:layout_editor_absoluteX="165dp" />
+
+    <Button
+        android:id="@+id/btn_s2_xml_database"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getDatabaseFromXml"
+        android:text="Get Database"
+        app:layout_constraintTop_toBottomOf="@+id/btn_s3_xml"
+        tools:layout_editor_absoluteX="165dp" />
 </android.support.constraint.ConstraintLayout>

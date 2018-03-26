@@ -5,12 +5,15 @@ package edu.duke.ece651.tyrata.display;
  * @author De Lan
  * Created by Alan on 2/27/2018.
  */
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,9 +40,14 @@ public class TireInfo extends AppCompatActivity {
     char axis_side;
     String vin;
     String message_manufacturer;
+    String message_sensorID;
     String message_model;
     String message_SKU;
     String message_Thickness;
+    String message_S11;
+    String message_Odometer;
+    String message_EOL;
+    String message_rep;
 
     private LineChartView lineChart;
 
@@ -52,9 +60,6 @@ public class TireInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info);
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Tire curr_tire = Database.getTire("sensor1");
-        Database.myDatabase.close();
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         axis_row = intent.getIntExtra("AXIS_ROW",0);
@@ -62,51 +67,71 @@ public class TireInfo extends AppCompatActivity {
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
 
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vin);
+        Database.myDatabase.close();
+
         if(curr_tire != null) {
             message_manufacturer = curr_tire.getManufacturer();
+            message_sensorID = curr_tire.getSensor();
             message_model = curr_tire.getModel();
             message_SKU = curr_tire.getSku();
-            message_Thickness = String.valueOf(curr_tire.get_INIT_THICK());
+            message_Thickness = String.valueOf(curr_tire.get_CURR_THCK());
+            message_S11 = String.valueOf(curr_tire.getS11());
+            message_Odometer = String.valueOf(curr_tire.getOdometer());
+            message_EOL = curr_tire.getEOL();
+            message_rep = curr_tire.getRepTime();
         }
 
         if(message_manufacturer == null)
-            message_manufacturer = "Default MAKE";
+            message_manufacturer = "Need manufacturer";
         TextView textView_manufacturer = findViewById(R.id.textView_manufacturer);
         textView_manufacturer.setText(message_manufacturer);
 
+        if(message_sensorID == null){
+            message_sensorID = "Need sensorID";
+            Button DeleteTire = findViewById(R.id.button_ADeteleTire);
+            DeleteTire.setVisibility(View.INVISIBLE);
+        }
+        TextView textView_sensorID = findViewById(R.id.textView_sensorID);
+        textView_sensorID.setText(message_sensorID);
+
         if(message_model == null)
-            message_model = "Default MODEL";
+            message_model = "Need MODEL";
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
         if(message_SKU == null)
-            message_SKU = "Default SKU";
+            message_SKU = "Need SKU";
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
         //TODO: calculate thickness
 
         if(message_Thickness == null)
-            message_Thickness = "Default THICKNESS";
+            message_Thickness = "Need init THICKNESS";
         TextView textView_Thickness = findViewById(R.id.textView_thickness);
         textView_Thickness.setText(message_Thickness);
 
 
         /* @TODO: read S11 and odometer from database, sync with BT*/
-        String message_Odometer = "odometer from BT";
-        TextView textView_Odometer = findViewById(R.id.textView_odometer);
-        textView_Odometer.setText(message_Odometer);
-
-        String message_S11 = "S11 from BT";
+        if(message_S11 == null)
+            message_S11 = "S11 from BT";
         TextView textView_S11 = findViewById(R.id.textView_S11);
         textView_S11.setText(message_S11);
 
+        if(message_Odometer == null)
+            message_Odometer = "odometer from BT";
+        TextView textView_Odometer = findViewById(R.id.textView_odometer);
+        textView_Odometer.setText(message_Odometer);
 
-        String message_EOL = "EOL from calculation";
+        if(message_EOL == null)
+            message_EOL = "EOL from calculation";
         TextView textView_EOL = findViewById(R.id.textView_EOL);
         textView_EOL.setText(message_EOL);
 
-        String message_rep = "time to rep from calculation";
+        if(message_rep == null)
+            message_rep = "time to rep from calculation";
         TextView textView_rep = findViewById(R.id.textView_replace);
         textView_rep.setText(message_rep);
 
@@ -123,6 +148,7 @@ public class TireInfo extends AppCompatActivity {
         intent.putExtra("axis_ROW", axis_row);
         intent.putExtra("axis_SIDE", axis_side);
         intent.putExtra("VIN",vin);
+        intent.putExtra("SENSOR_ID",message_sensorID);
 
         Log.i("NOTIFICATION","Tireinfo");
         Log.i("axis_ROW",String.valueOf(axis_row));
@@ -131,11 +157,30 @@ public class TireInfo extends AppCompatActivity {
         Log.i("VIN", vin);
         startActivity(intent);
     }
-    //TODO: call BT to for S11 and ODM ref
-    public void switchToS11ODM(View view) {
-        Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
+    public void BackToVehicle(View view) {
+        Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
+        intent.putExtra("VIN", vin);
         startActivity(intent);
+    }
+
+
+    /* Added by De Lan on 3/25/2018 */
+    public void DeleteTire(final View view){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage("Are you sure to delete this tire from your account?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                                Database.deleteTire(message_sensorID);
+                                Database.myDatabase.close();
+                                BackToVehicle(view);
+                            }
+                        }
+                )
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void getAxisXLables(){
