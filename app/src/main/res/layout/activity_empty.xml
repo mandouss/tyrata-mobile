@@ -42,14 +42,6 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_y0_bt"
         tools:layout_editor_absoluteX="165dp" />
 
-    <Button
-        android:id="@+id/btn_s2_xml"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="getTireSnapshotFromXml"
-        android:text="Get TireSnapshot"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s1_xml"
-        tools:layout_editor_absoluteX="165dp" />
 
     <Button
         android:id="@+id/btn_s3_xml"
@@ -57,7 +49,7 @@
         android:layout_height="wrap_content"
         android:onClick="getTireSnapshotListFromXml"
         android:text="Get TireSnapshot List"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s2_xml"
+        app:layout_constraintTop_toBottomOf="@+id/btn_s1_xml"
         tools:layout_editor_absoluteX="165dp" />
 
     <Button

@@ -52,7 +52,7 @@
         <user_id>2</user_id>
     </vehicle>
     <tire>
-        <sensor_id>1</sensor_id>
+        <sensor_id>C-1234</sensor_id>
         <manufacturer>manufacture1</manufacturer>
         <model>model1</model>
         <sku>sku1</sku>
@@ -65,7 +65,7 @@
         <init_thickness>15</init_thickness>
     </tire>
     <tire>
-        <sensor_id>2</sensor_id>
+        <sensor_id>C-1302</sensor_id>
         <manufacturer>manufacture2</manufacturer>
         <model>model2</model>
         <sku>sku2</sku>
@@ -77,13 +77,39 @@
         <cur_ss_id>3</cur_ss_id>
         <init_thickness>14</init_thickness>
     </tire>
+    <tire>
+        <sensor_id>C-4124</sensor_id>
+        <manufacturer>manufacture3</manufacturer>
+        <model>model3</model>
+        <sku>sku3</sku>
+        <vehicle_id>vin1-1</vehicle_id>
+        <axis_row>2</axis_row>
+        <axis_side>L</axis_side>
+        <axis_index>1</axis_index>
+        <init_ss_id>1</init_ss_id>
+        <cur_ss_id>3</cur_ss_id>
+        <init_thickness>13</init_thickness>
+    </tire>
+    <tire>
+        <sensor_id>C-9175</sensor_id>
+        <manufacturer>manufacture4</manufacturer>
+        <model>model4</model>
+        <sku>sku4</sku>
+        <vehicle_id>vin1-1</vehicle_id>
+        <axis_row>2</axis_row>
+        <axis_side>R</axis_side>
+        <axis_index>1</axis_index>
+        <init_ss_id>1</init_ss_id>
+        <cur_ss_id>3</cur_ss_id>
+        <init_thickness>12</init_thickness>
+    </tire>
     <snapshot>
         <id>1</id>
         <s11>-0.953</s11>
         <timestamp>2018-03-17</timestamp>
         <mileage>1234</mileage>
         <pressure>23.4</pressure>
-        <tire_id>1</tire_id>
+        <tire_id>C-1234</tire_id>
         <outlier>false</outlier>
         <thickness>14.2</thickness>
         <eol>eol1</eol>
@@ -97,7 +123,7 @@
         <timestamp>2018-03-21</timestamp>
         <mileage>1256</mileage>
         <pressure>25.9</pressure>
-        <tire_id>1</tire_id>
+        <tire_id>C-1234</tire_id>
         <outlier>false</outlier>
         <thickness>14.9</thickness>
         <eol>eol2</eol>
