@@ -216,6 +216,6 @@ public class MainActivity extends AppCompatActivity {
         int notification_axis_row = 1;
         int notification_axis_index = 1;
         char notification_axis_side = 'L';
-        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
+//        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
     }
 }
