@@ -5,6 +5,8 @@ package edu.duke.ece651.tyrata.display;
  * @author De Lan
  * Created by Alan on 2/27/2018.
  */
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -162,11 +164,23 @@ public class TireInfo extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void DeleteTire(View view) {
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.deleteTire(message_sensorID);
-        Database.myDatabase.close();
-        BackToVehicle(view);
+
+    /* Added by De Lan on 3/25/2018 */
+    public void DeleteTire(final View view){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage("Are you sure to delete this tire from your account?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                                Database.deleteTire(message_sensorID);
+                                Database.myDatabase.close();
+                                BackToVehicle(view);
+                            }
+                        }
+                )
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void getAxisXLables(){

@@ -3,6 +3,7 @@ package edu.duke.ece651.tyrata.display;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -217,20 +218,23 @@ public class Vehicle_Info extends Activity {
         startActivity(intent);
         // Do something in response to button
     }
-    public void delete_vehicle(View view){
-        //showExitDialog02();
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.deleteVehicle(vin);
-        Database.myDatabase.close();
-        BackToMain(view);
-    }
 
-    private void showExitDialog02(){
+    /* Added by De Lan on 3/25/2018 */
+    public void delete_vehicle(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
-                .setMessage("Are you sure to delete this car from your account?")
-                .setPositiveButton("Yes", null)
+                .setMessage("Are you sure to delete this vehicle from your account?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                                Database.deleteVehicle(vin);
+                                Database.myDatabase.close();
+                                BackToMain(view);
+                            }
+                        }
+                        )
                 .setNegativeButton("No", null)
                 .show();
     }
+
 }
