@@ -360,7 +360,6 @@ class BluetoothAPI {
 
         public void run() {
             Log.i(Common.LOG_TAG_BT_API, "BEGIN ConnectedThread");
-            // @TODO change byte array size to max required
             mmBuffer = new byte[1024];
             int numBytes; // bytes returned from read()
 

@@ -40,15 +40,6 @@
         tools:layout_editor_absoluteX="160dp" />
 
     <Button
-        android:id="@+id/btn_s4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="CONNECT BT"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s3"
-        tools:layout_editor_absoluteX="160dp" />
-
-    <Button
         android:id="@+id/btn_s5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,26 +49,67 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_s4"
         tools:layout_editor_absoluteX="160dp" />
 
-    <ScrollView
-        android:id="@+id/SCROLLER_ID"
+    <Button
+        android:id="@+id/btn_s4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:onClick="sampleDataTest"
+        android:text="Sample Data Test"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_s3" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView_s0_bt"
-            android:layout_width="match_parent"
+        <ScrollView
+            android:id="@+id/SCROLLER_ID_s0"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:maxLines="1000"
-            android:scrollbars="vertical"
-            android:text="Received message will appear here!"
-            android:textSize="8sp" />
-    </ScrollView>
+            android:layout_weight="0.5"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
 
+            <TextView
+                android:id="@+id/textView_s0_bt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="1000"
+                android:scrollbars="vertical"
+                android:text="Received message will appear here!"
+                android:textSize="10sp" />
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/SCROLLER_ID_s1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/textView_s1_bt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:maxLines="1000"
+                android:scrollbars="vertical"
+                android:text="Parsed message will appear here!"
+                android:textSize="10sp" />
+        </ScrollView>
+
+    </LinearLayout>
 
 </LinearLayout>

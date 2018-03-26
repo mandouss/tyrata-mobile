@@ -2,20 +2,16 @@ package edu.duke.ece651.tyrata.communication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -25,8 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,8 +30,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
-
-import static java.lang.System.in;
 
 /**
  * Example Activity using Bluetooth API
@@ -47,17 +40,22 @@ import static java.lang.System.in;
 public class BluetoothActivity extends AppCompatActivity {
 
     /* GLOBAL VARIABLES */
-    private BluetoothDevice mBluetoothDevice; // device to connect to
-    private TextView mTextView;
+    private TextView mTextViewReceived;
+    private TextView mTextViewParsed;
     private String mXmlStream;
+    private String mParsedMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
-        mTextView = findViewById(R.id.textView_s0_bt);
-        mTextView.setMovementMethod(new ScrollingMovementMethod());
+        mTextViewReceived = findViewById(R.id.textView_s0_bt);
+//        mTextViewReceived.setMovementMethod(new ScrollingMovementMethod());
+        mTextViewParsed = findViewById(R.id.textView_s1_bt);
+
+        mXmlStream = "";
+        mParsedMsg = "";
 
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
@@ -109,6 +107,22 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    public void sampleDataTest(View view) {
+        try {
+            InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            reader.close();
+            processMsg(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendMsg(View view) {
         Log.d(Common.LOG_TAG_BT_ACTIVITY, "sendMsg()");
         InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
@@ -129,8 +143,8 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
-    public void displayMsg(String msg) {
-        mTextView.setText(msg);
+    public void displayMsg(String msg, TextView textView) {
+        textView.setText(msg);
     }
 
     public void processMsg(String msg) {
@@ -144,37 +158,41 @@ public class BluetoothActivity extends AppCompatActivity {
             mXmlStream += msg;
         }
 
-        displayMsg(mXmlStream);
+        displayMsg(mXmlStream, mTextViewReceived);
         try {
             // construct an InputStream from XML string
             InputStream in = new ByteArrayInputStream(mXmlStream.getBytes("UTF-8"));
+            in.mark(0);
             // Validate XML format
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             dBuilder.parse(in);
+            in.reset();
             // No exceptions/errors --> valid XML format
             Toast.makeText(getApplicationContext(), "Received XML data! Parsing...",
                     Toast.LENGTH_SHORT).show();
-            displayMsg(mXmlStream);
             // parse the message
             BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
-            TireSnapshot tireSnapshot = btXmlParser.parseToTireSnapshot(in);
-            String info;
-            if (tireSnapshot == null)
-                info = "Failed to parse message received...";
-            else {
-                info = "Tire/Sensor ID: " + tireSnapshot.getSensorId();
-                info += ", S11: " + tireSnapshot.getS11();
-                info += " Pressure: " + tireSnapshot.getPressure();
-                info += ", Mileage: " + tireSnapshot.getOdometerMileage();
-                info += ", Timestamp: " + TireSnapshot.convertCalendarToString(tireSnapshot.getTimestamp());
+            ArrayList<TireSnapshot> tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
+            if (tireSnapshotList.isEmpty()){
+                Toast.makeText(getApplicationContext(),
+                        "Failed to obtain TireSnapshot from message received...",
+                        Toast.LENGTH_LONG).show();
             }
-            Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+            for (int i=0; i<tireSnapshotList.size(); i++) {
+                mParsedMsg += "Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId();
+                mParsedMsg += "\nS11: " + tireSnapshotList.get(i).getS11();
+                mParsedMsg += "\nPressure: " + tireSnapshotList.get(i).getPressure();
+                mParsedMsg += "\nMileage: " + tireSnapshotList.get(i).getOdometerMileage();
+                mParsedMsg += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
+                mParsedMsg += "\n\n";
+                displayMsg(mParsedMsg, mTextViewParsed);
+                //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+            }
         } catch (SAXException e) {
             // Parsing XML failed (invalid XML file)
             // Invalid --> assume incomplete and wait for rest of data
-            Toast.makeText(getApplicationContext(), "Received part XML data. Waiting for more...",
-                    Toast.LENGTH_SHORT).show();
+            Log.w(Common.LOG_TAG_BT_ACTIVITY, "Received incomplete XML data. Waiting for more...");
             return;
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -193,6 +211,9 @@ public class BluetoothActivity extends AppCompatActivity {
             case Common.REQUEST_ENABLE_BT:
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enable request canceled");
+                    Toast.makeText(getApplicationContext(),
+                            "Bluetooth request cancelled...",
+                            Toast.LENGTH_LONG).show();
                     // @todo Disable bluetooth features
                 }
                 else if (resultCode == RESULT_OK) {
@@ -202,8 +223,11 @@ public class BluetoothActivity extends AppCompatActivity {
                 break;
             case Common.REQUEST_ACCESS_COARSE_LOCATION:
                 if (resultCode == RESULT_CANCELED) {
-                    Log.w(Common.LOG_TAG_BT_ACTIVITY, "Location access request canceled");
+                    Log.w(Common.LOG_TAG_BT_ACTIVITY, "Location access request cancelled");
                     // @todo Cannot discover devices
+                    Toast.makeText(getApplicationContext(),
+                            "Location access request cancelled...",
+                            Toast.LENGTH_LONG).show();
                 }
                 else if (resultCode == RESULT_OK) {
                     Log.v(Common.LOG_TAG_BT_ACTIVITY, "Location access granted");
@@ -235,12 +259,10 @@ public class BluetoothActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
-                    Toast.makeText(getApplicationContext(), msgStr.length()
-                            + " Bytes read ", Toast.LENGTH_SHORT).show();
-                    displayMsg(msgStr);
+                    Log.d(Common.LOG_TAG_BT_ACTIVITY, msgStr.length() + " Bytes read");
+                    displayMsg(msgStr, mTextViewReceived);
                     processMsg(msgStr);
                     break;
-
                 case Common.MESSAGE_WRITE:
 //                    byte[] writeBuf = (byte[]) msg.obj;
 //                    // construct a string from the buffer

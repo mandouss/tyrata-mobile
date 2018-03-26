@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <dailyS11List>
     <dailyS11>
-        <timestamp>2018-03-23</timestamp>
         <mileage>0</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
@@ -23,231 +23,222 @@
             <s11>-2.14</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-25</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-24</timestamp>
         <mileage>15</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9997866784663707</s11>
+            <s11>-0.9997325302538783</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9997695711379018</s11>
+            <s11>-1.9997404438882795</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1997242098960146</s11>
+            <s11>-1.1997699484229227</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.139740407812243</s11>
+            <s11>-2.139695716325576</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-26</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-25</timestamp>
         <mileage>30</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9995559710956103</s11>
+            <s11>-0.999440719264773</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9994670354508255</s11>
+            <s11>-1.999600946130907</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1994431872114395</s11>
+            <s11>-1.1995882473934603</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1394324216378497</s11>
+            <s11>-2.139547402774011</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-27</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-26</timestamp>
         <mileage>45</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9991642594337065</s11>
+            <s11>-0.9993000413784968</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9993054667497765</s11>
+            <s11>-1.999334212801835</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1993161707648465</s11>
+            <s11>-1.199267369020621</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1392888306096873</s11>
+            <s11>-2.139234133963465</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-28</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-27</timestamp>
         <mileage>60</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9990117866894666</s11>
+            <s11>-0.9990301524069715</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9989285714030423</s11>
+            <s11>-1.9989625481973279</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1990358686683806</s11>
+            <s11>-1.1991067201666576</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.139010441612813</s11>
+            <s11>-2.138842547405545</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-29</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-28</timestamp>
         <mileage>75</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9988419173836963</s11>
+            <s11>-0.9988590573147258</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9989411979261216</s11>
+            <s11>-1.9986615500790341</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1987901087947528</s11>
+            <s11>-1.1987870202601243</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1389165223603492</s11>
+            <s11>-2.1388358800863294</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-30</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-29</timestamp>
         <mileage>90</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9986204395887175</s11>
+            <s11>-0.9987799124289277</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.998518873937246</s11>
+            <s11>-1.9986074020202274</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1988515039468794</s11>
+            <s11>-1.1985325894149932</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1385737894030807</s11>
+            <s11>-2.1385332222256106</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-03-31</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-30</timestamp>
         <mileage>105</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9981435113984327</s11>
+            <s11>-0.9981467095413652</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9979709159516421</s11>
+            <s11>-1.9983512821772276</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.198403575991866</s11>
+            <s11>-1.1983965998367163</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1382550977988815</s11>
+            <s11>-2.1384399624770056</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-04-01</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-03-31</timestamp>
         <mileage>120</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9977521154165613</s11>
+            <s11>-0.9980781868509295</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9982287334565292</s11>
+            <s11>-1.997858560259012</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.198270318337566</s11>
+            <s11>-1.1983319090386622</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1382901387701674</s11>
+            <s11>-2.1379884801896942</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-04-02</timeStamp>
     </dailyS11>
     <dailyS11>
-        <timestamp>2018-04-01</timestamp>
         <mileage>135</mileage>
         <tire>
             <sensorID>C-1234</sensorID>
-            <s11>-0.9981313635196131</s11>
+            <s11>-0.997927749640784</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-1302</sensorID>
-            <s11>-1.9978043864234414</s11>
+            <s11>-1.9980325335112732</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-4124</sensorID>
-            <s11>-1.1978254952338039</s11>
+            <s11>-1.1975264334477342</s11>
             <pressure>3.5</pressure>
         </tire>
         <tire>
             <sensorID>C-9175</sensorID>
-            <s11>-2.1381456159283254</s11>
+            <s11>-2.138081554349239</s11>
             <pressure>3.5</pressure>
         </tire>
-        <timeStamp/>
+        <timeStamp>2018-04-03</timeStamp>
     </dailyS11>
 </dailyS11List>
