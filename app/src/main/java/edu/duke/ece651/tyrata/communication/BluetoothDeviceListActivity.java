@@ -151,8 +151,14 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
                 Log.v(Common.LOG_TAG_BT_DEVICE_LIST_ACTIVITY, "BroadcastReceiver onReceive");
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // If name is null, ignore
+                if (device.getName() == null) {
+                    return;
+                }
+
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                    // New device, add to list
                     mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
 
