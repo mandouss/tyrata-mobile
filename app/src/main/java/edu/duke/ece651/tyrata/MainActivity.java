@@ -54,10 +54,10 @@ public class MainActivity extends EmptyActivity {
         Log.i("In main, user", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         // test functions
-//        Database.testUserTable();
-//        Database.testVehicleTable();
-//        Database.testTireTable();
-//        Database.testSnapTable();
+        Database.testUserTable();
+        Database.testVehicleTable();
+        Database.testTireTable();
+        Database.testSnapTable();
 
         User curr_user = Database.getUser(user_ID);
         Database.myDatabase.close();
@@ -152,6 +152,8 @@ public class MainActivity extends EmptyActivity {
                 return true;
             case R.id.n_submenu_Database:
                 getDatabaseFromXml();
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.n_submenu_GPS:
                 getGPS();

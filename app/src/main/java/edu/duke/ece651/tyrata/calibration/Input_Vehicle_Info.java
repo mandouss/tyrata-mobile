@@ -80,8 +80,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        if(item.getItemId() == R.id.homepage){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
         return true;
     }
 

@@ -36,25 +36,31 @@ public class EmptyActivity extends AppCompatActivity {
 
     public ArrayList<Double> getGPS() {
         ArrayList<Double> ans = new ArrayList<>();
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Request permission for location
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    123);
-        }
+        try {
+            // Check for location permission
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                // Request permission for location
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        123);
+            }
 
-        GPStracker g = new GPStracker(getApplicationContext());
-        Location l = g.getLocation();
-        if (l != null) {
-            Double lat = l.getLatitude();
-            Double lon = l.getLongitude();
-            ans.add(lat);
-            ans.add(lon);
-            Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
+            GPStracker g = new GPStracker(getApplicationContext());
+            Location l = g.getLocation();
+            if (l != null) {
+                Double lat = l.getLatitude();
+                Double lon = l.getLongitude();
+                ans.add(lat);
+                ans.add(lon);
+                Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
+            }
+        }
+        catch(Exception e){
+            String msg = "The GPS information cannot be fetched!";
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         }
         return ans;
     }
@@ -99,7 +105,7 @@ public class EmptyActivity extends AppCompatActivity {
     }
 
     /* Updated by Zijie and Yue on 3/24/2018. */
-    /* Updated by Saeed and De Lan on 3/24/2018. */
+    /* Updated by Saeed and De Lan on 3/25/2018. */
     public void getTireSnapshotListFromXml() {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
@@ -127,9 +133,14 @@ public class EmptyActivity extends AppCompatActivity {
                 String time_to_replacement = timestamp;
                 double longitutde = 0;
                 double lat = 0;
-                if(GPS != null){
-                    longitutde = GPS.get(0);
-                    lat = GPS.get(1);
+                try {
+                    if (GPS != null) {
+                        longitutde = GPS.get(0);
+                        lat = GPS.get(1);
+                    }
+                }
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 if (c != null && c.moveToFirst()) {

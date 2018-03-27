@@ -93,8 +93,15 @@ public class TireInfo extends AppCompatActivity {
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        if(item.getItemId() == R.id.homepage){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(this, Vehicle_Info.class);
+            intent.putExtra("VIN",vin);
+            startActivity(intent);
+        }
         return true;
     }
 
