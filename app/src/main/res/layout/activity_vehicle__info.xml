@@ -16,22 +16,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
-        android:layout_columnSpan="2"
+        android:layout_columnSpan="3"
         android:text="Information for the vehicle: "
         android:textSize="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="BackToMain"
-        android:text="Back"
-        app:layout_constraintBottom_toTopOf="@+id/textView_make"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/title_vehicle_info"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

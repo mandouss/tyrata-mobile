@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,13 +43,17 @@ public class MainActivity extends EmptyActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("USER_ID", 0);
-        Log.i("In main", String.valueOf(user_ID));
+        if(user_ID == 0){
+            SharedPreferences editor = getSharedPreferences("vehicle_data",MODE_PRIVATE);
+            user_ID = editor.getInt("USER_ID",0);
+        }
+        Log.i("In main, user", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         // test functions
-        Database.testUserTable();
-        Database.testVehicleTable();
-        Database.testTireTable();
-        Database.testSnapTable();
+//        Database.testUserTable();
+//        Database.testVehicleTable();
+//        Database.testTireTable();
+//        Database.testSnapTable();
 
         User curr_user = Database.getUser(user_ID);
         Database.myDatabase.close();

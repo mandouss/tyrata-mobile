@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,31 @@ public class Vehicle_Info extends AppCompatActivity {
     private int axis_index;
 
     @Override
+    protected  void onStop(){
+        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle Stop", String.valueOf(user_id));
+        editor.commit();
+        super.onStop();
+    }
+    @Override
+    protected  void onDestroy(){
+        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onDestroy", String.valueOf(user_id));
+        editor.commit();
+        super.onDestroy();
+    }
+    @Override
+    protected  void onPause(){
+        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onPause", String.valueOf(user_id));
+        editor.commit();
+        super.onPause();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
@@ -49,14 +75,20 @@ public class Vehicle_Info extends AppCompatActivity {
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
 
+        if(vin == null){
+            SharedPreferences editor = getSharedPreferences("tire_data",MODE_PRIVATE);
+            vin = editor.getString("VIN","");
+            Log.i("In VehicleInfo",vin);
+        }
+
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
 
         user_id = Database.getVinUserID(vin);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
 
-        Log.i("In vehicle info, VIN:", vin);
-        Log.i("In vehicle info, user:", String.valueOf(user_id));
+        Log.i("In vehicle info, VIN", vin);
+        Log.i("In vehicle info, user", String.valueOf(user_id));
 
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);

@@ -8,6 +8,7 @@ package edu.duke.ece651.tyrata.display;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +56,31 @@ public class TireInfo extends AppCompatActivity {
     int[] score= {50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20};//图表的数据点
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
+
+    @Override
+    protected void onStop(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onStop",vin);
+        editor.commit();
+        super.onStop();
+    }
+    @Override
+    protected void onDestroy(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onDestroy",vin);
+        editor.commit();
+        super.onDestroy();
+    }
+    @Override
+    protected void onPause(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onPause",vin);
+        editor.commit();
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
