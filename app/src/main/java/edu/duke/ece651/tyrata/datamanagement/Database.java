@@ -260,6 +260,7 @@ public class Database extends AppCompatActivity {
     // TODO: SQL injection
     /* Updated by Yue Li and De Lan on 3/24/2018 */
     public static int getUserID(String email) {
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '" + email + "'", null);
         int res = -1;
         if(c != null && c.moveToFirst()) {

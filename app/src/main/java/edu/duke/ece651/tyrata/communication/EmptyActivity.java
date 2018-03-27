@@ -110,9 +110,10 @@ public class EmptyActivity extends AppCompatActivity {
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
+            ArrayList<Double> GPS = getGPS();
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
-                ArrayList<Double> GPS = getGPS();
+
                 double s11 = tireSnapshotList.get(i).getS11();
                 String timestamp = TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 double mileage = tireSnapshotList.get(i).getOdometerMileage();
@@ -124,8 +125,13 @@ public class EmptyActivity extends AppCompatActivity {
                 double thickness = init_thickness;
                 String eol = Double.toString((init_thickness - 3) * 5000);
                 String time_to_replacement = timestamp;
-                double longitutde = GPS.get(0);
-                double lat = GPS.get(1);
+                double longitutde = 0;
+                double lat = 0;
+                if(GPS != null){
+                    longitutde = GPS.get(0);
+                    lat = GPS.get(1);
+                }
+
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                     thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);

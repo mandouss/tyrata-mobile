@@ -41,12 +41,16 @@ public class MainActivity extends EmptyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("USER_ID", 0);
         if(user_ID == 0){
-            SharedPreferences editor = getSharedPreferences("vehicle_data",MODE_PRIVATE);
+            SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
             user_ID = editor.getInt("USER_ID",0);
         }
+        SharedPreferences.Editor editor= getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_ID);
+        editor.commit();
         Log.i("In main, user", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         // test functions

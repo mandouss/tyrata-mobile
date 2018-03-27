@@ -9,6 +9,9 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,7 +46,7 @@ public class Vehicle_Info extends AppCompatActivity {
 
     @Override
     protected  void onStop(){
-        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
         editor.putInt("USER_ID",user_id);
         Log.i("In Vehicle Stop", String.valueOf(user_id));
         editor.commit();
@@ -51,7 +54,7 @@ public class Vehicle_Info extends AppCompatActivity {
     }
     @Override
     protected  void onDestroy(){
-        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
         editor.putInt("USER_ID",user_id);
         Log.i("In Vehicle onDestroy", String.valueOf(user_id));
         editor.commit();
@@ -59,11 +62,23 @@ public class Vehicle_Info extends AppCompatActivity {
     }
     @Override
     protected  void onPause(){
-        SharedPreferences.Editor editor = getSharedPreferences("vehicle_data",MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
         editor.putInt("USER_ID",user_id);
         Log.i("In Vehicle onPause", String.valueOf(user_id));
         editor.commit();
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        return true;
     }
 
     @Override

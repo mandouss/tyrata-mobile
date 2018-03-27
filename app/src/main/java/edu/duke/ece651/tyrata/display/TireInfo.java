@@ -13,6 +13,9 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -80,6 +84,18 @@ public class TireInfo extends AppCompatActivity {
         Log.i("In TireInfo onPause",vin);
         editor.commit();
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        return true;
     }
 
     @Override
