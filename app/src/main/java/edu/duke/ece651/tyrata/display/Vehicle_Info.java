@@ -29,7 +29,7 @@ import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-public class Vehicle_Info extends Activity {
+public class Vehicle_Info extends AppCompatActivity {
     private Integer buttonnumber = 0;
     private Vehicle curr_vehicle;
     private String vin;

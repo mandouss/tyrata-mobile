@@ -34,7 +34,7 @@ public class EmptyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_empty);
     }
 
-    public ArrayList<Double> getGPS(View view) {
+    public ArrayList<Double> getGPS() {
         ArrayList<Double> ans = new ArrayList<>();
         // Check for location permission
         if (ContextCompat.checkSelfPermission(this,
@@ -54,22 +54,22 @@ public class EmptyActivity extends AppCompatActivity {
             Double lon = l.getLongitude();
             ans.add(lat);
             ans.add(lon);
-//            Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
         }
         return ans;
     }
 
-    public void goToBluetooth(View view) {
+    public void goToBluetooth() {
         Intent intent = new Intent(this, BluetoothActivity.class);
         startActivity(intent);
     }
 
-    public void goToHTTP(View view) {
+    public void goToHTTP() {
         Intent intent = new Intent(this, HttpActivity.class);
         startActivity(intent);
     }
 
-    public void testParseXml(View view) {
+    public void testParseXml() {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         ArrayList<BluetoothXmlParser.DailyS11> list;
         try {
@@ -100,7 +100,7 @@ public class EmptyActivity extends AppCompatActivity {
 
     /* Updated by Zijie and Yue on 3/24/2018. */
     /* Updated by Saeed and De Lan on 3/24/2018. */
-    public void getTireSnapshotListFromXml(View view) {
+    public void getTireSnapshotListFromXml() {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
             ArrayList<TireSnapshot> tireSnapshotList = xmlParser.parseToTireSnapshotList(
@@ -112,7 +112,7 @@ public class EmptyActivity extends AppCompatActivity {
             }
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
-                ArrayList<Double> GPS = getGPS(view);
+                ArrayList<Double> GPS = getGPS();
                 double s11 = tireSnapshotList.get(i).getS11();
                 String timestamp = TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 double mileage = tireSnapshotList.get(i).getOdometerMileage();
@@ -165,7 +165,7 @@ public class EmptyActivity extends AppCompatActivity {
         }
     }
 
-    public void getDatabaseFromXml(View view) {
+    public void getDatabaseFromXml() {
         ServerXmlParser xmlParser = new ServerXmlParser();
         try {
             xmlParser.parse_server(getResources().openRawResource(R.raw.xml_get_from_server_sample), getApplicationContext());
