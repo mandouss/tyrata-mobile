@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="edu.duke.ece651.tyrata.display.Vehicle_Info">
 
 <GridLayout
@@ -194,7 +195,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="345dp" />
 
-    <ListView
+    <edu.duke.ece651.tyrata.display.ListViewForScrollView
         android:id="@+id/tire_list"
         android:layout_width="367dp"
         android:layout_height="171dp"
@@ -205,7 +206,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_vehicle"></ListView>
+        app:layout_constraintTop_toBottomOf="@+id/image_vehicle"></edu.duke.ece651.tyrata.display.ListViewForScrollView>
 
 
 
