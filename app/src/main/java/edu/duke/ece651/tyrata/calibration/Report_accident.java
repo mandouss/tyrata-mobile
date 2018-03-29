@@ -3,6 +3,9 @@ package edu.duke.ece651.tyrata.calibration;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -21,6 +24,17 @@ public class Report_accident extends AppCompatActivity {
         user_ID = intent.getIntExtra("userID", 1);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        return true;
+    }
 
     public void sendReportToMain(View view) {
 

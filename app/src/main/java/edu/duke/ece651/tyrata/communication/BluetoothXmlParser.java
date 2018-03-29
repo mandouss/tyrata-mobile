@@ -7,6 +7,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
@@ -20,6 +21,36 @@ import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 class BluetoothXmlParser {
     // We don't use namespaces
     private static final String ns = null;
+    private static final String TAG_DAILY_S11_LIST = "dailyS11List";
+    private static final String TAG_DAILY_S11 = "dailyS11";
+    private static final String TAG_MILEAGE = "mileage";
+    private static final String TAG_TIRE = "tire";
+    private static final String TAG_TIMESTAMP = "timeStamp";
+    private static final String TAG_SENSOR_ID = "sensorID";
+    private static final String TAG_S11 = "s11";
+    private static final String TAG_PRESSURE = "pressure";
+
+    /**
+     * Parse XML-format data received through Bluetooth into a list of TireSnapshot
+     * @param in InputStream containing XML-format data
+     * @return List of TireSnapshot received
+     * @throws IOException IO Exception
+     * @throws XmlPullParserException XmlPullParser Exception
+     */
+    ArrayList<TireSnapshot> parseToTireSnapshotList(InputStream in) throws XmlPullParserException, IOException {
+        ArrayList<TireSnapshot> tireSnapshotList = new ArrayList<>();
+        ArrayList<DailyS11> dailyS11List = parse(in);
+        for (int j=0; j<dailyS11List.size(); j++) {
+            DailyS11 dailyS11 = dailyS11List.get(j);
+            for (int i=0; i<dailyS11.mTires.size(); i++) {
+                dailyS11.mTires.get(i).setTimestamp(TireSnapshot.convertStringToCalendar(dailyS11.mTimestamp));
+                dailyS11.mTires.get(i).setOdometerMileage(dailyS11.mMileage);
+                tireSnapshotList.add(dailyS11.mTires.get(i));
+            }
+        }
+
+        return tireSnapshotList;
+    }
 
     TireSnapshot parseToTireSnapshot(InputStream in) throws XmlPullParserException, IOException {
         TireSnapshot tireSnapshot = new TireSnapshot();
@@ -66,14 +97,14 @@ class BluetoothXmlParser {
     private ArrayList<DailyS11> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         ArrayList<DailyS11> dailyS11List = new ArrayList<>();
 
-        parser.require(XmlPullParser.START_TAG, ns, "dailyS11List");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_DAILY_S11_LIST);
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
             // Starts by looking for the entry tag
-            if (name.equals("dailyS11")) {
+            if (name.equals(TAG_DAILY_S11)) {
                 dailyS11List.add(readDailyS11(parser));
             } else {
                 skip(parser);
@@ -109,7 +140,7 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private DailyS11 readDailyS11(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "dailyS11");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_DAILY_S11);
         DailyS11 dailyS11 = new DailyS11();
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -118,14 +149,14 @@ class BluetoothXmlParser {
             }
             String name = parser.getName();
             switch (name) {
-                case "timestamp":
-                    dailyS11.mTimestamp = readTimestamp(parser);
-                    break;
-                case "mileage":
+                case TAG_MILEAGE:
                     dailyS11.mMileage  = readMileage(parser);
                     break;
-                case "tire":
+                case TAG_TIRE:
                     dailyS11.mTires.add(readTire(parser));
+                    break;
+                case TAG_TIMESTAMP:
+                    dailyS11.mTimestamp = readTimestamp(parser);
                     break;
                 default:
                     skip(parser);
@@ -143,9 +174,9 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private String readTimestamp(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "timestamp");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_TIMESTAMP);
         String timestamp = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "timestamp");
+        parser.require(XmlPullParser.END_TAG, ns, TAG_TIMESTAMP);
         return timestamp;
     }
 
@@ -157,9 +188,9 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private int readMileage(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "mileage");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_MILEAGE);
         String mileage = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "mileage");
+        parser.require(XmlPullParser.END_TAG, ns, TAG_MILEAGE);
         return Integer.parseInt(mileage);
     }
 
@@ -171,7 +202,7 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private TireSnapshot readTire(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "tire");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_TIRE);
         TireSnapshot tire = new TireSnapshot();
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -180,13 +211,13 @@ class BluetoothXmlParser {
             }
             String name = parser.getName();
             switch (name) {
-                case "sensorID":
+                case TAG_SENSOR_ID:
                     tire.setSensorId(readSensorID(parser));
                     break;
-                case "s11":
+                case TAG_S11:
                     tire.setS11(readS11(parser));
                     break;
-                case "pressure":
+                case TAG_PRESSURE:
                     tire.setPressure(readPressure(parser));
                     break;
                 default:
@@ -205,7 +236,7 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private String readSensorID(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "sensorID");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_SENSOR_ID);
         String sensorID = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "sensorID");
         return sensorID;
@@ -219,9 +250,9 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private double readPressure(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "pressure");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_PRESSURE);
         String pressure = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "pressure");
+        parser.require(XmlPullParser.END_TAG, ns, TAG_PRESSURE);
         return Double.parseDouble(pressure);
     }
 
@@ -233,9 +264,9 @@ class BluetoothXmlParser {
      * @throws XmlPullParserException XmlPullParser Exception
      */
     private double readS11(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "s11");
+        parser.require(XmlPullParser.START_TAG, ns, TAG_S11);
         String s11 = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "s11");
+        parser.require(XmlPullParser.END_TAG, ns, TAG_S11);
         return Double.parseDouble(s11);
     }
 

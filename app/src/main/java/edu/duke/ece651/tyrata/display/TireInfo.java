@@ -8,10 +8,15 @@ package edu.duke.ece651.tyrata.display;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -51,10 +57,54 @@ public class TireInfo extends AppCompatActivity {
 
     private LineChartView lineChart;
 
-    String[] date = {"10-22","11-22","12-22","1-22","6-22","5-23","5-22","6-22","5-23","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22","5-22"};//X轴的标注
-    int[] score= {50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20,50,42,90,33,10,74,22,18,79,20};//图表的数据点
+    String[] date = {};//X轴的标注
+    float[] score = {};//图表的数据点
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
+
+    @Override
+    protected void onStop(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onStop",vin);
+        editor.commit();
+        super.onStop();
+    }
+    @Override
+    protected void onDestroy(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onDestroy",vin);
+        editor.commit();
+        super.onDestroy();
+    }
+    @Override
+    protected void onPause(){
+        SharedPreferences.Editor editor = getSharedPreferences("tire_data",MODE_PRIVATE).edit();
+        editor.putString("VIN",vin);
+        Log.i("In TireInfo onPause",vin);
+        editor.commit();
+        super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.homepage){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(this, Vehicle_Info.class);
+            intent.putExtra("VIN",vin);
+            startActivity(intent);
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +185,19 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_rep = findViewById(R.id.textView_replace);
         textView_rep.setText(message_rep);
 
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        ArrayList<Pair<String, Double>> line_data = Database.get_thickness_and_timestamp(message_sensorID);
+        Database.myDatabase.close();
+
+        date = new String[line_data.size()];
+        score = new float[line_data.size()];
+
+        for(int i = 0;i<line_data.size();i++){
+            date[i] = line_data.get(i).first;
+            Log.i("score",String.valueOf(line_data.get(i).second));
+            score[i] = line_data.get(i).second.floatValue();
+        }
+
         lineChart = (LineChartView)findViewById(R.id.line_chart);
         getAxisXLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
@@ -191,7 +254,7 @@ public class TireInfo extends AppCompatActivity {
 
     private void getAxisPoints() {
         for (int i = 0; i < score.length; i++) {
-            mPointValues.add(new PointValue(i, score[i]));
+            mPointValues.add(new PointValue(i, score[i]).setLabel(String.format("%.3f",score[i])));
         }
     }
 
@@ -202,18 +265,19 @@ public class TireInfo extends AppCompatActivity {
         line.setCubic(false);//curve or broken line
         line.setFilled(false);
         line.setHasLabels(true);
-//      line.setHasLabelsOnlyForSelected(true);//点击数据坐标提示数据（设置了这个line.setHasLabels(true);就无效）
+        //line.setHasLabelsOnlyForSelected(true);//点击数据坐标提示数据（设置了这个line.setHasLabels(true);就无效）
         line.setHasLines(true);//whether have line
         line.setHasPoints(true);
         lines.add(line);
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
+
         //X axis
         Axis axisX = new Axis();
         axisX.setHasTiltedLabels(true);  //whether the x axis text is italic
         axisX.setTextColor(Color.BLACK);  //text color
-        //axisX.setName("date");  //axis name
+        axisX.setName("The thickness of the tire");  //axis name
         axisX.setTextSize(14);//text size
         axisX.setMaxLabelChars(8); //最多几个X轴坐标，意思就是你的缩放让X轴上数据的个数7<=x<=mAxisXValues.length
         axisX.setValues(mAxisXValues);  //填充X轴的坐标名称
@@ -224,10 +288,11 @@ public class TireInfo extends AppCompatActivity {
         // Y axis
         Axis axisY = new Axis();
         axisY.setTextColor(Color.BLACK);
-        axisY.setName("Tire Thickness");
+        axisY.setName("Thickness");
         axisY.setTextSize(14);
         data.setAxisYLeft(axisY);  //Y axis is on the left
         axisY.setHasLines(true);
+
 
         /*axisY.setMaxLabelChars(6);//max label length, for example 60
         List<AxisValue> values = new ArrayList<>();

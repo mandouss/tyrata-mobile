@@ -30,31 +30,44 @@ public class Register extends AppCompatActivity {
         EditText phone = (EditText) findViewById(R.id.register_edit_phonenumber);
         String message_phone = phone.getText().toString();
 
+        String msg = "";
+        if(message_username.equals("")){
+            msg = "The username cannot be empty!";
+        }
+        if(message_email.equals("")){
+            msg = "The email cannot be empty!";
+        }
+        if(message_phone.equals("")){
+            msg = "The phone number cannot be empty!";
+        }
 
         try {
-            // Do something in response to button
-            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-            // For test, drop and create tables
-            Database.dropAllTable();
-            Database.createTable();
-            boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
-
-            Database.myDatabase.close();
-            if (!emailExist) {
-                startActivity(intent);
-            }
-            else {
-                notification();
+            if(msg.equals("")){
+                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                // For test, drop and create tables
+                Database.dropAllTable();
+                Database.createTable();
+                boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
+                Database.myDatabase.close();
+                if(emailExist){
+                    msg = "The email is already registered!";
+                    notification(msg);
+                } else{
+                    startActivity(intent);
+                }
+            } else{
+                notification(msg);
             }
         }
         catch(Exception e){
             e.printStackTrace();
         }
     }
-    private void notification(){
+
+    private void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
-                .setMessage("The email is already registered!")
+                .setMessage(msg)
                 .setPositiveButton("Yes", null)
                 .show();
     }

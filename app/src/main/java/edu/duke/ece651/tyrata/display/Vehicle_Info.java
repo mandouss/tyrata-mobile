@@ -5,9 +5,13 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +33,7 @@ import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-public class Vehicle_Info extends Activity {
+public class Vehicle_Info extends AppCompatActivity {
     private Integer buttonnumber = 0;
     private Vehicle curr_vehicle;
     private String vin;
@@ -41,6 +45,43 @@ public class Vehicle_Info extends Activity {
     private int axis_index;
 
     @Override
+    protected  void onStop(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle Stop", String.valueOf(user_id));
+        editor.commit();
+        super.onStop();
+    }
+    @Override
+    protected  void onDestroy(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onDestroy", String.valueOf(user_id));
+        editor.commit();
+        super.onDestroy();
+    }
+    @Override
+    protected  void onPause(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onPause", String.valueOf(user_id));
+        editor.commit();
+        super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
@@ -49,14 +90,20 @@ public class Vehicle_Info extends Activity {
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
 
+        if(vin == null){
+            SharedPreferences editor = getSharedPreferences("tire_data",MODE_PRIVATE);
+            vin = editor.getString("VIN","");
+            Log.i("In VehicleInfo",vin);
+        }
+
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
 
         user_id = Database.getVinUserID(vin);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
 
-        Log.i("In vehicle info, VIN:", vin);
-        Log.i("In vehicle info, user:", String.valueOf(user_id));
+        Log.i("In vehicle info, VIN", vin);
+        Log.i("In vehicle info, user", String.valueOf(user_id));
 
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);

@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends EmptyActivity {
     private ListView vehicle_list;
     private List<Map<String, Object>> list;
     private int user_ID;
@@ -39,9 +41,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("USER_ID", 0);
-        Log.i("In main", String.valueOf(user_ID));
+        if(user_ID == 0){
+            SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
+            user_ID = editor.getInt("USER_ID",0);
+        }
+        SharedPreferences.Editor editor= getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_ID);
+        editor.commit();
+        Log.i("In main, user", String.valueOf(user_ID));
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         // test functions
         Database.testUserTable();
@@ -126,24 +136,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        //EmptyActivity emptyActivity = new EmptyActivity();
         switch (item.getItemId()) {
-            case R.id.n_item2:
+            case R.id.n_menu_addCar:
                 main_to_addcar();
                 return true;
-            case R.id.n_item3:
+            case R.id.n_menu_reportAccident:
                 main_to_report();
                 return true;
-            case R.id.n_item4:
+            case R.id.n_menu_signOut:
                 main_to_login();
                 return true;
-            case R.id.n_item5:
-                main_to_communication();
+            case R.id.n_submenu_Bluetooth:
+                goToBluetooth();
+                return true;
+            case R.id.n_submenu_Database:
+                getDatabaseFromXml();
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.n_submenu_GPS:
+                getGPS();
+                return true;
+            case R.id.n_submenu_Http:
+                goToHTTP();
+                return true;
+            case R.id.n_submenu_tireSnapshot:
+                getTireSnapshotListFromXml();
+                return true;
+            case R.id.n_submenu_XML:
+                testParseXml();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
     public void main_to_addcar() {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
@@ -180,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button
     }
 
-    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
+/*    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
         Intent i = new Intent(this, TireInfo.class);
         i.putExtra("notificationID", notificationID);
         i.putExtra("AXIS_ROW", axis_row);
@@ -209,13 +236,13 @@ public class MainActivity extends AppCompatActivity {
 
         assert nm != null;
         nm.notify(notificationID, notifBuilder.build());
-    }
+    }*/
 
     public void onClick(View view) {
         String notification_vin = "abcd";
         int notification_axis_row = 1;
         int notification_axis_index = 1;
         char notification_axis_side = 'L';
-        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
+//        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
     }
 }

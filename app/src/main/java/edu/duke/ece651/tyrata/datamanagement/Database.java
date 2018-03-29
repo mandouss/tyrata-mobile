@@ -7,10 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.TextView;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
@@ -180,15 +182,32 @@ public class Database extends AppCompatActivity {
         }
     }
 
+    /* Created by Zijie Wang on 3/26/2018. */
+    public static ArrayList<Pair<String, Double>> get_thickness_and_timestamp (String tire_id) {
+        Cursor c = myDatabase.rawQuery("SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT WHERE TIRE_ID = '"+tire_id+"'", null);
+        ArrayList<Pair<String, Double>> ans = new ArrayList<>();
+        if(c != null && c.moveToFirst()) {
+            do {
+                String timestamp = c.getString(c.getColumnIndex("TIMESTAMP"));
+                Double thickness = c.getDouble(c.getColumnIndex("THICKNESS"));
+                Pair<String, Double> temp = new Pair<>(timestamp, thickness);
+                ans.add(temp);
+            }while(c.moveToNext());
+            c.close();
+        }
+        return ans;
+    }
+
+
     // Updated by De Lan on 03/23/2018
-    public static void storeSnapshot(double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat) {
+    public static boolean storeSnapshot(double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, PRESSURE DOUBLE, TIRE_ID VARCHAR, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONG DOUBLE, LAT DOUBLE, PRIMARY KEY(ID), FOREIGN KEY(TIRE_ID)REFERENCES TIRE(SENSOR_ID) ON DELETE CASCADE)");
         // avoid duplication
         Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIMESTAMP = '"+timestamp+"' and TIRE_ID = '"+tire_id+"'", null);
         if(c != null && c.moveToFirst()){
             Log.i("Snapshot duplication", "DUP!!!");
             c.close();
-            return;
+            return false;
         }
 
         Cursor c_ID = myDatabase.rawQuery("SELECT MAX(ID) FROM SNAPSHOT", null);
@@ -217,6 +236,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("LONG", longitutde);
         contentValues.put("LAT", lat);
         myDatabase.insertOrThrow("SNAPSHOT", null, contentValues);
+        return true;
     }
 
     public static void storeAccident(String record, int userid) {
@@ -231,7 +251,7 @@ public class Database extends AppCompatActivity {
     public static boolean updateTireSSID(String sensor_ID){
         Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
         if(sensorExist == null || !sensorExist.moveToFirst()){
-            Log.i("In updateTireSSID", sensor_ID+"The sensor_ID is not found in TIRE!");
+            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
             return false;
         }
         sensorExist.close();
@@ -259,6 +279,7 @@ public class Database extends AppCompatActivity {
     // TODO: SQL injection
     /* Updated by Yue Li and De Lan on 3/24/2018 */
     public static int getUserID(String email) {
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (USER_ID INT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR, PRIMARY KEY(USER_ID))");
         Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '" + email + "'", null);
         int res = -1;
         if(c != null && c.moveToFirst()) {
@@ -277,7 +298,6 @@ public class Database extends AppCompatActivity {
             c.close();
         }
         return res;
-
     }
 
 

@@ -2,25 +2,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/n_item1"
-        android:title="Account Information"
-        app:showAsAction="never"/>
 
-    <item android:id="@+id/n_item2"
+    <item android:id="@+id/n_menu_addCar"
         android:title="Add Car"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/n_item3"
+    <item android:id="@+id/n_menu_reportAccident"
         android:title="Report Accident"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/n_item4"
+    <item android:id="@+id/n_menu_communication"
+        android:title="Communication"
+        app:showAsAction="never">
+        <menu>
+            <item android:id="@+id/n_submenu_GPS"
+                android:title="GPS"/>
+            <item android:id="@+id/n_submenu_Bluetooth"
+                android:title="Bluetooth"/>
+            <item android:id="@+id/n_submenu_Http"
+                android:title="Http Test"/>
+            <item android:id="@+id/n_submenu_XML"
+                android:title="Test XML"/>
+            <item android:id="@+id/n_submenu_tireSnapshot"
+                android:title="Get Tire Snapshot"/>
+            <item android:id="@+id/n_submenu_Database"
+                android:title="Get Database"/>
+        </menu>
+    </item>
+
+
+    <item android:id="@+id/n_menu_signOut"
         android:title="Sign Out"
         app:showAsAction="never"/>
-
-    <item android:id="@+id/n_item5"
-        android:title="Communication"
-        app:showAsAction="never"/>
-
 
 </menu>
