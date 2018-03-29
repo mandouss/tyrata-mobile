@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="edu.duke.ece651.tyrata.display.TireInfo">
     <GridLayout
         android:layout_width="match_parent"
@@ -248,10 +249,12 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/line_chart"
             android:layout_width="fill_parent"
+            android:layout_height="300dp"
             android:layout_columnSpan="2"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="18dp"
-            android:layout_height="300dp"/>
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/button_A4"
@@ -266,18 +269,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_rep" />
 
-        <Button
-            android:id="@+id/button_AS11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:onClick="BackToVehicle"
-            android:text="Back"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_A4"
-            app:layout_constraintTop_toBottomOf="@+id/textView_replace" />
 
         <Button
             android:id="@+id/button_ADeteleTire"

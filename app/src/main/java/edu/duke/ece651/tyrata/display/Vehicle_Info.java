@@ -5,9 +5,13 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,9 +31,10 @@ import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-public class Vehicle_Info extends Activity {
+public class Vehicle_Info extends AppCompatActivity {
     private Integer buttonnumber = 0;
     private Vehicle curr_vehicle;
     private String vin;
@@ -41,6 +46,43 @@ public class Vehicle_Info extends Activity {
     private int axis_index;
 
     @Override
+    protected  void onStop(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle Stop", String.valueOf(user_id));
+        editor.commit();
+        super.onStop();
+    }
+    @Override
+    protected  void onDestroy(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onDestroy", String.valueOf(user_id));
+        editor.commit();
+        super.onDestroy();
+    }
+    @Override
+    protected  void onPause(){
+        SharedPreferences.Editor editor = getSharedPreferences("user_data",MODE_PRIVATE).edit();
+        editor.putInt("USER_ID",user_id);
+        Log.i("In Vehicle onPause", String.valueOf(user_id));
+        editor.commit();
+        super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.go_to_homepage, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
@@ -49,14 +91,20 @@ public class Vehicle_Info extends Activity {
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
 
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        if(vin == null){
+            SharedPreferences editor = getSharedPreferences("tire_data",MODE_PRIVATE);
+            vin = editor.getString("VIN","");
+            Log.i("In VehicleInfo",vin);
+        }
 
-        user_id = Database.getVinUserID(vin);
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
+        user_id = editor.getInt("USER_ID",0);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
 
-        Log.i("In vehicle info, VIN:", vin);
-        Log.i("In vehicle info, user:", String.valueOf(user_id));
+        Log.i("In vehicle info, VIN", vin);
+        Log.i("In vehicle info, user", String.valueOf(user_id));
 
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);
@@ -83,7 +131,7 @@ public class Vehicle_Info extends Activity {
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
 
-        ImageView imageView= (ImageView) findViewById(R.id.image_vehicle);
+        ImageView imageView= findViewById(R.id.image_vehicle);
         if(curr_vehicle.getNumTires() == 4){
             imageView.setImageResource(R.drawable.four_wheel);
         }
@@ -103,12 +151,11 @@ public class Vehicle_Info extends Activity {
         buttonnumber=Integer.parseInt(message_tirenumber);
 
         tire_list = (ListView) findViewById(R.id.tire_list);
-        initDataList(buttonnumber);
+        initDataList(buttonnumber,curr_vehicle.mTires);
 
-        String[] from = { "img", "tire number", "content", "percent" };
+        String[] from = { "img", "tire number","replace" };
         // 列表项组件Id 数组
-        int[] to = { R.id.item_img, R.id.item_tire, R.id.item_location,
-                R.id.item_percent };
+        int[] to = { R.id.item_img, R.id.item_tire, R.id.item_replace };
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
@@ -177,7 +224,7 @@ public class Vehicle_Info extends Activity {
     }
 
 
-    private void initDataList(int number) {
+    private void initDataList(int number, ArrayList<Tire> tires) {
         //图片资源
         int img[] = null;
         img = new int[number];
@@ -189,8 +236,19 @@ public class Vehicle_Info extends Activity {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("img", img[i]);
             map.put("tire number", "tire" + (i+1));
-            map.put("content", "location:" );
-            map.put("percent", "96%");
+            calculate_location(buttonnumber,i+1);
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            int vehicle_ID = Database.getVehicleID(vin);
+            Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vehicle_ID);
+            Database.myDatabase.close();
+            String reptime;
+            if(curr_tire==null){
+                reptime = "";
+            }
+            else{
+                reptime = curr_tire.getRepTime();
+            }
+            map.put("replace","Replace before: "+reptime );
             list.add(map);
         }
     }

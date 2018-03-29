@@ -53,7 +53,7 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "tire":
                     readtire(parser,context);
                     break;
-                case "sanpshot":
+                case "snapshot":
                     readsnapshot(parser,context);
                     break;
                 default:
@@ -146,9 +146,8 @@ public class ServerXmlParser extends AppCompatActivity {
         }
 
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeVehicleData(vin, make, model, year, axis_num, tire_num, user_id);
+        Database.storeVehicleData(-1, vin, make, model, year, axis_num, tire_num, user_id);
         Database.myDatabase.close();
-
     }
 
     private void readtire(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
@@ -209,7 +208,7 @@ public class ServerXmlParser extends AppCompatActivity {
             }
         }
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeTireData(sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
+        Database.storeTireData(-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
         Database.myDatabase.close();
 
     }

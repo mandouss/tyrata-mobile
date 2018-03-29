@@ -103,32 +103,4 @@
         <cur_ss_id>3</cur_ss_id>
         <init_thickness>12</init_thickness>
     </tire>
-    <snapshot>
-        <id>1</id>
-        <s11>-0.953</s11>
-        <timestamp>2018-03-17</timestamp>
-        <mileage>1234</mileage>
-        <pressure>23.4</pressure>
-        <tire_id>C-1234</tire_id>
-        <outlier>false</outlier>
-        <thickness>14.2</thickness>
-        <eol>eol1</eol>
-        <time_to_replacement>replacement1</time_to_replacement>
-        <long>25.3</long>
-        <lat>123.5</lat>
-    </snapshot>
-    <snapshot>
-        <id>2</id>
-        <s11>-0.756</s11>
-        <timestamp>2018-03-21</timestamp>
-        <mileage>1256</mileage>
-        <pressure>25.9</pressure>
-        <tire_id>C-1234</tire_id>
-        <outlier>false</outlier>
-        <thickness>14.9</thickness>
-        <eol>eol2</eol>
-        <time_to_replacement>replacement2</time_to_replacement>
-        <long>25.9</long>
-        <lat>123.9</lat>
-    </snapshot>
 </download>
