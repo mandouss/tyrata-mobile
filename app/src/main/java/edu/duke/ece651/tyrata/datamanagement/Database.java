@@ -298,7 +298,7 @@ public class Database extends AppCompatActivity {
     /* Updated by Yue Li and De Lan on 3/24/2018 */
     public static int getUserID(String email) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
-        Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '" + email + "'", null);
+        Cursor c = myDatabase.rawQuery("SELECT ID FROM USER WHERE EMAIL = '" + email + "'", null);
         int res = -1;
         if(c != null && c.moveToFirst()) {
             res = c.getInt(c.getColumnIndex("ID"));
