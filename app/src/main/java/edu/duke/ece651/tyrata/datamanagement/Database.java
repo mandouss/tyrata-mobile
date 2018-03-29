@@ -397,7 +397,7 @@ public class Database extends AppCompatActivity {
         int t_init = c.getInt(c.getColumnIndex("INIT_SS_ID"));
         int t_curr = c.getInt(c.getColumnIndex("CUR_SS_ID"));
         double s11 = 0;
-        double curr_thickness = 0;
+        double curr_thickness = c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
         double odometer = 0;
         String eol = "Default";
         String repTime = "Default";
