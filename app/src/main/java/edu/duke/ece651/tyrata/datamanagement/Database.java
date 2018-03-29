@@ -214,12 +214,11 @@ public class Database extends AppCompatActivity {
 
 
     // Updated by De Lan on 03/23/2018
-    public static boolean storeSnapshot(double s11, String timestamp, double mileage, double pressure, String tire_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat) {
-//        Log.i("In database", "In storeSnapshot");
+    public static boolean storeSnapshot(double s11, String timestamp, double mileage, double pressure, String sensor_id, boolean outlier, double thickness, String eol, String time_to_replacement, double longitutde, double lat) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INTEGER PRIMARY KEY AUTOINCREMENT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, " +
                 "PRESSURE DOUBLE, TIRE_ID INT, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONGITUDE DOUBLE, LATITUDE DOUBLE, FOREIGN KEY(TIRE_ID) REFERENCES TIRE(ID) ON DELETE CASCADE)");
         // avoid duplication
-        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIMESTAMP = '"+timestamp+"' and SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+tire_id+"'", null);
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIMESTAMP = '"+timestamp+"' and SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
         if(c != null && c.moveToFirst()){
             Log.i("Snapshot duplication", "DUP!!!");
             c.close();
@@ -230,6 +229,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("TIMESTAMP", timestamp);
         contentValues.put("MILEAGE", mileage);
         contentValues.put("PRESSURE", pressure);
+        int tire_id = getTireID(sensor_id);
         contentValues.put("TIRE_ID", tire_id);
         contentValues.put("OUTLIER", outlier);
         contentValues.put("THICKNESS", thickness);
@@ -237,6 +237,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("TIME_TO_REPLACEMENT", time_to_replacement);
         contentValues.put("LONGITUDE", longitutde);
         contentValues.put("LATITUDE", lat);
+        Log.i("Snapshot Insertion", "New insert!!!");
         long ID = myDatabase.insert("SNAPSHOT", null, contentValues);
         updateTrace( "CREATE", "SNAPSHOT", ID,"");
         return true;

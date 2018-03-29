@@ -133,7 +133,6 @@ public class TireInfoInput extends AppCompatActivity {
                 intent.putExtra("VIN", vin);
                 startActivity(intent);
             } catch (Exception e) {
-                msg = "Please type in valid information!";
                 notification(msg);
             }
         }

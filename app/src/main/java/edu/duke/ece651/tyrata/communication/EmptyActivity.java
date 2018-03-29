@@ -123,18 +123,17 @@ public class EmptyActivity extends AppCompatActivity {
                 String timestamp = TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 double mileage = tireSnapshotList.get(i).getOdometerMileage();
                 double pressure = tireSnapshotList.get(i).getPressure();
-                String tire_id = tireSnapshotList.get(i).getSensorId();
+                String sensor_id = tireSnapshotList.get(i).getSensorId();
 
-                double init_thickness = Database.getInitThickness(tire_id); //init_thickness
-                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '" + tire_id + "'", null);
+                double init_thickness = Database.getInitThickness(sensor_id); //init_thickness
                 double thickness = init_thickness;
                 String eol = Double.toString((init_thickness - 3) * 5000);
                 String time_to_replacement = timestamp;
-                double longitutde = 0;
+                double longitude = 0;
                 double lat = 0;
                 try {
                     if (GPS != null) {
-                        longitutde = GPS.get(0);
+                        longitude = GPS.get(0);
                         lat = GPS.get(1);
                     }
                 }
@@ -142,6 +141,7 @@ public class EmptyActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
+                Cursor c = Database.myDatabase.rawQuery("SELECT S11 FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                     thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
@@ -150,9 +150,9 @@ public class EmptyActivity extends AppCompatActivity {
                     c.close();
 //                    Log.i("Check eol", eol);
                 }
-                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, false, thickness, eol, time_to_replacement, longitutde, lat);
+                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, false, thickness, eol, time_to_replacement, longitude, lat);
                 if(notDupSanpShot){
-                    boolean sensorExist = Database.updateTireSSID(tire_id);
+                    boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
                         Database.myDatabase.close();
                         throw new IOException();
