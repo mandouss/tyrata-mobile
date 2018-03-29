@@ -87,7 +87,7 @@ public class Database extends AppCompatActivity {
     }
 
 
-    public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid) {
+    public static void storeVehicleData(String vin, String carmake, String carmodel, int tireyear, int axisnum, int tirenum, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, PRIMARY KEY(VIN), FOREIGN KEY(USER_ID)REFERENCES USER(USER_ID) ON DELETE CASCADE)");
         ContentValues contentValues = new ContentValues();
         contentValues.put("MAKE", carmake);
