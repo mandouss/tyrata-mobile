@@ -25,6 +25,7 @@ import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,7 @@ public class MainActivity extends EmptyActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_view_navigation, menu);
+        //setIconEnable(menu, true);
         return true;
     }
 
@@ -207,7 +209,7 @@ public class MainActivity extends EmptyActivity {
         // Do something in response to button
     }
 
-/*    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
+    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
         Intent i = new Intent(this, TireInfo.class);
         i.putExtra("notificationID", notificationID);
         i.putExtra("AXIS_ROW", axis_row);
@@ -219,14 +221,14 @@ public class MainActivity extends EmptyActivity {
         NotificationManager nm = (NotificationManager) getSystemService
                 (NOTIFICATION_SERVICE);
         String id = "my_channel_01";
-        int importance = NotificationManager.IMPORTANCE_LOW;
+        /*int importance = NotificationManager.IMPORTANCE_LOW;
         CharSequence name = "my_channel";
         NotificationChannel mChannel = new NotificationChannel(id, name,importance);
         mChannel.enableLights(true);
-        nm.createNotificationChannel(mChannel);
+        nm.createNotificationChannel(mChannel);*/
         int tire_index;
 
-        String notification_content = "Your tire_index of vehicle "+vin+" need to be replaced.";
+        String notification_content = "Your tire1 of vehicle "+vin+" need to be replaced.";
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, id)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("NOTIFICATION:")
@@ -236,13 +238,30 @@ public class MainActivity extends EmptyActivity {
 
         assert nm != null;
         nm.notify(notificationID, notifBuilder.build());
-    }*/
+    }
 
     public void onClick(View view) {
-        String notification_vin = "abcd";
+        String notification_vin = "vin1-1";
         int notification_axis_row = 1;
         int notification_axis_index = 1;
         char notification_axis_side = 'L';
-//        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
+        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
     }
+
+    /*private void setIconEnable(Menu menu, boolean enable)
+    {
+        try
+        {
+            Class<?> clazz = Class.forName("com.android.internal.view.menu.MenuBuilder");
+            Method m = clazz.getDeclaredMethod("setOptionalIconsVisible", boolean.class);
+            m.setAccessible(true);
+
+            //MenuBuilder实现Menu接口，创建菜单时，传进来的menu其实就是MenuBuilder对象(java的多态特征)
+            m.invoke(menu, enable);
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }*/
 }

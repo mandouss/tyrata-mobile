@@ -202,6 +202,9 @@ public class TireInfo extends AppCompatActivity {
         getAxisXLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
         initLineChart();//初始化
+        if(curr_tire==null){
+            lineChart.setVisibility(View.GONE);
+        }
 
     }
     public void switchToEdit(View view) {
@@ -292,17 +295,6 @@ public class TireInfo extends AppCompatActivity {
         axisY.setTextSize(14);
         data.setAxisYLeft(axisY);  //Y axis is on the left
         axisY.setHasLines(true);
-
-
-        /*axisY.setMaxLabelChars(6);//max label length, for example 60
-        List<AxisValue> values = new ArrayList<>();
-        for(int i = 0; i < 100; i+= 10){
-            AxisValue value = new AxisValue(i);
-            String label = String.valueOf(i);
-            value.setLabel(label);
-            values.add(value);
-        }
-        axisY.setValues(values);*/
 
 
 

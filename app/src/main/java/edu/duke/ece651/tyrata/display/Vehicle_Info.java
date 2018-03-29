@@ -31,6 +31,7 @@ import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Vehicle_Info extends AppCompatActivity {
@@ -130,7 +131,7 @@ public class Vehicle_Info extends AppCompatActivity {
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
 
-        ImageView imageView= (ImageView) findViewById(R.id.image_vehicle);
+        ImageView imageView= findViewById(R.id.image_vehicle);
         if(curr_vehicle.getNumTires() == 4){
             imageView.setImageResource(R.drawable.four_wheel);
         }
@@ -150,12 +151,11 @@ public class Vehicle_Info extends AppCompatActivity {
         buttonnumber=Integer.parseInt(message_tirenumber);
 
         tire_list = (ListView) findViewById(R.id.tire_list);
-        initDataList(buttonnumber);
+        initDataList(buttonnumber,curr_vehicle.mTires);
 
-        String[] from = { "img", "tire number", "content", "percent" };
+        String[] from = { "img", "tire number","replace" };
         // 列表项组件Id 数组
-        int[] to = { R.id.item_img, R.id.item_tire, R.id.item_location,
-                R.id.item_percent };
+        int[] to = { R.id.item_img, R.id.item_tire, R.id.item_replace };
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
@@ -224,7 +224,7 @@ public class Vehicle_Info extends AppCompatActivity {
     }
 
 
-    private void initDataList(int number) {
+    private void initDataList(int number, ArrayList<Tire> tires) {
         //图片资源
         int img[] = null;
         img = new int[number];
@@ -236,8 +236,18 @@ public class Vehicle_Info extends AppCompatActivity {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("img", img[i]);
             map.put("tire number", "tire" + (i+1));
-            map.put("content", "location:" );
-            map.put("percent", "96%");
+            calculate_location(buttonnumber,i+1);
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vin);
+            Database.myDatabase.close();
+            String reptime;
+            if(curr_tire==null){
+                reptime = "";
+            }
+            else{
+                reptime = curr_tire.getRepTime();
+            }
+            map.put("replace","Replace before: "+reptime );
             list.add(map);
         }
     }
