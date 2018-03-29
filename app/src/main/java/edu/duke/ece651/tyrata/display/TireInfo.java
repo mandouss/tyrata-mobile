@@ -44,6 +44,7 @@ public class TireInfo extends AppCompatActivity {
     int axis_index;
     char axis_side;
     String vin;
+    int vehicle_ID;
     String message_manufacturer;
     String message_sensorID;
     String message_model;
@@ -116,8 +117,10 @@ public class TireInfo extends AppCompatActivity {
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
 
+
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vin);
+        vehicle_ID = Database.getVehicleID(vin);
+        Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vehicle_ID);
         Database.myDatabase.close();
 
         if(curr_tire != null) {

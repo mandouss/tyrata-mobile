@@ -97,8 +97,8 @@ public class Vehicle_Info extends AppCompatActivity {
         }
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-
-        user_id = Database.getVinUserID(vin);
+        SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
+        user_id = editor.getInt("USER_ID",0);
         curr_vehicle = Database.getVehicle(vin);
         Database.myDatabase.close();
 

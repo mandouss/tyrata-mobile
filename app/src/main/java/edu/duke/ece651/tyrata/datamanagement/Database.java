@@ -81,7 +81,7 @@ public class Database extends AppCompatActivity {
     }
 
     /* Updated by De Lan on 3/28/2018 */
-    public static void storeVehicleData(String vin, String carmodel, String carmake, int tireyear, int axisnum, int tirenum, int userid) {
+    public static boolean storeVehicleData(int vehicle_ID, String vin, String carmake, String carmodel, int tireyear, int axisnum, int tirenum, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (ID INTEGER PRIMARY KEY AUTOINCREMENT, VIN VARCHAR UNIQUE, MAKE VARCHAR, MODEL VARCHAR, " +
                 "YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, FOREIGN KEY(USER_ID) REFERENCES USER(ID))");
         ContentValues contentValues = new ContentValues();
@@ -92,25 +92,35 @@ public class Database extends AppCompatActivity {
         contentValues.put("AXIS_NUM", axisnum);
         contentValues.put("TIRE_NUM", tirenum);
         // Update
-        Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
-        if (c != null && c.moveToFirst()) {
+        if (vehicle_ID > 0) {
+            Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
+            if(c != null && c.moveToFirst() && vehicle_ID != c.getInt(c.getColumnIndex("ID"))){
+                Log.i("In storeVehicleData","Update VIN conflict");
+                c.close();
+                return false;
+            }
             Log.i("In database", "update vehicle");
-            long ID = c.getLong(c.getColumnIndex("ID"));
-            c.close();
-            myDatabase.update("VEHICLE", contentValues, "USER_ID = ? and VIN = ?", new String[]{Integer.toString(userid), vin});
-            updateTrace( "UPDATE", "VEHICLE", ID,"");
+            myDatabase.update("VEHICLE", contentValues, "ID = ?", new String[]{Integer.toString(vehicle_ID)});
+            updateTrace( "UPDATE", "VEHICLE", vehicle_ID,"");
         }
         // Insert
         else {
+            Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
+            if(c != null && c.moveToFirst()){
+                Log.i("In storeVehicleData","Insert VIN conflict");
+                c.close();
+                return false;
+            }
             contentValues.put("USER_ID", userid);
             Log.i("In database", "insert vehicle");
             long ID = myDatabase.insert("VEHICLE", null, contentValues);
             updateTrace( "CREATE", "VEHICLE", ID,"");
         }
+        return true;
     }
 
     // Updated by Yue Li and De Lan on 3/22/2018
-    public static boolean storeTireData(String sensor_id, String manufacturer, String model, String sku, String vehicle_id, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id) {
+    public static boolean storeTireData(int tire_ID, String sensor_id, String manufacturer, String model, String sku, String vin, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(ID INTEGER PRIMARY KEY AUTOINCREMENT, SENSOR_ID VARCHAR UNIQUE, MANUFACTURER VARCHAR, MODEL VARCHAR, " +
                 "SKU VARCHAR, VEHICLE_ID INT, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, FOREIGN KEY(VEHICLE_ID) REFERENCES VEHICLE(ID) ON DELETE CASCADE)");
         ContentValues contentValues = new ContentValues();
@@ -119,27 +129,26 @@ public class Database extends AppCompatActivity {
         contentValues.put("SKU", sku);
         contentValues.put("INIT_THICKNESS", init_thickness);
         // Update
-        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '" + sensor_id + "'", null);
-        if (c != null && c.moveToFirst()) {
-            Cursor posQuery = myDatabase.rawQuery("SELECT * FROM TIRE, VEHICLE WHERE TIRE.VEHICLE_ID = VEHICLE.ID and VEHICLE.VIN = '" + vehicle_id + "' and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
-            // This is edit update
-            if (posQuery != null && posQuery.moveToFirst()) {
-                Log.i("In database", "update tire succeeds!");
-                posQuery.close();
-                long ID = c.getLong(c.getColumnIndex("ID"));
+        if (tire_ID > 0) {
+            Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
+            if(c != null && c.moveToFirst() && tire_ID != c.getInt(c.getColumnIndex("ID"))){
+                Log.i("In storeTireData","Update SENSOR_ID conflict");
                 c.close();
-                myDatabase.update("TIRE", contentValues, "SENSOR_ID = ? ", new String[]{sensor_id});
-                updateTrace( "UPDATE", "TIRE", ID,"");
-            }
-            // The user types in a existing sensor ID
-            else {
-                Log.i("In database", "update tire fails, sensorID exists!");
                 return false;
             }
+            myDatabase.update("TIRE", contentValues, "SENSOR_ID = ? ", new String[]{sensor_id});
+            updateTrace( "UPDATE", "TIRE", tire_ID,"");
         }
         // Insert
         else {
+            Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
+            if(c != null && c.moveToFirst()){
+                Log.i("In storeTireData","Insert SENSOR_ID conflict");
+                c.close();
+                return false;
+            }
             contentValues.put("SENSOR_ID", sensor_id);
+            int vehicle_id = getVehicleID(vin);
             contentValues.put("VEHICLE_ID", vehicle_id);
             contentValues.put("AXIS_ROW", axis_row);
             contentValues.put("AXIS_SIDE", axis_side);
@@ -296,12 +305,21 @@ public class Database extends AppCompatActivity {
         return res;
     }
 
-    /* Updated by De Lan on 3/24/2018 */
-    public static int getVinUserID(String vin){
+    public static int getVehicleID(String vin){
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
         int res = -1;
         if(c != null && c.moveToFirst()) {
-            res = c.getInt(c.getColumnIndex("USER_ID"));
+            res = c.getInt(c.getColumnIndex("ID"));
+            c.close();
+        }
+        return res;
+    }
+
+    public static int getTireID(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
+        int res = -1;
+        if(c != null && c.moveToFirst()) {
+            res = c.getInt(c.getColumnIndex("ID"));
             c.close();
         }
         return res;
@@ -398,8 +416,8 @@ public class Database extends AppCompatActivity {
 
 
     /* Updated by De Lan on 3/24/2018 */
-    public static Tire getTire(int axis_row, int axis_index, char axis_side, String vin) {
-        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE, VEHICLE WHERE TIRE.VEHICLE_ID = VEHICLE.ID and VEHICLE.VIN = '" + vin + "' and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
+    public static Tire getTire(int axis_row, int axis_index, char axis_side, int vehicle_ID) {
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = "+vehicle_ID+" and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
         if (c.moveToFirst()) {
             Tire ans = tireHelper(c);
             c.close();

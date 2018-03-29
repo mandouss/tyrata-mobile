@@ -21,12 +21,14 @@ import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
+import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
     private List<String> dataList;
     private ArrayAdapter<String> adapter;
     private int user_ID;
+    private int vehicle_ID;
     String tirenumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,21 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         user_ID = intent.getIntExtra("userID", 1);
         // If this page is switched from vehicle edit
         String vin = intent.getStringExtra("VIN");
+        vehicle_ID = -1;
         if(vin != null) {
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            Vehicle cur_vehicle = Database.getVehicle(vin);
+            vehicle_ID = Database.getVehicleID(vin);
+            Database.myDatabase.close();
             Log.i("Vehicle Input edit", vin);
             EditText textView_vin = findViewById(R.id.edit_vin);
             textView_vin.setText(vin);
-            textView_vin.setKeyListener(null);
+            EditText textView_make = findViewById(R.id.edit_make);
+            textView_make.setText(cur_vehicle.getMake());
+            EditText textView_model = findViewById(R.id.edit_model);
+            textView_model.setText(cur_vehicle.getModel());
+            EditText textView_year = findViewById(R.id.edit_year);
+            textView_year.setText(String.valueOf(cur_vehicle.getYear()));
         }else{
             Log.i("Vehicle Input add_car", "add_car");
         }
@@ -89,6 +101,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
     public void saveMessage(View view) {
 
+        String msg = "";
         Intent intent = new Intent(this, MainActivity.class);
         EditText edit_make = (EditText) findViewById(R.id.edit_make);
         String message_make = edit_make.getText().toString();
@@ -102,6 +115,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         EditText edit_vin = (EditText) findViewById(R.id.edit_vin);
         String message_vin = edit_vin.getText().toString();
 
+        if(message_make.equals("") || message_model.equals("") || message_year.equals("") || message_vin.equals("")){
+            msg = "You need to fill out all the fields!";
+        }
+
         int num = Integer.parseInt(tirenumber);
         int axis_num = 0;
         if (num == 4) {
@@ -114,23 +131,31 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             axis_num = 5;
         }
 
-        // Do something in response to button
-        try {
-            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-            Database.storeVehicleData(message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
-            Database.myDatabase.close();
-            intent.putExtra("USER_ID", user_ID);
-            startActivity(intent);
+        if(!msg.equals("")){
+            notification(msg);
         }
-        catch(Exception e){
-            notification();
+        else {
+            try {
+                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                boolean noConflict = Database.storeVehicleData(vehicle_ID, message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
+                Database.myDatabase.close();
+                if (!noConflict) {
+                    msg = "The VIN already exists!";
+                    notification(msg);
+                } else {
+                    startActivity(intent);
+                }
+            } catch (Exception e) {
+                msg = "Please type in valid information!";
+                notification(msg);
+            }
         }
     }
 
-    private void notification(){
+    private void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
-                .setMessage("Please type in valid information!")
+                .setMessage(msg)
                 .setPositiveButton("Yes", null)
                 .show();
     }
