@@ -39,7 +39,6 @@ public class TireInfoInput extends AppCompatActivity {
         axis_side = intent.getCharExtra("axis_SIDE",'a');
         vin = intent.getStringExtra("VIN");
         // switched from tire edit
-        // @TODO add deletion button
         String sensor_id = intent.getStringExtra("SENSOR_ID");
         if(sensor_id != null && !sensor_id.equals("Need sensorID")) {
             Log.i("Tire Input edit", sensor_id);

@@ -53,7 +53,7 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "tire":
                     readtire(parser,context);
                     break;
-                case "sanpshot":
+                case "snapshot":
                     readsnapshot(parser,context);
                     break;
                 default:

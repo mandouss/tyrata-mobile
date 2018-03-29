@@ -119,7 +119,6 @@ public class EmptyActivity extends AppCompatActivity {
             ArrayList<Double> GPS = getGPS();
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
-
                 double s11 = tireSnapshotList.get(i).getS11();
                 String timestamp = TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 double mileage = tireSnapshotList.get(i).getOdometerMileage();
@@ -149,7 +148,7 @@ public class EmptyActivity extends AppCompatActivity {
                     eol = Double.toString((thickness - 3) * 5000);
                     time_to_replacement = timestamp;
                     c.close();
-                    Log.i("Check eol", eol);
+//                    Log.i("Check eol", eol);
                 }
                 boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, false, thickness, eol, time_to_replacement, longitutde, lat);
                 if(notDupSanpShot){
