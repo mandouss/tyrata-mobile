@@ -148,7 +148,6 @@ public class EmptyActivity extends AppCompatActivity {
                     eol = Double.toString((thickness - 3) * 5000);
                     time_to_replacement = timestamp;
                     c.close();
-//                    Log.i("Check eol", eol);
                 }
                 boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, false, thickness, eol, time_to_replacement, longitude, lat);
                 if(notDupSanpShot){

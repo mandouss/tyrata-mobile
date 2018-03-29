@@ -36,6 +36,7 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
+    /* Updated by De Lan on 3/4/2018. */
     public static void createTable() {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (ID INTEGER PRIMARY KEY AUTOINCREMENT, VIN VARCHAR UNIQUE, MAKE VARCHAR, MODEL VARCHAR, " +
@@ -128,6 +129,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("MODEL", model);
         contentValues.put("SKU", sku);
         contentValues.put("INIT_THICKNESS", init_thickness);
+        contentValues.put("SENSOR_ID", sensor_id);
         // Update
         if (tire_ID > 0) {
             Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
@@ -136,7 +138,7 @@ public class Database extends AppCompatActivity {
                 c.close();
                 return false;
             }
-            myDatabase.update("TIRE", contentValues, "SENSOR_ID = ? ", new String[]{sensor_id});
+            myDatabase.update("TIRE", contentValues, "ID = ?", new String[]{Integer.toString(tire_ID)});
             updateTrace( "UPDATE", "TIRE", tire_ID,"");
         }
         // Insert
@@ -147,7 +149,6 @@ public class Database extends AppCompatActivity {
                 c.close();
                 return false;
             }
-            contentValues.put("SENSOR_ID", sensor_id);
             int vehicle_id = getVehicleID(vin);
             contentValues.put("VEHICLE_ID", vehicle_id);
             contentValues.put("AXIS_ROW", axis_row);
