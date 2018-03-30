@@ -14,6 +14,7 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +46,9 @@ class BluetoothAPI {
         if (mBluetoothAdapter == null) {
             // Device doesn't support BluetoothAPI
             Log.e(Common.LOG_TAG_BT_API, "Device doesn't support BluetoothAPI");
-            // @todo disable bluetooth features
+            Toast.makeText(activity.getApplicationContext(),
+                    "Device doesn't support Bluetooth. Cannot connect to sensors...",
+                    Toast.LENGTH_LONG).show();
             return ;
         }
 
@@ -106,19 +109,6 @@ class BluetoothAPI {
             Log.d(Common.LOG_TAG_BT_API,
                     "startDiscovery() " + (discoverySuccess? "successful":"failed"));
         }
-
-        /* //@todo if I wanted to show a message for rationale to access location
-        // Should we show an explanation?
-        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
-                Manifest.permission.READ_CONTACTS)) {
-
-            // Show an explanation to the user *asynchronously* -- don't block
-            // this thread waiting for the user's response! After the user
-            // sees the explanation, try again to request the permission.
-
-        } else {
-        }
-        */
     }
 
     static void cancelBtDiscovery() {
@@ -128,7 +118,7 @@ class BluetoothAPI {
         }
     }
 
-    static void connectBt(BluetoothDevice device) {
+    private static void connectBt(BluetoothDevice device) {
         Log.d(Common.LOG_TAG_BT_API, "ConnectThread() called");
         // Start the thread to connect with the given device
         if (mConnectThread == null) {
@@ -146,7 +136,7 @@ class BluetoothAPI {
     /** Cancel all threads
      *
      */
-    static void closeBtConnection() {
+    private static void closeBtConnection() {
         if (mConnectThread != null)
             mConnectThread.cancel();
 
@@ -308,7 +298,6 @@ class BluetoothAPI {
             }
         }
 
-        // @todo I didn't proofread this method
         // Call this from the main activity to send data to the remote device.
         /**
          * Write to the connected OutStream.

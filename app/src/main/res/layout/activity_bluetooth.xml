@@ -17,8 +17,7 @@
         android:onClick="discoverBluetooth"
         android:text="Discover Devices"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s1" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_s4"
@@ -30,7 +29,7 @@
         android:text="Cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s3" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_s2" />
 
     <LinearLayout
         android:layout_width="match_parent"

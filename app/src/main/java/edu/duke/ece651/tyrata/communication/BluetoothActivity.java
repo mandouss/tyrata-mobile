@@ -16,7 +16,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,13 +34,15 @@ import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 public class BluetoothActivity extends AppCompatActivity {
 
+    /* CONSTANTS */
+    private byte EOF = 0; // End-of-File byte
+
     /* GLOBAL VARIABLES */
     private TextView mTextViewReceived;
     private TextView mTextViewParsed;
     private String mXmlStream;
     private String mParsedMsg;
 
-    private int mNumBytesRead;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,6 @@ public class BluetoothActivity extends AppCompatActivity {
 
         mXmlStream = "";
         mParsedMsg = "";
-        mNumBytesRead = 0;
 
         // Enable Bluetooth
         Log.v(Common.LOG_TAG_BT_ACTIVITY, "Enabling Bluetooth...");
@@ -101,7 +101,7 @@ public class BluetoothActivity extends AppCompatActivity {
             InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
@@ -117,11 +117,11 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     public void processMsg(String msg) {
-        Toast.makeText(getApplicationContext(), "Received XML data! Parsing...",
+        Toast.makeText(getApplicationContext(), "Received " +msg.length() + " bytes! Parsing...",
                 Toast.LENGTH_SHORT).show();
+        displayMsg(msg, mTextViewReceived);
         try {
-            InputStream in = new ByteArrayInputStream(mXmlStream.getBytes("UTF-8"));
-            mNumBytesRead = 0;
+            InputStream in = new ByteArrayInputStream(msg.getBytes("UTF-8"));
             // parse the message
             BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
             ArrayList<TireSnapshot> tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
@@ -138,7 +138,6 @@ public class BluetoothActivity extends AppCompatActivity {
                 mParsedMsg += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 mParsedMsg += "\n\n";
                 displayMsg(mParsedMsg, mTextViewParsed);
-                //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -147,63 +146,6 @@ public class BluetoothActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-/*
-        // Create/Update XML string
-        if (msg.startsWith("<?xml")) {
-            // beginning of XML data
-            mXmlStream = msg;
-
-        } else {
-            // middle of XML data
-            mXmlStream += msg;
-        }
-
-        displayMsg(mXmlStream, mTextViewReceived);
-        try {
-            // construct an InputStream from XML string
-            InputStream in = new ByteArrayInputStream(mXmlStream.getBytes("UTF-8"));
-            in.mark(0);
-            // Validate XML format
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            dBuilder.parse(in);
-            in.reset();
-            // No exceptions/errors --> valid XML format
-            Toast.makeText(getApplicationContext(), "Received XML data! Parsing...",
-                    Toast.LENGTH_SHORT).show();
-            mNumBytesRead = 0;
-            // parse the message
-            BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
-            ArrayList<TireSnapshot> tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
-            if (tireSnapshotList.isEmpty()){
-                Toast.makeText(getApplicationContext(),
-                        "Failed to obtain TireSnapshot from message received...",
-                        Toast.LENGTH_LONG).show();
-            }
-            for (int i=0; i<tireSnapshotList.size(); i++) {
-                mParsedMsg += "Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId();
-                mParsedMsg += "\nS11: " + tireSnapshotList.get(i).getS11();
-                mParsedMsg += "\nPressure: " + tireSnapshotList.get(i).getPressure();
-                mParsedMsg += "\nMileage: " + tireSnapshotList.get(i).getOdometerMileage();
-                mParsedMsg += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
-                mParsedMsg += "\n\n";
-                displayMsg(mParsedMsg, mTextViewParsed);
-                //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-            }
-        } catch (SAXException e) {
-            // Parsing XML failed (invalid XML file)
-            // Invalid --> assume incomplete and wait for rest of data
-            Log.w(Common.LOG_TAG_BT_ACTIVITY, "Received incomplete XML data. Waiting for more...");
-            return;
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
 
@@ -215,21 +157,18 @@ public class BluetoothActivity extends AppCompatActivity {
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enable request canceled");
                     Toast.makeText(getApplicationContext(),
-                            "Bluetooth request cancelled...",
+                            "Bluetooth request cancelled. Cannot connect to sensors...",
                             Toast.LENGTH_LONG).show();
-                    // @todo Disable bluetooth features
                 }
                 else if (resultCode == RESULT_OK) {
-                    // @todo connect to sensor/simulator
                     Log.v(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enabled");
                 }
                 break;
             case Common.REQUEST_ACCESS_COARSE_LOCATION:
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_BT_ACTIVITY, "Location access request cancelled");
-                    // @todo Cannot discover devices
                     Toast.makeText(getApplicationContext(),
-                            "Location access request cancelled...",
+                            "Location access request cancelled. Cannot discover Bluetooth devices...",
                             Toast.LENGTH_LONG).show();
                 }
                 else if (resultCode == RESULT_OK) {
@@ -266,18 +205,9 @@ public class BluetoothActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
-                    mNumBytesRead += msgStr.length();
                     mXmlStream += msgStr;
-                    if (mNumBytesRead > 7000) {
-//                        Log.d(Common.LOG_TAG_BT_ACTIVITY, "numBytes from msg: " + msg.arg1);
-//                        Log.d(Common.LOG_TAG_BT_ACTIVITY, msgStr.length() + " Bytes read");
-                        Log.d(Common.LOG_TAG_BT_ACTIVITY, mNumBytesRead + " Total bytes read");
-                        Log.d(Common.LOG_TAG_BT_ACTIVITY, "String length: " + mXmlStream.length());
-//                        Log.v(Common.LOG_TAG_BT_ACTIVITY, msgStr);
-                        //Log.v(Common.LOG_TAG_BT_ACTIVITY, mXmlStream);
-                        //displayMsg(msgStr, mTextViewReceived);
-                        //processMsg(msgStr);
-                        displayMsg(mXmlStream, mTextViewReceived);
+                    if (readBuf[msg.arg1-1] == EOF) { // reached end of message/file
+                        Log.d(Common.LOG_TAG_BT_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
                         processMsg(mXmlStream);
                     }
                     break;
