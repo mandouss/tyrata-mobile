@@ -30,6 +30,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     private int user_ID;
     private int vehicle_ID;
     String tirenumber;
+    String original_vin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +54,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             textView_model.setText(cur_vehicle.getModel());
             EditText textView_year = findViewById(R.id.edit_year);
             textView_year.setText(String.valueOf(cur_vehicle.getYear()));
+            original_vin = vin;
         }else{
             Log.i("Vehicle Input add_car", "add_car");
+            original_vin = "";
         }
 
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
@@ -137,7 +140,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         else {
             try {
                 Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-                boolean noConflict = Database.storeVehicleData(vehicle_ID, message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
+                boolean noConflict = Database.storeVehicleData(original_vin,vehicle_ID, message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
                 Database.myDatabase.close();
                 if (!noConflict) {
                     msg = "The VIN already exists!";

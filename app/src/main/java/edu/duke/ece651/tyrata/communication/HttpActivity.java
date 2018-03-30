@@ -32,10 +32,12 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http);
         mDataText = (TextView) findViewById(R.id.data_text);
-        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345");
     }
 
-    private void startDownload() {
+
+    public void startDownload(String myUrl) {
+
+        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl);
         if (!mDownloading && mNetworkFragment != null) {
             // Execute the async download.
             mNetworkFragment.startDownload();
@@ -87,7 +89,10 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
     }
 
     public void startDownload(View view) {
-        startDownload();
+        HTTPsender httpSender = new HTTPsender();
+        String myUrl = httpSender.send_to_cloud(getApplicationContext());
+        //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
+        startDownload(myUrl);
     }
 
     public void finishDownloading(View view) {

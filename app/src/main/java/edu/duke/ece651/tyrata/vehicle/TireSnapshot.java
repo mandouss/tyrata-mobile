@@ -18,7 +18,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class TireSnapshot extends Tire {
     private double mS11;
-    private int mOdometerMileage;
+    private double mOdometerMileage;
     private Calendar mTimestamp; /* @TODO DateFormat might be a better type */
     private double mPressure;
 
@@ -30,7 +30,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(Tire tire, double s11, int odoMileage, Calendar timestamp, double pressure) {
+    public TireSnapshot(Tire tire, double s11, double odoMileage, Calendar timestamp, double pressure) {
         super(tire);
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -45,7 +45,7 @@ public class TireSnapshot extends Tire {
      * @param timestamp Timestamp of snapshot
      * @param pressure Tire pressure
      */
-    public TireSnapshot(double s11, int odoMileage, Calendar timestamp, double pressure) {
+    public TireSnapshot(double s11, double odoMileage, Calendar timestamp, double pressure) {
         super();
         this.mS11 = s11;
         this.mOdometerMileage = odoMileage;
@@ -165,11 +165,11 @@ public class TireSnapshot extends Tire {
         this.mS11 = mS11;
     }
 
-    public int getOdometerMileage() {
+    public double getOdometerMileage() {
         return mOdometerMileage;
     }
 
-    public void setOdometerMileage(int mOdometerMileage) {
+    public void setOdometerMileage(double mOdometerMileage) {
         this.mOdometerMileage = mOdometerMileage;
     }
 

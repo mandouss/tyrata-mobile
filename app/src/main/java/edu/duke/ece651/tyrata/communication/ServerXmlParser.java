@@ -146,7 +146,7 @@ public class ServerXmlParser extends AppCompatActivity {
         }
 
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeVehicleData(-1, vin, make, model, year, axis_num, tire_num, user_id);
+        Database.storeVehicleData("",-1, vin, make, model, year, axis_num, tire_num, user_id);
         Database.myDatabase.close();
     }
 
@@ -208,7 +208,7 @@ public class ServerXmlParser extends AppCompatActivity {
             }
         }
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeTireData(-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
+        Database.storeTireData("",-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
         Database.myDatabase.close();
 
     }
