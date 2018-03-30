@@ -92,6 +92,10 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    public void cancelBtConnection(View view) {
+        BluetoothAPI.disableBt();
+    }
+
     public void sampleDataTest(View view) {
         try {
             InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);

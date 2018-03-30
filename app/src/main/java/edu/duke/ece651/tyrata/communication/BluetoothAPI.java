@@ -194,7 +194,7 @@ class BluetoothAPI {
     static String getDeviceName() {
         return mBluetoothAdapter.getName();
     }
-    
+
 
     private static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
