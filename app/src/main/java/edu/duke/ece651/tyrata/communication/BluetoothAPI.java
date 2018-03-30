@@ -35,7 +35,6 @@ class BluetoothAPI {
 
     /* GLOBAL */
     private static BluetoothAdapter mBluetoothAdapter; // Device BluetoothAPI adapter (required for all BluetoothAPI activity)
-    private static AcceptThread mAcceptThread;
     private static ConnectThread mConnectThread;
     private static ConnectedThread mConnectedThread;
     private static Handler mHandler; // handler that gets info from Bluetooth service
@@ -61,9 +60,8 @@ class BluetoothAPI {
 
     static void disableBt() {
         // Make sure we're not doing discovery anymore
-        if (mBluetoothAdapter != null) {
-            mBluetoothAdapter.cancelDiscovery();
-        }
+        cancelBtDiscovery();
+        closeBtConnection();
     }
 
     static Set<BluetoothDevice> getBtPairedDevices() {
@@ -130,16 +128,6 @@ class BluetoothAPI {
         }
     }
 
-    static void acceptBt() {
-        // Start the thread to listen on a BluetoothServerSocket
-        if (mAcceptThread == null) {
-            Log.d(Common.LOG_TAG_BT_API, "Starting AcceptThread");
-            mAcceptThread = new AcceptThread();
-            mAcceptThread.start();
-        }
-        Log.d(Common.LOG_TAG_BT_API, "Starting ConnectThread...");
-    }
-
     static void connectBt(BluetoothDevice device) {
         Log.d(Common.LOG_TAG_BT_API, "ConnectThread() called");
         // Start the thread to connect with the given device
@@ -159,16 +147,12 @@ class BluetoothAPI {
      *
      */
     static void closeBtConnection() {
-        if (mAcceptThread != null)
-            mAcceptThread.cancel();
-
         if (mConnectThread != null)
             mConnectThread.cancel();
 
         if (mConnectedThread != null)
             mConnectedThread.cancel();
 
-        mAcceptThread = null;
         mConnectThread = null;
         mConnectedThread = null;
     }
@@ -210,65 +194,7 @@ class BluetoothAPI {
     static String getDeviceName() {
         return mBluetoothAdapter.getName();
     }
-
-    /**
-     * This thread runs while listening for incoming connections. It behaves
-     * like a server-side client. It runs until a connection is accepted
-     * (or until cancelled).
-     */
-    private static class AcceptThread extends Thread {
-        private final BluetoothServerSocket mmServerSocket;
-
-        AcceptThread() {
-            // Use a temporary object that is later assigned to mmServerSocket
-            // because mmServerSocket is final.
-            BluetoothServerSocket tmp = null;
-            try {
-                // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(
-                        "@string/app_name", Common.MY_UUID);
-            } catch (IOException e) {
-                Log.e(Common.LOG_TAG_BT_API, "Socket's listen() method failed", e);
-            }
-            mmServerSocket = tmp;
-            Log.d(Common.LOG_TAG_BT_API, "Bluetooth Server Socket " + mmServerSocket);
-        }
-
-        public void run() {
-            BluetoothSocket socket;
-            // Keep listening until exception occurs or a socket is returned.
-            while (true) {
-                try {
-                    socket = mmServerSocket.accept();
-                } catch (IOException e) {
-                    Log.e(Common.LOG_TAG_BT_API, "Socket's accept() method failed", e);
-                    break;
-                }
-
-                if (socket != null) {
-                    // A connection was accepted. Perform work associated with
-                    // the connection in a separate thread.
-                    connectedBt(socket, socket.getRemoteDevice());
-                    Log.d(Common.LOG_TAG_BT_API, "AcceptThread is ConnectedThread");
-                    try {
-                        mmServerSocket.close();
-                    } catch (IOException e) {
-                        Log.e(Common.LOG_TAG_BT_API, "Socket's close() method failed", e);
-                    }
-                    break;
-                }
-            }
-        }
-
-        // Closes the connect socket and causes the thread to finish.
-        void cancel() {
-            try {
-                mmServerSocket.close();
-            } catch (IOException e) {
-                Log.e(Common.LOG_TAG_BT_API, "Could not close the connect socket", e);
-            }
-        }
-    }
+    
 
     private static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
@@ -23,10 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
@@ -54,7 +49,6 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
 
         mTextViewReceived = findViewById(R.id.textView_s0_bt);
-//        mTextViewReceived.setMovementMethod(new ScrollingMovementMethod());
         mTextViewParsed = findViewById(R.id.textView_s1_bt);
 
         mXmlStream = "";
@@ -71,12 +65,6 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onDestroy();
 
         BluetoothAPI.disableBt();
-        BluetoothAPI.closeBtConnection();
-    }
-
-    public void pairedBluetooth(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "pairedBluetooth()");
-        BluetoothAPI.queryBtPairedDevices();
     }
 
     public void discoverBluetooth(View view) {
@@ -85,13 +73,6 @@ public class BluetoothActivity extends AppCompatActivity {
         // Launch the DeviceListActivity to see devices and do scan
         Intent serverIntent = new Intent(this, BluetoothDeviceListActivity.class);
         startActivityForResult(serverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
-    }
-
-    public void acceptBluetooth(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "acceptBluetooth()");
-
-        BluetoothAPI.acceptBt();
-
     }
 
     public void connectBluetooth(Intent data) {
@@ -122,26 +103,6 @@ public class BluetoothActivity extends AppCompatActivity {
             }
             reader.close();
             processMsg(sb.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendMsg(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "sendMsg()");
-        InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        byte[] data = new byte[16384];
-
-        try {
-            while ((nRead = in.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, nRead);
-            }
-            buffer.flush();
-            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Sending message...");
-            BluetoothAPI.write(buffer.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -317,12 +278,6 @@ public class BluetoothActivity extends AppCompatActivity {
                     }
                     break;
                 case Common.MESSAGE_WRITE:
-//                    byte[] writeBuf = (byte[]) msg.obj;
-//                    // construct a string from the buffer
-//                    String writeMessage = new String(writeBuf, 0, msg.arg1);
-//                    Log.d(Common.LOG_TAG_BT_ACTIVITY, writeMessage);
-//                    Toast.makeText(getApplicationContext(), "Msg written: "
-//                            + writeMessage, Toast.LENGTH_LONG).show();
                     Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
                                     + " Bytes!", Toast.LENGTH_LONG).show();
                     break;
