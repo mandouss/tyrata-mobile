@@ -299,10 +299,12 @@ class BluetoothAPI {
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 mmSocket.connect();
+                Log.d(Common.LOG_TAG_BT_API, "mmSocket.connect() successful!");
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and return.
                 try {
                     mmSocket.close();
+                    Log.d(Common.LOG_TAG_BT_API, "mmSocket.connect() failed...");
                 } catch (IOException closeException) {
                     Log.e(Common.LOG_TAG_BT_API, "Could not close the client socket", closeException);
                 }
@@ -368,6 +370,7 @@ class BluetoothAPI {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
+                    Log.d(Common.LOG_TAG_BT_API, "Bytes received: " + numBytes);
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = mHandler.obtainMessage(
                             Common.MESSAGE_READ, numBytes, -1, mmBuffer);
