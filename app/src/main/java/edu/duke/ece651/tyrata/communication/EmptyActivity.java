@@ -141,7 +141,7 @@ public class EmptyActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
-                Cursor c = Database.myDatabase.rawQuery("SELECT S11 FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
+                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                     thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
@@ -149,7 +149,16 @@ public class EmptyActivity extends AppCompatActivity {
                     time_to_replacement = timestamp;
                     c.close();
                 }
-                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, false, thickness, eol, time_to_replacement, longitude, lat);
+                boolean isoutlier = false;
+                double mean = Database.get_mean_s11(sensor_id);
+                Log.i("test outlier1", String.valueOf(mean));
+                //Database.testSnapTable();
+                if((s11 < mean - 3 * 0.01 || s11 > mean + 3 * 0.01) && mean != 0) {
+                    isoutlier = true;
+                }
+                Log.i("test outlier2", String.valueOf(isoutlier));
+
+                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, isoutlier, thickness, eol, time_to_replacement, longitude, lat);
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
