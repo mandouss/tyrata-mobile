@@ -22,39 +22,41 @@ public class HTTPsender extends AppCompatActivity {
 
     public String send_to_cloud(Context context){
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        ArrayList<Trace_item> trace_list = Database.getTrace();
+        Trace_item trace_item = Database.getTrace();
         Database.myDatabase.close();
-        String message = "<message>";
-
-        for(int i = 0; i < trace_list.size(); i++){
-            message = message + "<id>" + String.valueOf(trace_list.get(i).getId()) + "</id><method>" + trace_list.get(i).getMethod() + "</method>";
-            switch (trace_list.get(i).getTable_name()){
+        if(trace_item != null) {
+            String message = "<message>";
+            message = message + "<id>" + String.valueOf(trace_item.getId()) + "</id><method>" + trace_item.getMethod() + "</method>";
+            switch (trace_item.getTable_name()) {
                 case "USER":
-                    message = message + userMessage(trace_list.get(i).getTarget_id(),context);
+                    message = message + userMessage(trace_item.getTarget_id(), context);
                     break;
                 case "VEHICLE":
-                    message = message + vehicleMessage(trace_list.get(i).getTarget_id(),context);
+                    message = message + vehicleMessage(trace_item.getTarget_id(), context);
                     break;
                 case "TIRE":
-                    message = message + tireMessage(trace_list.get(i).getTarget_id(),context);
+                    message = message + tireMessage(trace_item.getTarget_id(), context);
                     break;
                 case "SNAPSHOT":
-                    message = message + snapshotMessage(trace_list.get(i).getTarget_id(),context);
+                    message = message + snapshotMessage(trace_item.getTarget_id(), context);
                     break;
                 case "ACCIDENT":
-                    message = message + accidentMessage(trace_list.get(i).getTarget_id(),context);
+                    message = message + accidentMessage(trace_item.getTarget_id(), context);
                     break;
                 default:
                     break;
             }
-            message = message + "<original_info>" + trace_list.get(i).getOrigin_info() + "</original_info>";
+            message = message + "<original_info>" + trace_item.getOrigin_info() + "</original_info>";
+
+            message = message + "</message>";
+            //HttpActivity httpActivity = new HttpActivity();
+            String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + message;
+            return myUrl;
         }
-        
-        message = message + "</message>";
-        //HttpActivity httpActivity = new HttpActivity();
-        String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + message;
         //httpActivity.startDownload(myUrl);
-        return myUrl;
+        else{
+            return null;
+        }
     }
 
     private String userMessage(int id,Context context){

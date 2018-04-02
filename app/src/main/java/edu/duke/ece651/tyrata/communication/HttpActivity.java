@@ -1,6 +1,7 @@
 package edu.duke.ece651.tyrata.communication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -37,7 +38,7 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
 
     public void startDownload(String myUrl) {
 
-        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl);
+        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl,getApplicationContext());
         if (!mDownloading && mNetworkFragment != null) {
             // Execute the async download.
             mNetworkFragment.startDownload();
@@ -49,6 +50,7 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
     public void updateFromDownload(String result) {
         if (result != null) {
             mDataText.setText(result);
+
         } else {
             mDataText.setText(getString(R.string.connection_error));
         }
@@ -92,7 +94,9 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         HTTPsender httpSender = new HTTPsender();
         String myUrl = httpSender.send_to_cloud(getApplicationContext());
         //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
-        startDownload(myUrl);
+        if(myUrl != null){
+            startDownload(myUrl);
+        }
     }
 
     public void finishDownloading(View view) {

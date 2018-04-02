@@ -440,25 +440,22 @@ public class Database extends AppCompatActivity {
         return curr_vehicle;
     }
 
-    public static ArrayList<Trace_item> getTrace(){
-        ArrayList<Trace_item> trace_list = new ArrayList<Trace_item>();
-        Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE",null);
+    public static Trace_item getTrace(){
+        //ArrayList<Trace_item> trace_list = new ArrayList<Trace_item>();
+        Trace_item trace_item = new Trace_item();
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE WHERE ID = (SELECT min(ID) FROM TRACE)",null);
         if(c == null){
             return null;
         }
-        if(c.moveToFirst()){
-            do{
-                Trace_item trace_item = new Trace_item();
-                trace_item.setId(c.getInt(c.getColumnIndex("ID")));
-                trace_item.setMethod(c.getString(c.getColumnIndex("METHOD_NAME")));
-                trace_item.setTable_name(c.getString(c.getColumnIndex("TABLE_NAME")));
-                trace_item.setTarget_id(c.getInt(c.getColumnIndex("TARGET_ID")));
-                trace_item.setOrigin_info(c.getString(c.getColumnIndex("ORIGINAL_INFO")));
-                trace_list.add(trace_item);
-            }while (c.moveToNext());
-        }
+        c.moveToFirst();
+        trace_item.setId(c.getInt(c.getColumnIndex("ID")));
+        trace_item.setMethod(c.getString(c.getColumnIndex("METHOD_NAME")));
+        trace_item.setTable_name(c.getString(c.getColumnIndex("TABLE_NAME")));
+        trace_item.setTarget_id(c.getInt(c.getColumnIndex("TARGET_ID")));
+        trace_item.setOrigin_info(c.getString(c.getColumnIndex("ORIGINAL_INFO")));
+        //trace_list.add(trace_item);
         c.close();
-        return trace_list;
+        return trace_item;
     }
 
     /* Created by De Lan on 3/18/2018.*/
@@ -561,6 +558,12 @@ public class Database extends AppCompatActivity {
     public static void deleteTire(String sensor_ID ) {
         updateTrace( "DELETE", "TIRE", 0, sensor_ID);
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = '" + sensor_ID + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
+    }
+
+    public static void deleteTrace(int ID){
+        String del = "DELETE FROM TRACE WHERE ID = '" + ID + "'";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
     }
