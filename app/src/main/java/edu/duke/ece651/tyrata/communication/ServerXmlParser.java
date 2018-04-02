@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -67,10 +68,32 @@ public class ServerXmlParser extends AppCompatActivity {
             String name = parser.getName();
             switch (name) {
                 case "success":
-                    message = readcontent(parser,"success");
+                    readSuccess(parser,context);
                     break;
                 case "error":
                     message = readcontent(parser,"error");
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    skip(parser);
+                    break;
+            }
+        }
+    }
+
+    private void readSuccess(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
+        parser.require(XmlPullParser.START_TAG, ns, "success");
+        while (parser.next() != XmlPullParser.END_TAG){
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            switch (name) {
+                case "id":
+                    int id = Integer.valueOf(readcontent(parser,"id"));
+                    Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                    Database.deleteTrace(id);
+                    Database.myDatabase.close();
                     break;
                 default:
                     skip(parser);

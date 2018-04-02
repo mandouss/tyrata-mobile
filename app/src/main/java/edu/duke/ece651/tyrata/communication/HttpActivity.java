@@ -11,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.duke.ece651.tyrata.R;
+
+import static java.lang.Thread.sleep;
 
 public class HttpActivity extends FragmentActivity implements DownloadCallback {
 
@@ -90,13 +93,20 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         }
     }
 
-    public void startDownload(View view) {
+    public void startDownload(View view) throws InterruptedException {
         HTTPsender httpSender = new HTTPsender();
         String myUrl = httpSender.send_to_cloud(getApplicationContext());
-        //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
-        if(myUrl != null){
-            startDownload(myUrl);
-        }
+        do {
+            //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
+            if (myUrl != null) {
+                startDownload(myUrl);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "no update needs to do", Toast.LENGTH_SHORT).show();
+            }
+            myUrl = httpSender.send_to_cloud(getApplicationContext());
+            sleep(1000);
+        }while(myUrl != null);
     }
 
     public void finishDownloading(View view) {
