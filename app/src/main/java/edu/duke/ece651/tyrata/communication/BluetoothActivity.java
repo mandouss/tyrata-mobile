@@ -12,20 +12,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
@@ -39,11 +34,15 @@ import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 public class BluetoothActivity extends AppCompatActivity {
 
+    /* CONSTANTS */
+    private byte EOF = 0; // End-of-File byte
+
     /* GLOBAL VARIABLES */
     private TextView mTextViewReceived;
     private TextView mTextViewParsed;
     private String mXmlStream;
     private String mParsedMsg;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
 
         mTextViewReceived = findViewById(R.id.textView_s0_bt);
-//        mTextViewReceived.setMovementMethod(new ScrollingMovementMethod());
         mTextViewParsed = findViewById(R.id.textView_s1_bt);
 
         mXmlStream = "";
@@ -67,12 +65,6 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onDestroy();
 
         BluetoothAPI.disableBt();
-        BluetoothAPI.closeBtConnection();
-    }
-
-    public void pairedBluetooth(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "pairedBluetooth()");
-        BluetoothAPI.queryBtPairedDevices();
     }
 
     public void discoverBluetooth(View view) {
@@ -81,13 +73,6 @@ public class BluetoothActivity extends AppCompatActivity {
         // Launch the DeviceListActivity to see devices and do scan
         Intent serverIntent = new Intent(this, BluetoothDeviceListActivity.class);
         startActivityForResult(serverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
-    }
-
-    public void acceptBluetooth(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "acceptBluetooth()");
-
-        BluetoothAPI.acceptBt();
-
     }
 
     public void connectBluetooth(Intent data) {
@@ -107,12 +92,16 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    public void cancelBtConnection(View view) {
+        BluetoothAPI.disableBt();
+    }
+
     public void sampleDataTest(View view) {
         try {
             InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
@@ -123,54 +112,16 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
-    public void sendMsg(View view) {
-        Log.d(Common.LOG_TAG_BT_ACTIVITY, "sendMsg()");
-        InputStream in = getResources().openRawResource(R.raw.xml_bluetooth_sample);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        byte[] data = new byte[16384];
-
-        try {
-            while ((nRead = in.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, nRead);
-            }
-            buffer.flush();
-            Log.d(Common.LOG_TAG_BT_ACTIVITY, "Sending message...");
-            BluetoothAPI.write(buffer.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void displayMsg(String msg, TextView textView) {
         textView.setText(msg);
     }
 
     public void processMsg(String msg) {
-        // Create/Update XML string
-        if (msg.startsWith("<?xml")) {
-            // beginning of XML data
-            mXmlStream = msg;
-
-        } else {
-            // middle of XML data
-            mXmlStream += msg;
-        }
-
-        displayMsg(mXmlStream, mTextViewReceived);
+        Toast.makeText(getApplicationContext(), "Received " +msg.length() + " bytes.",
+                Toast.LENGTH_SHORT).show();
+        displayMsg(msg, mTextViewReceived);
         try {
-            // construct an InputStream from XML string
-            InputStream in = new ByteArrayInputStream(mXmlStream.getBytes("UTF-8"));
-            in.mark(0);
-            // Validate XML format
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            dBuilder.parse(in);
-            in.reset();
-            // No exceptions/errors --> valid XML format
-            Toast.makeText(getApplicationContext(), "Received XML data! Parsing...",
-                    Toast.LENGTH_SHORT).show();
+            InputStream in = new ByteArrayInputStream(msg.getBytes("UTF-8"));
             // parse the message
             BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
             ArrayList<TireSnapshot> tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
@@ -187,18 +138,12 @@ public class BluetoothActivity extends AppCompatActivity {
                 mParsedMsg += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 mParsedMsg += "\n\n";
                 displayMsg(mParsedMsg, mTextViewParsed);
-                //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
             }
-        } catch (SAXException e) {
-            // Parsing XML failed (invalid XML file)
-            // Invalid --> assume incomplete and wait for rest of data
-            Log.w(Common.LOG_TAG_BT_ACTIVITY, "Received incomplete XML data. Waiting for more...");
-            return;
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -212,21 +157,18 @@ public class BluetoothActivity extends AppCompatActivity {
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enable request canceled");
                     Toast.makeText(getApplicationContext(),
-                            "Bluetooth request cancelled...",
+                            "Bluetooth request cancelled. Cannot connect to sensors...",
                             Toast.LENGTH_LONG).show();
-                    // @todo Disable bluetooth features
                 }
                 else if (resultCode == RESULT_OK) {
-                    // @todo connect to sensor/simulator
                     Log.v(Common.LOG_TAG_BT_ACTIVITY, "Bluetooth enabled");
                 }
                 break;
             case Common.REQUEST_ACCESS_COARSE_LOCATION:
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_BT_ACTIVITY, "Location access request cancelled");
-                    // @todo Cannot discover devices
                     Toast.makeText(getApplicationContext(),
-                            "Location access request cancelled...",
+                            "Location access request cancelled. Cannot discover Bluetooth devices...",
                             Toast.LENGTH_LONG).show();
                 }
                 else if (resultCode == RESULT_OK) {
@@ -238,10 +180,17 @@ public class BluetoothActivity extends AppCompatActivity {
             case Common.REQUEST_CONNECT_BT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
                     connectBluetooth(data);
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Connection Bluetooth Device Failed...",
+                            Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
                 Log.w(Common.LOG_TAG_BT_ACTIVITY, "Unknown REQUEST_CODE " + requestCode);
+                Toast.makeText(getApplicationContext(),
+                        "Something went wrong (Unknown REQUEST_CODE)...",
+                        Toast.LENGTH_LONG).show();
         }
     }
 
@@ -259,17 +208,13 @@ public class BluetoothActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
-                    Log.d(Common.LOG_TAG_BT_ACTIVITY, msgStr.length() + " Bytes read");
-                    displayMsg(msgStr, mTextViewReceived);
-                    processMsg(msgStr);
+                    mXmlStream += msgStr;
+                    if (readBuf[msg.arg1-1] == EOF) { // reached end of message/file
+                        Log.d(Common.LOG_TAG_BT_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
+                        processMsg(mXmlStream);
+                    }
                     break;
                 case Common.MESSAGE_WRITE:
-//                    byte[] writeBuf = (byte[]) msg.obj;
-//                    // construct a string from the buffer
-//                    String writeMessage = new String(writeBuf, 0, msg.arg1);
-//                    Log.d(Common.LOG_TAG_BT_ACTIVITY, writeMessage);
-//                    Toast.makeText(getApplicationContext(), "Msg written: "
-//                            + writeMessage, Toast.LENGTH_LONG).show();
                     Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
                                     + " Bytes!", Toast.LENGTH_LONG).show();
                     break;
