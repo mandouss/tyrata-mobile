@@ -7,10 +7,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
     <application
         android:allowBackup="true"
@@ -19,8 +17,7 @@
         android:roundIcon="@drawable/tyrata"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity android:name=".user.Log_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,28 +25,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".calibration.Input_Vehicle_Info"/>
-            <!--android:parentActivityName=".MainActivity" />-->
+        <activity android:name=".calibration.Input_Vehicle_Info" />
+        <!-- android:parentActivityName=".MainActivity" /> -->
         <activity
             android:name=".display.Vehicle_Info"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".user.Register"
             android:parentActivityName=".user.Log_in" />
-        <activity
-            android:name=".calibration.Report_accident"/>
-            <!--android:parentActivityName=".MainActivity" />-->
+        <activity android:name=".calibration.Report_accident" />
+        <!-- android:parentActivityName=".MainActivity" /> -->
         <activity android:name=".communication.BluetoothActivity" />
         <activity
             android:name=".display.TireInfo"
             android:parentActivityName=".display.Vehicle_Info" />
-        <activity
-            android:name=".calibration.TireInfoInput"/>
-            <!--android:parentActivityName=".display.TireInfo" />-->
+        <activity android:name=".calibration.TireInfoInput" />
+        <!-- android:parentActivityName=".display.TireInfo" /> -->
         <activity android:name=".communication.EmptyActivity" />
-        <activity android:name=".communication.BluetoothDeviceListActivity"></activity>
-        <activity android:name=".communication.HttpActivity"></activity>
+        <activity android:name=".communication.BluetoothDeviceListActivity" />
+        <activity android:name=".communication.HttpActivity" />
+        <activity android:name=".communication.AuthenticationActivity"></activity>
     </application>
 
 </manifest>

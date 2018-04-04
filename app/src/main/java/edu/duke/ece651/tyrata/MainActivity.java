@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.communication.AuthenticationActivity;
 import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
@@ -170,6 +171,9 @@ public class MainActivity extends EmptyActivity {
             case R.id.n_submenu_XML:
                 testParseXml();
                 return true;
+            case R.id.n_submenu_Authentication:
+                goToAuthentication();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -208,6 +212,11 @@ public class MainActivity extends EmptyActivity {
 
         startActivity(intent);
         // Do something in response to button
+    }
+
+    public  void goToAuthentication() {
+        Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+        startActivity(intent);
     }
 
     private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
