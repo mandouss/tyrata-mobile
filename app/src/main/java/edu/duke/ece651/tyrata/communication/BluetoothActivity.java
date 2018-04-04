@@ -188,6 +188,9 @@ public class BluetoothActivity extends AppCompatActivity {
                 break;
             default:
                 Log.w(Common.LOG_TAG_BT_ACTIVITY, "Unknown REQUEST_CODE " + requestCode);
+                Toast.makeText(getApplicationContext(),
+                        "Something went wrong (Unknown REQUEST_CODE)...",
+                        Toast.LENGTH_LONG).show();
         }
     }
 

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -120,13 +119,14 @@ class BluetoothAPI {
 
     private static void connectBt(BluetoothDevice device) {
         Log.d(Common.LOG_TAG_BT_API, "ConnectThread() called");
+
+        // Close any previous attempts to connect
+        if (mConnectThread != null)
+            mConnectThread.cancel();
+
         // Start the thread to connect with the given device
-        if (mConnectThread == null) {
-            mConnectThread = new ConnectThread(device);
-            mConnectThread.start();
-        } else {
-            Log.d(Common.LOG_TAG_BT_API, "ConnectThread already exists");
-        }
+        mConnectThread = new ConnectThread(device);
+        mConnectThread.start();
     }
 
     static void connectBt(String deviceAddress) {
@@ -137,11 +137,10 @@ class BluetoothAPI {
      *
      */
     private static void closeBtConnection() {
-        if (mConnectThread != null)
-            mConnectThread.cancel();
-
         if (mConnectedThread != null)
             mConnectedThread.cancel();
+        else if (mConnectThread != null)
+            mConnectThread.cancel();
 
         mConnectThread = null;
         mConnectedThread = null;
@@ -220,7 +219,7 @@ class BluetoothAPI {
                 // Unable to connect; close the socket and return.
                 try {
                     mmSocket.close();
-                    Log.d(Common.LOG_TAG_BT_API, "mmSocket.connect() failed...");
+                    Log.d(Common.LOG_TAG_BT_API, "mmSocket.connect() failed", connectException);
                 } catch (IOException closeException) {
                     Log.e(Common.LOG_TAG_BT_API, "Could not close the client socket", closeException);
                 }
