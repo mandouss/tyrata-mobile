@@ -117,7 +117,7 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     public void processMsg(String msg) {
-        Toast.makeText(getApplicationContext(), "Received " +msg.length() + " bytes! Parsing...",
+        Toast.makeText(getApplicationContext(), "Received " +msg.length() + " bytes.",
                 Toast.LENGTH_SHORT).show();
         displayMsg(msg, mTextViewReceived);
         try {
