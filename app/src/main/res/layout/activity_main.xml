@@ -8,6 +8,10 @@
     android:background="@color/white"
     tools:context="edu.duke.ece651.tyrata.MainActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
     <TextView
         android:id="@+id/main_notification"
         android:layout_width="192dp"

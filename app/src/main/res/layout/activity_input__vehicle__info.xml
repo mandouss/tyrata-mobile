@@ -1,156 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/login_gradients"
     tools:context="edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:text="Please input your vehicle information: "
-        android:textSize="22dip"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/Make"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="40dp"
-        android:text="Make: "
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_make"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/Model"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:text="Model: "
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_model"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Make" />
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"/>
 
-    <TextView
-        android:id="@+id/Year"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:text="Year: "
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_year"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Model" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
 
-    <TextView
-        android:id="@+id/VIN"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:text="VIN: "
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_vin"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Year" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/edit_make"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="40dp"
-        android:ems="10"
-        android:hint="@string/edit_vehicle_make"
-        android:inputType="textLongMessage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/Make"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="Make"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
-    <EditText
-        android:id="@+id/edit_model"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:hint="@string/edit_vehicle_model"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/Model"
-        app:layout_constraintTop_toBottomOf="@+id/edit_make" />
+                <EditText
+                    android:id="@+id/edit_make"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:ems="10"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="0 - 20 characters"
+                    android:textSize="18dp"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:maxLines="1" />
 
-    <EditText
-        android:id="@+id/edit_year"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:hint="@string/edit_vehicle_year"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/Year"
-        app:layout_constraintTop_toBottomOf="@+id/edit_model" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
 
-    <EditText
-        android:id="@+id/edit_vin"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:hint="@string/edit_vehicle_vin"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/VIN"
-        app:layout_constraintTop_toBottomOf="@+id/edit_year" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="Model"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:onClick="saveMessage"
-        android:text="Submit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TireNumber" />
+                <EditText
+                    android:id="@+id/edit_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:ems="10"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="0 - 20 characters"
+                    android:textSize="18dp"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:maxLines="1" />
 
-    <TextView
-        android:id="@+id/TireNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignStart="@id/VIN"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="50dp"
-        android:text="Number of tires: "
-        android:textSize="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/VIN" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
 
-    <Spinner
-        android:id="@+id/spinner_tirenumber"
-        android:layout_width="160dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toEndOf="@+id/TireNumber"
-        app:layout_constraintTop_toBottomOf="@+id/edit_vin" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="VIN"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
-</android.support.constraint.ConstraintLayout>
+                <EditText
+                    android:id="@+id/edit_vin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:ems="10"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="0 - 20 characters"
+                    android:textSize="18dp"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:maxLines="1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:text="Year"
+                        android:textSize="20dp"
+                        android:layout_weight="0.5"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="80dp"
+                        android:text="Number of tires"
+                        android:layout_weight="0.5"
+                        android:textStyle="bold"
+                        android:textSize="20dp"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/edit_year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="12dp"
+                        android:padding="8dp"
+                        android:hint="XXXX"
+                        android:textSize="18dp"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/white"
+                        android:maxLines="1" />
+
+                    <Spinner
+                        android:id="@+id/spinner_tirenumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="1dp"
+                        android:background="@color/white" />
+                    <View
+                        android:layout_width="170dp"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@color/white" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/button_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/login_button"
+                    android:text="Submit"
+                    android:textColor="#2e2c57"
+                    android:textAllCaps="false"
+                    android:padding="12dp"
+                    android:clickable="true"
+                    android:onClick="saveMessage"
+                    android:layout_marginTop="40dp"
+                    android:textSize="20dp"
+                    style="@style/Base.TextAppearance.AppCompat.Body2"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>

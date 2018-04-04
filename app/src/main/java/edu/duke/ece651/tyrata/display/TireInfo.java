@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -113,6 +114,10 @@ public class TireInfo extends AppCompatActivity {
         setContentView(R.layout.activity_tire_info);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         axis_row = intent.getIntExtra("AXIS_ROW",0);
         axis_index = intent.getIntExtra("AXIS_INDEX",0);
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');

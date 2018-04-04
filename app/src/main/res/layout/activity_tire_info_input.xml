@@ -7,6 +7,10 @@
     android:background="@color/white"
     tools:context="edu.duke.ece651.tyrata.calibration.TireInfoInput">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"

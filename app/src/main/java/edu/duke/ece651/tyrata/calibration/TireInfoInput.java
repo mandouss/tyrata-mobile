@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.DragAndDropPermissions;
 import android.view.Menu;
@@ -38,6 +39,9 @@ public class TireInfoInput extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info_input);
         Intent intent = getIntent();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         axis_row = intent.getIntExtra("axis_ROW",0);
         axis_index = intent.getIntExtra("axis_IDX",0);
