@@ -90,6 +90,15 @@ public class Vehicle_Info extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new         Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
 
         //getVehicle
         // Get the Intent that started this activity and extract the string

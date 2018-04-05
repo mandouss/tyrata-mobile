@@ -1,6 +1,7 @@
 package edu.duke.ece651.tyrata.calibration;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);

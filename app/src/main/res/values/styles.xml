@@ -6,6 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
+    </style>
+
+    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!-- THIS is where you can color the arrow and the overflow button! -->
+        <item name="colorControlNormal">@color/white</item>
+        <item name="actionOverflowButtonStyle">@style/overflowButtonStyle</item>
+    </style>
+
+    <style name="overflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/white</item>
     </style>
 
     <style name="LoginEditText" parent="Theme.AppCompat.Light">
