@@ -9,9 +9,13 @@
     android:background="@drawable/login_background2"
     tools:context="edu.duke.ece651.tyrata.user.Log_in">
 
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:isScrollContainer="false">
 
         <LinearLayout
