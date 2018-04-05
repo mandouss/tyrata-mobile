@@ -36,6 +36,28 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
+    public static double get_mean_s11(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
+
+        if (c != null && c.moveToFirst()) {
+            if(c.getCount() < 10) {
+                c.close();
+                return 0;
+            }
+            double sum = 0;
+            int count = 0;
+            do {
+                count++;
+                sum += c.getDouble(c.getColumnIndex("S11"));
+            }while(c.moveToNext());
+            //Log.i("test number of data", String.valueOf(c.getCount()));
+            c.close();
+
+            return sum/count;
+        }
+        return 0;
+    }
+
     /* Updated by De Lan on 3/4/2018. */
     public static void createTable() {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
