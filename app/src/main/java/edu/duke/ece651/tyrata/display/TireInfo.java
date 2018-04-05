@@ -117,6 +117,15 @@ public class TireInfo extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new         Intent(getApplicationContext(),Vehicle_Info.class));
+            }
+        });
 
         axis_row = intent.getIntExtra("AXIS_ROW",0);
         axis_index = intent.getIntExtra("AXIS_INDEX",0);
