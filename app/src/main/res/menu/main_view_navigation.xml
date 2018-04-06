@@ -27,8 +27,6 @@
                 android:title="Get Tire Snapshot"/>
             <item android:id="@+id/n_submenu_Database"
                 android:title="Get Database"/>
-            <item android:id="@+id/n_submenu_Authentication"
-                android:title="Authentication"/>
         </menu>
     </item>
 

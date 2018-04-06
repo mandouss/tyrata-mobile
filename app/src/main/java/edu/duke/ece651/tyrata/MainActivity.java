@@ -1,12 +1,10 @@
 package edu.duke.ece651.tyrata;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import edu.duke.ece651.tyrata.calibration.Report_accident;
-import edu.duke.ece651.tyrata.communication.AuthenticationActivity;
 import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
@@ -26,7 +23,6 @@ import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,9 +167,6 @@ public class MainActivity extends EmptyActivity {
             case R.id.n_submenu_XML:
                 testParseXml();
                 return true;
-            case R.id.n_submenu_Authentication:
-                goToAuthentication();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -212,11 +205,6 @@ public class MainActivity extends EmptyActivity {
 
         startActivity(intent);
         // Do something in response to button
-    }
-
-    public  void goToAuthentication() {
-        Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
-        startActivity(intent);
     }
 
     private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {

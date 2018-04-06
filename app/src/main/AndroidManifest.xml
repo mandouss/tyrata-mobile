@@ -44,7 +44,6 @@
         <activity android:name=".communication.EmptyActivity" />
         <activity android:name=".communication.BluetoothDeviceListActivity" />
         <activity android:name=".communication.HttpActivity" />
-        <activity android:name=".communication.AuthenticationActivity"></activity>
     </application>
 
 </manifest>

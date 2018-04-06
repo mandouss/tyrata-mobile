@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.Arrays;
+
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -24,6 +26,14 @@ public class Log_in extends AppCompatActivity {
 
         EditText input_email = (EditText) findViewById(R.id.input_email);
         String message_email = input_email.getText().toString();
+
+        EditText inputPassword = findViewById(R.id.input_password);
+        String messagePassword = inputPassword.getText().toString();
+
+        if(!authenticateUser(message_email, messagePassword)) {
+            // Authentication failed
+            String msg = "Incorrect credentials. Please try again.";
+        }
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         int user_ID = Database.getUserID(message_email);
@@ -52,5 +62,20 @@ public class Log_in extends AppCompatActivity {
                 .setMessage("The email doesn't exist. Please enter the right email or register.")
                 .setPositiveButton("OK", null)
                 .show();
+    }
+
+    private boolean authenticateUser(String email, String password) {
+        //@TODO athenticate user with server
+
+//        // get user salt and hashed password from server
+//        byte salt[] = null; // from server
+//        byte serverHash[] = null; // from server
+//
+//        // re-calculate hashed password from user input and salt
+//        byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
+//
+//        // confirm password
+//        return Arrays.equals(hashedPassword, serverHash);
+        return true; // @TODO remove this line and uncomment code above (this bypass is temporary)
     }
 }
