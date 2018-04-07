@@ -1,5 +1,6 @@
 package edu.duke.ece651.tyrata.communication;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
@@ -39,6 +40,7 @@ public class ServerXmlParser extends AppCompatActivity {
     }
     private void readFeed(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
         parser.require(XmlPullParser.START_TAG, ns, "message");
+        String message;
         while (parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -49,31 +51,20 @@ public class ServerXmlParser extends AppCompatActivity {
                     readDownload(parser, context);
                     break;
                 case "ack":
-                    readAck(parser, context);
-                    break;
-                default:
-                    skip(parser);
-                    break;
-            }
-        }
-    }
-
-    private void readAck(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
-        parser.require(XmlPullParser.START_TAG, ns, "ack");
-        String message;
-        while (parser.next() != XmlPullParser.END_TAG){
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            switch (name) {
-                case "success":
-                    readSuccess(parser,context);
+                    int id = Integer.valueOf(readcontent(parser, "ack"));
+                    if (id > 0) {
+                        Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                        Database.deleteTrace(id);
+                        Database.myDatabase.close();
+                    }
                     break;
                 case "error":
                     message = readcontent(parser,"error");
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     break;
+                case "authentication":
+                    readAuthentication(parser, context);
+                    break;
                 default:
                     skip(parser);
                     break;
@@ -81,25 +72,31 @@ public class ServerXmlParser extends AppCompatActivity {
         }
     }
 
-    private void readSuccess(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
-        parser.require(XmlPullParser.START_TAG, ns, "success");
-        while (parser.next() != XmlPullParser.END_TAG){
+    private void readAuthentication(XmlPullParser parser, Context context) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "authentication");
+        while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
+            SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
             String name = parser.getName();
             switch (name) {
-                case "id":
-                    int id = Integer.valueOf(readcontent(parser,"id"));
-                    Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-                    Database.deleteTrace(id);
-                    Database.myDatabase.close();
+                case "hash":
+                    String hashed_pass = readcontent(parser, "hash");
+                    editor.putString("hash",hashed_pass);
+                    editor.commit();
+                    break;
+                case "salt":
+                    String salt = readcontent(parser, "salt");
+                    editor.putString("salt",salt);
+                    editor.commit();
                     break;
                 default:
                     skip(parser);
                     break;
             }
         }
+
     }
 
     private void readDownload(XmlPullParser parser, Context context) throws XmlPullParserException, IOException {
@@ -132,7 +129,6 @@ public class ServerXmlParser extends AppCompatActivity {
 
     private void readuser(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "user");
-        int user_id = 0;
         String username="";
         String email="";
         String phone="";
@@ -143,17 +139,14 @@ public class ServerXmlParser extends AppCompatActivity {
             }
             String name = parser.getName();
             switch (name) {
-                case "user_id":
-                    user_id = Integer.valueOf(readcontent(parser,"user_id"));
-                    break;
                 case "name":
                     username = readcontent(parser,"name");
                     break;
                 case "email":
                     email = readcontent(parser,"email");
                     break;
-                case "phone_number":
-                    phone = readcontent(parser,"phone_number");
+                case "phone_num":
+                    phone = readcontent(parser,"phone_num");
                     break;
                 default:
                     skip(parser);
@@ -197,11 +190,11 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "vin":
                     vin = readcontent(parser,"vin");
                     break;
-                case "tire_num":
-                    tire_num = Integer.valueOf(readcontent(parser,"tire_num"));
+                case "numtires":
+                    tire_num = Integer.valueOf(readcontent(parser,"numtires"));
                     break;
-                case "axis_num":
-                    axis_num = Integer.valueOf(readcontent(parser,"axis_num"));
+                case "numaxis":
+                    axis_num = Integer.valueOf(readcontent(parser,"numaxis"));
                     break;
                 case "user_id":
                     user_id = Integer.valueOf(readcontent(parser,"user_id"));

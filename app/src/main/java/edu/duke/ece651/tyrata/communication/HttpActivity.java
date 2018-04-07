@@ -53,6 +53,9 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
     public void updateFromDownload(String result) {
         if (result != null) {
             mDataText.setText(result);
+            SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
+            editor.putString("msg",result);
+            editor.commit();
 
         } else {
             mDataText.setText(getString(R.string.connection_error));

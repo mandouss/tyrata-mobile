@@ -2,13 +2,22 @@ package edu.duke.ece651.tyrata.user;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
+import edu.duke.ece651.tyrata.communication.HttpActivity;
 
 public class Register extends AppCompatActivity {
 
@@ -57,21 +66,22 @@ public class Register extends AppCompatActivity {
             if(msg.equals("")){
                 if(!registerUser(message_username, message_email, message_phone, message_password)) {
                     // @TODO register user with server failed
-                    msg = "Failed to register...";
+                    msg = "Failed to register.";
                     notification(msg);
                 }
-
-                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-                // For test, drop and create tables
-                Database.dropAllTable();
-                Database.createTable();
-                boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
-                Database.myDatabase.close();
-                if(emailExist){
-                    msg = "The email is already registered!";
-                    notification(msg);
-                } else{
-                    startActivity(intent);
+                else {
+                    Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                    // For test, drop and create tables
+                    Database.dropAllTable();
+                    Database.createTable();
+                    boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
+                    Database.myDatabase.close();
+                    if (emailExist) {
+                        msg = "The email is already registered!";
+                        notification(msg);
+                    } else {
+                        startActivity(intent);
+                    }
                 }
             } else{
                 notification(msg);
@@ -95,10 +105,40 @@ public class Register extends AppCompatActivity {
         byte salt[] = AuthenticationAPI.generateSalt();
         byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
 
+        String create_user = "<message><id>0</id><method>create</method><user><username>" + username
+                + "</username><email>" + email
+                + "</email><phone>" + phone
+                + "</phone><hash>" + String.valueOf(hashedPassword)
+                + "</hash><salt>" + String.valueOf(salt)
+                + "</salt></user><original_info></original_info></message>";
+        String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + create_user;
         //@TODO register user with server and return success/fail
+        HttpActivity httpActivity = new HttpActivity();
+        SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
+        editor.putString("msg","");
+        editor.commit();
+        httpActivity.startDownload(myUrl);
 
-
-        return true;
+        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
+        String message = "";
+        do{
+            message= editor_get.getString("msg","");
+        }while (message == "");
+        if(message.equals("<message><ack>0</ack></message>")) {
+            return true;
+        }
+        else{
+            ServerXmlParser parser = new ServerXmlParser();
+            InputStream msg = new ByteArrayInputStream(message.getBytes());
+            try {
+                parser.parse_server(msg, getApplicationContext());
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
     }
 
 }
