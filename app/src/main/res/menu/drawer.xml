@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/d_name"
+        android:title="name: Ming"/>
+    <item android:id="@+id/d_email"
+        android:title="email: ming@duke.edu"/>
+    <item android:id="@+id/d_phone"
+        android:title="phone: 1234567"/>
+    <item android:id="@+id/edit_account"
+        android:title="Edit"/>
+    <item android:id="@+id/log_out"
+        android:title="Logout"/>
+
+</menu>

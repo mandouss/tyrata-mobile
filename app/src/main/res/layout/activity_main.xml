@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="visible"
-    android:background="#f2f2f2"
     android:orientation="vertical"
     tools:context="edu.duke.ece651.tyrata.MainActivity">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
+    <include
+        android:id="@+id/drawer"
+        layout="@layout/drawer_main" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -133,5 +134,5 @@
 
 </ScrollView>
 
-
 </LinearLayout>
+
