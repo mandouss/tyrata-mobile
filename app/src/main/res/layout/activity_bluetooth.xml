@@ -9,16 +9,6 @@
     tools:context="edu.duke.ece651.tyrata.communication.BluetoothActivity">
 
     <Button
-        android:id="@+id/btn_s1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="pairedBluetooth"
-        android:text="Paired Devices"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="86dp" />
-
-    <Button
         android:id="@+id/btn_s2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,28 +17,7 @@
         android:onClick="discoverBluetooth"
         android:text="Discover Devices"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s1" />
-
-    <Button
-        android:id="@+id/btn_s3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="acceptBluetooth"
-        android:text="Accept BT"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s2"
-        tools:layout_editor_absoluteX="160dp" />
-
-    <Button
-        android:id="@+id/btn_s5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="sendMsg"
-        android:text="SEND MSG"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s4"
-        tools:layout_editor_absoluteX="160dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_s4"
@@ -56,11 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:onClick="sampleDataTest"
-        android:text="Sample Data Test"
+        android:onClick="cancelBtConnection"
+        android:text="Cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_s3" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_s2" />
 
     <LinearLayout
         android:layout_width="match_parent"

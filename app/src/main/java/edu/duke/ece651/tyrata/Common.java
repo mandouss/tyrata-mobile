@@ -15,6 +15,9 @@ public class Common {
     public static final String LOG_TAG_BT_API = "BluetoothAPI";
     public static final String LOG_TAG_BT_ACTIVITY = "BluetoothActivity";
     public static final String LOG_TAG_BT_DEVICE_LIST_ACTIVITY = "BtDeviceListActivity";
+    public static final String LOG_TAG_REGISTER_ACTIVITY = "RegisterActivity";
+    public static final String LOG_TAG_LOGIN_ACTIVITY = "LoginActivity";
+    public static final String LOG_TAG_AUTHENTICATION_API = "AuthenticationAPI";
 
     // Defines constants for bundle keywords/tags
     public static final String DEVICE_NAME = "device_name";
