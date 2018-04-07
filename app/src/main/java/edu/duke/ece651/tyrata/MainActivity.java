@@ -126,7 +126,12 @@ public class MainActivity extends EmptyActivity {
         int img[] ;
         img = new int[number];
         for(int i = 0;i < number; i++) {
-            img[i] = R.drawable.vehicle;
+            if(i%2==0) {
+                img[i] = R.drawable.vehicle_list2;
+            }
+            else{
+                img[i] = R.drawable.vehicle_list3;
+            }
         }
         list = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < number; i++) {

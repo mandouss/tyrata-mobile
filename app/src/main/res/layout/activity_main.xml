@@ -1,83 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    android:background="@color/white"
+    android:background="#f2f2f2"
+    android:orientation="vertical"
     tools:context="edu.duke.ece651.tyrata.MainActivity">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-    <TextView
-        android:id="@+id/main_notification"
-        android:layout_width="192dp"
-        android:layout_height="146dp"
-        android:layout_marginTop="20dp"
-        android:textSize="24sp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.53"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/main"
+        android:elevation="6dp"
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/vehicle_list"
-        android:layout_width="401dp"
-        android:layout_height="199dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="20dp"
-        android:dividerHeight="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_listlabel" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                android:src="@drawable/user_child"/>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/label_user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="User:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView_user"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginBottom="140dp"
+            android:layout_marginRight="10dp"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal" />
 
-    <TextView
-        android:id="@+id/label_user_email"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="Email:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/label_user_name" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/label_user_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="Phone:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/label_user_email" />
 
-    <TextView
-        android:id="@+id/textView_user"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/label_user_name"
-        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:elevation="6dp">
+
+
+
+            </GridLayout>
+
+            <edu.duke.ece651.tyrata.display.ListViewForScrollView
+                android:id="@+id/vehicle_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:dividerHeight="0dp"
+                tools:listheader=""
+                android:background="#f2f2f2" />
+
+
+
+
+
+
+
+
+
 
     <TextView
         android:id="@+id/textView_email"
@@ -99,37 +105,33 @@
         app:layout_constraintStart_toEndOf="@+id/label_user_phone"
         app:layout_constraintTop_toBottomOf="@+id/textView_email" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="144dp"
-        android:layout_height="145dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/user" />
 
-    <TextView
-        android:id="@+id/textView_listlabel"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="30dp"
-        android:text="Vehicle List: "
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+            <Button
+                android:id="@+id/notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="8dp"
+                android:onClick="onClick"
+                android:text="Notification"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
 
-    <Button
-        android:id="@+id/notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="8dp"
-        android:onClick="onClick"
-        android:text="Notification"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
+            <TextView
+                android:id="@+id/main_notification"
+                android:layout_width="192dp"
+                android:layout_height="146dp"
+                android:layout_marginTop="20dp"
+                android:textSize="24sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.53"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
+
+        </LinearLayout>
+
+</ScrollView>
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
