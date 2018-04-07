@@ -40,7 +40,7 @@ public class BluetoothActivity extends AppCompatActivity {
     /* GLOBAL VARIABLES */
     private TextView mTextViewReceived;
     private TextView mTextViewParsed;
-    private String mXmlStream;
+    private StringBuilder mXmlStream;
     private String mParsedMsg;
 
 
@@ -52,7 +52,8 @@ public class BluetoothActivity extends AppCompatActivity {
         mTextViewReceived = findViewById(R.id.textView_s0_bt);
         mTextViewParsed = findViewById(R.id.textView_s1_bt);
 
-        mXmlStream = "";
+        mXmlStream = new StringBuilder();
+//        mXmlStream = "";
         mParsedMsg = "";
 
         // Enable Bluetooth
@@ -208,10 +209,11 @@ public class BluetoothActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
-                    mXmlStream += msgStr;
+                    mXmlStream.append(msgStr);
+//                    mXmlStream += msgStr;
                     if (readBuf[msg.arg1-1] == EOF) { // reached end of message/file
                         Log.d(Common.LOG_TAG_BT_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
-                        processMsg(mXmlStream);
+                        processMsg(mXmlStream.toString());
                     }
                     break;
                 case Common.MESSAGE_WRITE:
