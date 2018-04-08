@@ -81,11 +81,6 @@ public class ServerXmlParser extends AppCompatActivity {
             SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
             String name = parser.getName();
             switch (name) {
-                case "hash":
-                    String hashed_pass = readcontent(parser, "hash");
-                    editor.putString("hash",hashed_pass);
-                    editor.commit();
-                    break;
                 case "salt":
                     String salt = readcontent(parser, "salt");
                     editor.putString("salt",salt);
@@ -157,6 +152,7 @@ public class ServerXmlParser extends AppCompatActivity {
         Database.createTable();
         Database.storeUserData(username, email, phone);
         Database.testUserTable();
+        Database.deleteNewestTrace();
         Database.myDatabase.close();
     }
 
@@ -170,7 +166,7 @@ public class ServerXmlParser extends AppCompatActivity {
         String vin = "";
         Integer axis_num = 0;
         Integer tire_num = 0;
-        Integer user_id = 0;
+        String email = "";
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -196,17 +192,18 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "numaxis":
                     axis_num = Integer.valueOf(readcontent(parser,"numaxis"));
                     break;
-                case "user_id":
-                    user_id = Integer.valueOf(readcontent(parser,"user_id"));
+                case "email":
+                    email = readcontent(parser,"email");
                     break;
                 default:
                     skip(parser);
                     break;
             }
         }
-
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+        int user_id  = Database.getUserID(email);
         Database.storeVehicleData("",-1, vin, make, model, year, axis_num, tire_num, user_id);
+        Database.deleteNewestTrace();
         Database.myDatabase.close();
     }
 
@@ -221,8 +218,6 @@ public class ServerXmlParser extends AppCompatActivity {
         String axisSide = "";
         int axisIndex = 0;
         double init_thickness = 0;
-        int INIT_SS_ID = 0;
-        int CUR_SS_ID = 0;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -241,8 +236,8 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "sku":
                     sku = readcontent(parser,"sku");
                     break;
-                case "vehicle_id":
-                    vin = readcontent(parser,"vehicle_id");
+                case "vin":
+                    vin = readcontent(parser,"vin");
                     break;
                 case "axis_row":
                     axisRow = Integer.valueOf(readcontent(parser,"axis_row"));
@@ -253,12 +248,6 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "axis_index":
                     axisIndex = Integer.valueOf(readcontent(parser,"axis_index"));
                     break;
-                case "init_ss_id":
-                    INIT_SS_ID = Integer.valueOf(readcontent(parser,"init_ss_id"));
-                    break;
-                case "cur_ss_id":
-                    CUR_SS_ID = Integer.valueOf(readcontent(parser,"cur_ss_id"));
-                    break;
                 case "init_thickness":
                     init_thickness = Integer.valueOf(readcontent(parser,"init_thickness"));
                     break;
@@ -268,19 +257,19 @@ public class ServerXmlParser extends AppCompatActivity {
             }
         }
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeTireData("",-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
+        Database.storeTireData("",-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, 0, 0);
+        Database.deleteNewestTrace();
         Database.myDatabase.close();
 
     }
 
     private void readsnapshot(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "snapshot");
-        Integer id = 0;
         Double s11 = 0.0;
         String timestamp = "";
         Double mileage = 0.0;
         Double pressure = 0.0;
-        String tire_id = "";
+        String sensor_id = "";
         boolean outlier = false;
         Double thickness = 0.0;
         String eol = "";
@@ -293,9 +282,6 @@ public class ServerXmlParser extends AppCompatActivity {
             }
             String name = parser.getName();
             switch (name) {
-                case "id":
-                    id = Integer.valueOf(readcontent(parser,"id"));
-                    break;
                 case "s11":
                     s11 = Double.valueOf(readcontent(parser,"s11"));
                     break;
@@ -308,8 +294,8 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "pressure":
                     pressure = Double.valueOf(readcontent(parser,"pressure"));
                     break;
-                case "tire_id":
-                    tire_id = readcontent(parser,"tire_id");
+                case "sensor_id":
+                    sensor_id = readcontent(parser,"sensor_id");
                     break;
                 case "outlier":
                     outlier = Boolean.parseBoolean(readcontent(parser,"outlier"));
@@ -334,9 +320,9 @@ public class ServerXmlParser extends AppCompatActivity {
                     break;
             }
         }
-
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", 0, null);
-        Database.storeSnapshot(s11, timestamp, mileage, pressure, tire_id, outlier, thickness, eol, time_to_replacement, longitutde, lat);
+        Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, outlier, thickness, eol, time_to_replacement, longitutde, lat);
+        Database.deleteNewestTrace();
         Database.myDatabase.close();
 
     }

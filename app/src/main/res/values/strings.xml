@@ -14,10 +14,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="edit_vehicle_make">Enter the make of vehicle</string>
-    <string name="edit_vehicle_model">Enter the model of vehicle</string>
-    <string name="edit_vehicle_year">Enter the year of vehicle</string>
-    <string name="edit_vehicle_vin">Enter the VIN of vehicle</string>
 
     <!--  DeviceListActivity -->
     <string name="bt_scanning">scanning for devices...</string>
@@ -36,6 +32,8 @@
     <string name="clear_text">Clear</string>
     <string name="connection_error">Connection error.</string>
     <string name="fetch_cancelled">Fetch cancelled.</string>
+
+    <string name="url">http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=</string>
 
 
 </resources>

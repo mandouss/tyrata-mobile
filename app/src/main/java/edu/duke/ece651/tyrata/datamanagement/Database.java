@@ -2,10 +2,13 @@ package edu.duke.ece651.tyrata.datamanagement;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Trace;
+import android.support.annotation.Nullable;
 import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +18,8 @@ import android.widget.TextView;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
@@ -586,6 +591,12 @@ public class Database extends AppCompatActivity {
 
     public static void deleteTrace(int ID){
         String del = "DELETE FROM TRACE WHERE ID = '" + ID + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
+    }
+
+    public static void deleteNewestTrace(){
+        String del = "DELETE FROM TRACE WHERE ID = (SELECT MAX(ID) FROM TRACE)";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
     }

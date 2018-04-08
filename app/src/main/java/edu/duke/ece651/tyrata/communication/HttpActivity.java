@@ -96,7 +96,14 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         }
     }
 
-    public void startDownload(View view) throws InterruptedException {
+    public void startDownload(View view){
+        try {
+            startDownload();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public void startDownload() throws InterruptedException {
         HTTPsender httpSender = new HTTPsender();
         String myUrl = httpSender.send_to_cloud(getApplicationContext());
         do {

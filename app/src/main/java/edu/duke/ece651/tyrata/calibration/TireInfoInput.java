@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.communication.HttpActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.vehicle.Tire;
@@ -130,6 +131,8 @@ public class TireInfoInput extends AppCompatActivity {
                     msg = "The Sensor ID already exists!";
                     throw new IOException();
                 }
+                HttpActivity send = new HttpActivity();
+                send.startDownload();
                 intent.putExtra("AXIS_ROW", axis_row);
                 intent.putExtra("AXIS_INDEX", axis_index);
                 intent.putExtra("AXIS_SIDE", axis_side);

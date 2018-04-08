@@ -1,11 +1,14 @@
 package edu.duke.ece651.tyrata.communication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Tire;
@@ -19,6 +22,24 @@ import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertCalendarToStrin
  */
 
 public class HTTPsender extends AppCompatActivity {
+
+    public String send_and_receive(String message){
+        String myUrl = getResources().getString(R.string.url) + message;
+        HttpActivity httpActivity = new HttpActivity();
+        SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
+        editor.putString("msg","");
+        editor.commit();
+        Log.i("send",myUrl);
+        httpActivity.startDownload(myUrl);
+
+        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
+        String message_get = "";
+        do{
+            message_get= editor_get.getString("msg","");
+        }while (message_get == "");
+        Log.i("receive",message_get);
+        return message_get;
+    }
 
     public String send_to_cloud(Context context){
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
@@ -50,7 +71,7 @@ public class HTTPsender extends AppCompatActivity {
 
             message = message + "</message>";
             //HttpActivity httpActivity = new HttpActivity();
-            String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + message;
+            String myUrl = getResources().getString(R.string.url) + message;
             return myUrl;
         }
         //httpActivity.startDownload(myUrl);

@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.communication.HTTPsender;
 import edu.duke.ece651.tyrata.communication.HttpActivity;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -40,7 +41,7 @@ public class Log_in extends AppCompatActivity {
 
         if(!authenticateUser(message_email, messagePassword)) {
             // Authentication failed
-            String msg = "Incorrect credentials. Please try again.";
+            String msg = "Incorrect credentials. Please enter the right information or register.";
             notification(msg);
         }
         else {
@@ -52,36 +53,21 @@ public class Log_in extends AppCompatActivity {
                 intent.putExtra("USER_ID", user_ID);
                 startActivity(intent);
             } else {
-                Log.i("exist", "No");
-                String msg = "The email doesn't exist. Please enter the right email or register.";
-                notification(msg);
+                getDatabase(message_email);
+                Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                user_ID = Database.getUserID(message_email);
+                Database.myDatabase.close();
+                intent.putExtra("USER_ID", user_ID);
+                startActivity(intent);
             }
         }
-
-    }
-    public void switchto_register(View view) {
-        Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
-
-        startActivity(intent);
-        // Do something in response to button
     }
 
-    public void notification(String msg){
-        new AlertDialog.Builder(this)
-                .setTitle("NOTIFICATION")
-                .setMessage(msg)
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private boolean authenticateUser(String email, String password) {
-        //@TODO athenticate user with server
-        String user = "<message><authentication><email>" + email + "</email></authentication></message>";
-        String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + user;
+    public void getDatabase(String email){
+        String get_message = "<message><method>get</method><email>" + email + "</email></message>";
+        String myUrl = getResources().getString(R.string.url) + get_message;
         HttpActivity httpActivity = new HttpActivity();
         SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
-        editor.putString("hash","");
-        editor.putString("salt","");
         editor.putString("msg","");
         editor.commit();
         httpActivity.startDownload(myUrl);
@@ -101,23 +87,56 @@ public class Log_in extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void switchto_register(View view) {
+        Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
+
+        startActivity(intent);
+        // Do something in response to button
+    }
+
+    public void notification(String msg){
+        new AlertDialog.Builder(this)
+                .setTitle("NOTIFICATION")
+                .setMessage(msg)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    private boolean authenticateUser(String email, String password) {
+        //@TODO athenticate user with server
+        String user = "<message><authentication><email>" + email + "</email></authentication></message>";
+        HTTPsender send_get = new HTTPsender();
+        String message = send_get.send_and_receive(user);
+        ServerXmlParser parser = new ServerXmlParser();
+        InputStream msg = new ByteArrayInputStream(message.getBytes());
+        try {
+            parser.parse_server(msg, getApplicationContext());
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
         String salt_get = "";
-        String hash_get = "";
         do{
             salt_get = editor_get.getString("salt","");
-            hash_get = editor_get.getString("hash","");
-        }while (salt_get == "" || hash_get == "");
+        }while (salt_get == "");
 
 
         // get user salt and hashed password from server
         byte salt[] = salt_get.getBytes(); // from server
-        byte serverHash[] = hash_get.getBytes(); // from server
 
         // re-calculate hashed password from user input and salt
         byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
 
         // confirm password
-        return Arrays.equals(hashedPassword, serverHash);
+        message = send_get.send_and_receive(String.valueOf(hashedPassword));
+        if(message.equals("<message><authentication>success</authentication></message>")){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

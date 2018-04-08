@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import edu.duke.ece651.tyrata.R;
+import edu.duke.ece651.tyrata.communication.HTTPsender;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.communication.HttpActivity;
@@ -111,19 +112,10 @@ public class Register extends AppCompatActivity {
                 + "</phone><hash>" + String.valueOf(hashedPassword)
                 + "</hash><salt>" + String.valueOf(salt)
                 + "</salt></user><original_info></original_info></message>";
-        String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + create_user;
-        //@TODO register user with server and return success/fail
-        HttpActivity httpActivity = new HttpActivity();
-        SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
-        editor.putString("msg","");
-        editor.commit();
-        httpActivity.startDownload(myUrl);
 
-        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
-        String message = "";
-        do{
-            message= editor_get.getString("msg","");
-        }while (message == "");
+        //@TODO register user with server and return success/fail
+        HTTPsender send_get = new HTTPsender();
+        String message = send_get.send_and_receive(create_user);
         if(message.equals("<message><ack>0</ack></message>")) {
             return true;
         }
