@@ -42,6 +42,8 @@ public class BluetoothActivity extends AppCompatActivity {
     private TextView mTextViewParsed;
     private StringBuilder mXmlStream;
     private String mParsedMsg;
+    private int mCount = 0;
+    private int mSize = 0;
 
 
     @Override
@@ -120,31 +122,46 @@ public class BluetoothActivity extends AppCompatActivity {
     public void processMsg(String msg) {
         Toast.makeText(getApplicationContext(), "Received " +msg.length() + " bytes.",
                 Toast.LENGTH_SHORT).show();
-        displayMsg(msg, mTextViewReceived);
+        if (msg.length() > 20000) {
+            String shortMsg = msg.substring(0,8192);
+            shortMsg += "\n\n...\n\n";
+            shortMsg += msg.substring(msg.length()-8192);
+            displayMsg(shortMsg,mTextViewReceived);
+        } else {
+            displayMsg(msg, mTextViewReceived);
+        }
+
         try {
             InputStream in = new ByteArrayInputStream(msg.getBytes("UTF-8"));
             // parse the message
             BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
             ArrayList<TireSnapshot> tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
+            StringBuilder parsedMsg = new StringBuilder();
+            parsedMsg.append("Parsed " + tireSnapshotList.size() + " tires!\n");
             if (tireSnapshotList.isEmpty()){
                 Toast.makeText(getApplicationContext(),
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
-            for (int i=0; i<tireSnapshotList.size(); i++) {
-                mParsedMsg += "Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId();
-                mParsedMsg += "\nS11: " + tireSnapshotList.get(i).getS11();
-                mParsedMsg += "\nPressure: " + tireSnapshotList.get(i).getPressure();
-                mParsedMsg += "\nMileage: " + tireSnapshotList.get(i).getOdometerMileage();
-                mParsedMsg += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
-                mParsedMsg += "\n\n";
-                displayMsg(mParsedMsg, mTextViewParsed);
+            if (tireSnapshotList.size()<32) {
+                for (int i=0; i<tireSnapshotList.size(); i++) {
+                    parsedMsg.append("Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId());
+                    parsedMsg.append( "\nS11: " + tireSnapshotList.get(i).getS11());
+                    parsedMsg.append( "\nPressure: " + tireSnapshotList.get(i).getPressure());
+                    parsedMsg.append( "\nMileage: " + tireSnapshotList.get(i).getOdometerMileage());
+                    parsedMsg.append( "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp()));
+                    parsedMsg.append( "\n\n");
+                }
             }
+            displayMsg(parsedMsg.toString(), mTextViewParsed);
         } catch (UnsupportedEncodingException e) {
+            displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         } catch (XmlPullParserException e) {
+            displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         } catch (IOException e) {
+            displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         }
     }
@@ -203,7 +220,7 @@ public class BluetoothActivity extends AppCompatActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.i(Common.LOG_TAG_BT_ACTIVITY, "mHandler with type " + msg.what);
+//            Log.i(Common.LOG_TAG_BT_ACTIVITY, "mHandler with type " + msg.what);
             switch (msg.what) {
                 case Common.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
@@ -215,6 +232,8 @@ public class BluetoothActivity extends AppCompatActivity {
                         Log.d(Common.LOG_TAG_BT_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
                         processMsg(mXmlStream.toString());
                     }
+                    mCount++;
+                    mSize += msg.arg1;
                     break;
                 case Common.MESSAGE_WRITE:
                     Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
