@@ -102,14 +102,6 @@ public class MainActivity extends EmptyActivity {
 //        TextView textView_phonenum = findViewById(R.id.textView_phone);
 //        textView_phonenum.setText(curr_user.phone);
 
-        String message_report = intent.getStringExtra("REPORT");
-        if(message_report != null && !message_report.equals("")){
-            message_report = "User Report:\n" + message_report;
-            TextView textView_report = findViewById(R.id.main_notification);
-            textView_report.setText(message_report);
-            textView_report.setVisibility(View.VISIBLE);
-        }
-
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
 
         initDataList(curr_user.mVehicles);

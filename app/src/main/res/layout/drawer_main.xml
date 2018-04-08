@@ -205,27 +205,6 @@
                     android:dividerHeight="0dp"
                     android:background="#f2f2f2" />
 
-
-                <TextView
-                    android:id="@+id/textView_email"
-                    android:layout_width="140dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="15dp"
-                    android:textSize="24sp"
-                    app:layout_constraintStart_toEndOf="@+id/label_user_email"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_user" />
-
-                <TextView
-                    android:id="@+id/textView_phone"
-                    android:layout_width="140dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="15dp"
-                    android:textSize="24sp"
-                    app:layout_constraintStart_toEndOf="@+id/label_user_phone"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_email" />
-
                 <Button
                     android:id="@+id/notification"
                     android:layout_width="wrap_content"
@@ -235,18 +214,6 @@
                     android:onClick="onClick"
                     android:text="Notification"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
-
-                <TextView
-                    android:id="@+id/main_notification"
-                    android:layout_width="192dp"
-                    android:layout_height="146dp"
-                    android:layout_marginTop="20dp"
-                    android:textSize="24sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.53"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
 
             </LinearLayout>
