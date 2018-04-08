@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,6 +41,7 @@ public class MainActivity extends EmptyActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private List<Map<String, Object>> list;
+    private NavigationView navigationView;
     private int user_ID;
 
     int notificationID = 1;
@@ -57,6 +59,12 @@ public class MainActivity extends EmptyActivity {
         mToggle.syncState();
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = (NavigationView) findViewById(R.id.drawer_navigation) ;
+        Menu menu = navigationView.getMenu();
+        MenuItem menu_username = menu.findItem(R.id.d_name);
+        MenuItem menu_email = menu.findItem(R.id.d_email);
+        MenuItem menu_phone = menu.findItem(R.id.d_phone);
 
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("USER_ID", 0);
@@ -81,12 +89,18 @@ public class MainActivity extends EmptyActivity {
 
         TextView textView_username = findViewById(R.id.textView_user);
         textView_username.setText(curr_user.username);
+        menu_username.setTitle(curr_user.username);
+        menu_email.setTitle(curr_user.email);
+        menu_phone.setTitle(curr_user.phone);
+//        TextView textView_username_d = findViewById(R.id.d_name);
+//        textView_username_d.setText(curr_user.username);
 
-        TextView textView_email = findViewById(R.id.textView_email);
-        textView_email.setText(curr_user.email);
+//        TextView textView_email = findViewById(R.id.textView_email);
+//        textView_email.setText(curr_user.email);
 
-        TextView textView_phonenum = findViewById(R.id.textView_phone);
-        textView_phonenum.setText(curr_user.phone);
+
+//        TextView textView_phonenum = findViewById(R.id.textView_phone);
+//        textView_phonenum.setText(curr_user.phone);
 
         String message_report = intent.getStringExtra("REPORT");
         if(message_report != null && !message_report.equals("")){

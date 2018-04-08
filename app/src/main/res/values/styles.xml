@@ -28,4 +28,8 @@
         <item name="colorControlNormal">#ffffff</item>
     </style>
 
+    <style name="drawer_menu">
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>

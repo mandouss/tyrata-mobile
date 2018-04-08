@@ -4,12 +4,12 @@
     android:layout_height="160dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/main_background3"
-    android:padding="40dp">
+    android:padding="30dp">
     <ImageView
         android:id="@+id/drawer_image"
-        android:src="@drawable/user_child"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
+        android:src="@drawable/child4_2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         />
 
 
