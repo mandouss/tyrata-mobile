@@ -131,8 +131,12 @@ public class Log_in extends AppCompatActivity {
         // re-calculate hashed password from user input and salt
         byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
 
+        String hash_info = "<message><authentication><email>" + email
+                + "</email><hash>" + String.valueOf(hashedPassword)
+                + "</hash></authentication></message>";
+
         // confirm password
-        message = send_get.send_and_receive(String.valueOf(hashedPassword));
+        message = send_get.send_and_receive(hash_info);
         if(message.equals("<message><authentication>success</authentication></message>")){
             return true;
         }else{
