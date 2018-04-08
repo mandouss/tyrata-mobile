@@ -4,28 +4,13 @@
     android:layout_height="160dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/main_background3"
-    android:padding="20dp">
+    android:padding="40dp">
     <ImageView
         android:id="@+id/drawer_image"
         android:src="@drawable/user_child"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         />
-    <TextView
-        android:id="@+id/drawer_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ming Ming"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/drawer_image"
-        android:layout_marginTop="5dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ming.ming@duke.edu"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/drawer_name"
-        android:layout_marginTop="5dp"/>
+
 
 </android.support.constraint.ConstraintLayout>

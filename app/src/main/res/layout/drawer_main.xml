@@ -9,39 +9,42 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@drawable/main"
-            android:elevation="6dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="130dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@drawable/main_background"/>
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/headshot"
-                    android:src="@drawable/child2"
-                    />
-
+                <TextView
+                    android:id="@+id/textView_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Ming Ming"
+                    android:textColor="@color/grey"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView_user"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginBottom="140dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:textColor="@color/white"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal" />
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="90dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/child2"
 
-        </LinearLayout>
+                />
+
+        </FrameLayout>
 
         <ScrollView
             android:layout_width="match_parent"
