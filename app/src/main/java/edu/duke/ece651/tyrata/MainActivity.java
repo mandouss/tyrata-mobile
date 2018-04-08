@@ -61,6 +61,32 @@ public class MainActivity extends EmptyActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         navigationView = (NavigationView) findViewById(R.id.drawer_navigation) ;
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        switch (menuItem.getItemId()) {
+                            case R.id.edit_account:
+                                main_to_edit();
+                                return true;
+                            case R.id.log_out:
+                                main_to_login();
+                                return true;
+                        }
+                        return true;
+                    }
+                });
+
+        //set the user information in the drawer menu
         Menu menu = navigationView.getMenu();
         MenuItem menu_username = menu.findItem(R.id.d_name);
         MenuItem menu_email = menu.findItem(R.id.d_email);
@@ -137,6 +163,7 @@ public class MainActivity extends EmptyActivity {
         return true;
     }
 
+
     private void initDataList(ArrayList<Vehicle> vehicles) {
         int number = vehicles.size();
         //图片资源
@@ -199,6 +226,14 @@ public class MainActivity extends EmptyActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void main_to_edit() {
+        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.user.Edit_user_information.class);
+        //intent.putExtra("userID", user_ID);
+
+        startActivity(intent);
+        // Do something in response to button
     }
 
     public void main_to_addcar() {
