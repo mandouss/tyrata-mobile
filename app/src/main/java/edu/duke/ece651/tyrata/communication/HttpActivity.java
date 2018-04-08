@@ -25,7 +25,7 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
 
     // Keep a reference to the NetworkFragment which owns the AsyncTask object
     // that is used to execute network ops.
-    private NetworkFragment mNetworkFragment;
+    public NetworkFragment mNetworkFragment;
 
     // Boolean telling us whether a download is in progress, so we don't trigger overlapping
     // downloads with consecutive button clicks.
@@ -39,9 +39,9 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
     }
 
 
-    public void startDownload(String myUrl) {
+    public void startDownload(String myUrl, Context context) {
 
-        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl,getApplicationContext());
+        //mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl,context);
         if (!mDownloading && mNetworkFragment != null) {
             // Execute the async download.
             mNetworkFragment.startDownload();
@@ -109,7 +109,7 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         do {
             //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
             if (myUrl != null) {
-                startDownload(myUrl);
+                startDownload(myUrl,getApplicationContext());
             }
             else{
                 Toast.makeText(getApplicationContext(), "no update needs to do", Toast.LENGTH_SHORT).show();

@@ -70,7 +70,7 @@ public class Log_in extends AppCompatActivity {
         SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
         editor.putString("msg","");
         editor.commit();
-        httpActivity.startDownload(myUrl);
+        httpActivity.startDownload(myUrl,getApplicationContext());
 
         SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
         String message = "";
@@ -108,7 +108,7 @@ public class Log_in extends AppCompatActivity {
         //@TODO athenticate user with server
         String user = "<message><authentication><email>" + email + "</email></authentication></message>";
         HTTPsender send_get = new HTTPsender();
-        String message = send_get.send_and_receive(user);
+        String message = send_get.send_and_receive(user,getApplicationContext());
         ServerXmlParser parser = new ServerXmlParser();
         InputStream msg = new ByteArrayInputStream(message.getBytes());
         try {
@@ -136,7 +136,7 @@ public class Log_in extends AppCompatActivity {
                 + "</hash></authentication></message>";
 
         // confirm password
-        message = send_get.send_and_receive(hash_info);
+        message = send_get.send_and_receive(hash_info,getApplicationContext());
         if(message.equals("<message><authentication>success</authentication></message>")){
             return true;
         }else{

@@ -23,14 +23,17 @@ import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertCalendarToStrin
 
 public class HTTPsender extends AppCompatActivity {
 
-    public String send_and_receive(String message){
-        String myUrl = getResources().getString(R.string.url) + message;
+
+
+    public String send_and_receive(String message, Context context){
+        String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
         HttpActivity httpActivity = new HttpActivity();
-        SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
+        httpActivity.mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl, context);
+        SharedPreferences.Editor editor= context.getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
         editor.putString("msg","");
         editor.commit();
         Log.i("send",myUrl);
-        httpActivity.startDownload(myUrl);
+        httpActivity.startDownload(myUrl,context);
 
         SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
         String message_get = "";
@@ -71,7 +74,7 @@ public class HTTPsender extends AppCompatActivity {
 
             message = message + "</message>";
             //HttpActivity httpActivity = new HttpActivity();
-            String myUrl = getResources().getString(R.string.url) + message;
+            String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
             return myUrl;
         }
         //httpActivity.startDownload(myUrl);

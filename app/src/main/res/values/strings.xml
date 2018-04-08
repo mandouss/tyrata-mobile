@@ -33,7 +33,7 @@
     <string name="connection_error">Connection error.</string>
     <string name="fetch_cancelled">Fetch cancelled.</string>
 
-    <string name="url">http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=</string>
+    <string name="url">http://vcm-2932.vm.duke.edu:9999/tyrata-team/XMLAction?xml_data=</string>
 
 
 </resources>

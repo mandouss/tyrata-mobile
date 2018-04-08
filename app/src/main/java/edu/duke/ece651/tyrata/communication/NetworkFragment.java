@@ -67,7 +67,6 @@ public class NetworkFragment extends Fragment {
             networkFragment.setArguments(args);
             Toast.makeText(context, "network wrong!!!!", Toast.LENGTH_SHORT).show();
             fragmentManager.beginTransaction().add(networkFragment, TAG).commit();
-
         }
         return networkFragment;
     }

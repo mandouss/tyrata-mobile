@@ -115,7 +115,7 @@ public class Register extends AppCompatActivity {
 
         //@TODO register user with server and return success/fail
         HTTPsender send_get = new HTTPsender();
-        String message = send_get.send_and_receive(create_user);
+        String message = send_get.send_and_receive(create_user,getApplicationContext());
         if(message.equals("<message><ack>0</ack></message>")) {
             return true;
         }
