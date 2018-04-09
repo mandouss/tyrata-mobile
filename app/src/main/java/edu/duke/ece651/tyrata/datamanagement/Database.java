@@ -409,7 +409,7 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     public static User getUser(int user_id) {
         //Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE ID = " + user_id + "", null);
-        String sql = "SELECT * FROM USER WHERE ID =";
+        String sql = "SELECT * FROM USER WHERE ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {String.valueOf(user_id)});
         if (!c.moveToFirst()) {
             return null;
