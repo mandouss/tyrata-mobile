@@ -64,6 +64,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         dataList.add("6");
         dataList.add("8");
         dataList.add("10");
+        dataList.add("14");
         dataList.add("18");
 
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataList);
@@ -129,7 +130,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         else if(num == 6 || num == 10) {
             axis_num = 3;
         }
-        else if(num == 8){
+        else if(num == 8 || num == 14){
             axis_num = 4;
         }
         else if(num == 18){
