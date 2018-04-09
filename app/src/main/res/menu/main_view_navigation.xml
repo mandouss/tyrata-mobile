@@ -4,7 +4,7 @@
 
 
     <item android:id="@+id/n_menu_addCar"
-        android:title="Add Car"
+        android:title="Add Vehicle"
         app:showAsAction="never"/>
 
     <item android:id="@+id/n_menu_reportAccident"
