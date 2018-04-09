@@ -144,6 +144,9 @@ public class Vehicle_Info extends AppCompatActivity {
         else if(curr_vehicle.getNumTires() == 10){
             imageView.setImageResource(R.drawable.ten_wheel);
         }
+        else if(curr_vehicle.getNumTires() == 14){
+            imageView.setImageResource(R.drawable.fourteen_wheel);
+        }
         else if(curr_vehicle.getNumTires() == 18){
             imageView.setImageResource(R.drawable.eighteen_wheel);
         }
@@ -195,7 +198,7 @@ public class Vehicle_Info extends AppCompatActivity {
             axis_index = 1;
             side = index%2;
         }
-        if(tirenum == 10 || tirenum == 18) {
+        if(tirenum == 10 || tirenum == 14 || tirenum == 18) {
             axis_row = (index + 1) / 4 + 1;
             if (index == 1) {
                 axis_index = 1;
