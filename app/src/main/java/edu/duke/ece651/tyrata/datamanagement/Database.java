@@ -380,7 +380,7 @@ public class Database extends AppCompatActivity {
     public static int getVehicleID(String vin){
         //Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
         String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
-        Cursor c = myDatabase.rawQuery(sql, new String[] {vin})
+        Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
 
         int res = -1;
         if(c != null && c.moveToFirst()) {
