@@ -37,25 +37,52 @@ public class Database extends AppCompatActivity {
     public static SQLiteDatabase myDatabase;
 
     public static double get_mean_s11(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
-
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
+                //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
                 c.close();
                 return 0;
             }
+            c.moveToLast();
             double sum = 0;
             int count = 0;
             do {
                 count++;
                 sum += c.getDouble(c.getColumnIndex("S11"));
-            }while(c.moveToNext());
-            //Log.i("test number of data", String.valueOf(c.getCount()));
+            }while(c.moveToPrevious() && count < 10);
             c.close();
-
-            return sum/count;
+            return sum/10;
         }
         return 0;
+    }
+
+    public static double get_deviation_s11(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
+        double mean = get_mean_s11(sensor_id);
+        if (c != null && c.moveToFirst()) {
+            if(c.getCount() < 10) {
+                c.close();
+                return 0;
+            }
+            c.moveToLast();
+            double sum = 0;
+            int count = 0;
+            do {
+                count++;
+                sum += Math.pow((c.getDouble(c.getColumnIndex("S11")) - mean), 2);
+            }while(c.moveToPrevious() && count < 10);
+            c.close();
+
+            return sum/10;
+        }
+        return 0;
+    }
+
+    public static int get_outlier_num(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
+
+        return c.getCount();
     }
 
     /* Updated by De Lan on 3/4/2018. */
@@ -540,6 +567,7 @@ public class Database extends AppCompatActivity {
                 Log.i("mileage", c.getString(3));
                 Log.i("pressure", c.getString(4));
                 Log.i("tire_id", c.getString(5));
+                Log.i("outlier", c.getString(6));
                 Log.i("thickness", c.getString(7));
                 Log.i("eol", c.getString(8));
                 Log.i("time_to_replacement", c.getString(9));
