@@ -38,7 +38,9 @@ public class Database extends AppCompatActivity {
     public static SQLiteDatabase myDatabase;
 
     public static double get_mean_s11(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and OUTLIER != 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
                 //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
@@ -59,7 +61,9 @@ public class Database extends AppCompatActivity {
     }
 
     public static double get_deviation_s11(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
         double mean = get_mean_s11(sensor_id);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
@@ -81,7 +85,9 @@ public class Database extends AppCompatActivity {
     }
 
     public static int get_outlier_num(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER = 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
 
         return c.getCount();
     }
