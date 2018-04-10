@@ -1,6 +1,5 @@
 package edu.duke.ece651.tyrata;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -26,10 +25,10 @@ import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
+import edu.duke.ece651.tyrata.user.Edit_user_information;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +58,7 @@ public class MainActivity extends EmptyActivity {
         mToggle.syncState();
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
 
         navigationView = (NavigationView) findViewById(R.id.drawer_navigation) ;
 
@@ -195,10 +195,10 @@ public class MainActivity extends EmptyActivity {
         //EmptyActivity emptyActivity = new EmptyActivity();
         switch (item.getItemId()) {
             case R.id.n_menu_addCar:
-                main_to_addcar();
+                //main_to_addcar();
                 return true;
             case R.id.n_menu_reportAccident:
-                main_to_report();
+                //main_to_report();
                 return true;
             case R.id.n_menu_signOut:
                 main_to_login();
@@ -218,7 +218,7 @@ public class MainActivity extends EmptyActivity {
                 goToHTTP();
                 return true;
             case R.id.n_submenu_tireSnapshot:
-                getTireSnapshotListFromXml();
+                //getTireSnapshotListFromXml();
                 return true;
             case R.id.n_submenu_XML:
                 testParseXml();
@@ -229,21 +229,21 @@ public class MainActivity extends EmptyActivity {
     }
 
     public void main_to_edit() {
-        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.user.Edit_user_information.class);
+        Intent intent = new Intent(MainActivity.this, Edit_user_information.class);
         //intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
     }
 
-    public void main_to_addcar() {
+    public void main_to_addcar(View view) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
         intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
     }
-    public void main_to_report() {
+    public void main_to_report(View view) {
         Intent intent = new Intent(MainActivity.this, Report_accident.class);
         intent.putExtra("userID", user_ID);
 

@@ -20,7 +20,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:background="@drawable/main_background"/>
+                    android:background="@drawable/main_background5"/>
 
                 <TextView
                     android:id="@+id/textView_user"
@@ -48,7 +48,7 @@
                         android:layout_column="0"
                         android:layout_marginTop="3dp"
                         android:layout_marginBottom="3dp"
-                        >
+                        android:onClick="main_to_addcar">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -89,7 +89,8 @@
                         android:layout_columnWeight="1"
                         android:layout_column="1"
                         android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp">
+                        android:layout_marginBottom="3dp"
+                        android:onClick="main_to_report">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -130,7 +131,8 @@
                         android:layout_columnWeight="1"
                         android:layout_column="2"
                         android:layout_marginTop="3dp"
-                        android:layout_marginBottom="3dp">
+                        android:layout_marginBottom="3dp"
+                        android:onClick="getTireSnapshotListFromXml">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

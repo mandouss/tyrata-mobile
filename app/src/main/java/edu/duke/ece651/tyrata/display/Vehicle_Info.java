@@ -147,7 +147,7 @@ public class Vehicle_Info extends AppCompatActivity {
 
         ImageView imageView= findViewById(R.id.image_vehicle);
         if(curr_vehicle.getNumTires() == 4){
-            imageView.setImageResource(R.drawable.four_wheel);
+            imageView.setImageResource(R.drawable.four_wheel2);
         }
         else if(curr_vehicle.getNumTires() == 10){
             imageView.setImageResource(R.drawable.ten_wheel);

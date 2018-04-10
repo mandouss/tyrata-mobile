@@ -106,7 +106,7 @@ public class EmptyActivity extends AppCompatActivity {
 
     /* Updated by Zijie and Yue on 3/24/2018. */
     /* Updated by Saeed and De Lan on 3/25/2018. */
-    public void getTireSnapshotListFromXml() {
+    public void getTireSnapshotListFromXml(View view) {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
             ArrayList<TireSnapshot> tireSnapshotList = xmlParser.parseToTireSnapshotList(
