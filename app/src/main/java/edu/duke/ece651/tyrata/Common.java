@@ -38,6 +38,12 @@ public class Common {
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
     public static final int REQUEST_CONNECT_BT_DEVICE = 3;
 
+    //tags for http tasks
+    public static final int GET_SALT = 1;
+    public static final int GET_AUTHENTICATION = 2;
+    public static final int GET_DATABASE = 3;
+
+
 
     /* GLOBAL VARIABLES */
 }

@@ -2,13 +2,9 @@ package edu.duke.ece651.tyrata.communication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import java.util.ArrayList;
-
-import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Tire;
@@ -28,12 +24,13 @@ public class HTTPsender extends AppCompatActivity {
     public String send_and_receive(String message, Context context){
         String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
         HttpActivity httpActivity = new HttpActivity();
-        httpActivity.mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl, context);
+        //httpActivity.mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl, context);
         SharedPreferences.Editor editor= context.getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
         editor.putString("msg","");
         editor.commit();
         Log.i("send",myUrl);
-        httpActivity.startDownload(myUrl,context);
+        httpActivity.send(myUrl,context);
+        httpActivity.startDownload(context);
 
         SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
         String message_get = "";

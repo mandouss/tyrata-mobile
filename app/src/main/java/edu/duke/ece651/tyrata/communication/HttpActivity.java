@@ -5,10 +5,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +15,7 @@ import edu.duke.ece651.tyrata.R;
 
 import static java.lang.Thread.sleep;
 
-public class HttpActivity extends FragmentActivity implements DownloadCallback {
+public class HttpActivity extends AppCompatActivity implements DownloadCallback {
 
     // Reference to the TextView showing fetched data, so we can clear it with a button
     // as necessary.
@@ -38,10 +36,12 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         mDataText = (TextView) findViewById(R.id.data_text);
     }
 
+    public void send(String myUrl, Context context){
+        mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl,context);
+    }
 
-    public void startDownload(String myUrl, Context context) {
 
-        //mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl,context);
+    public void startDownload(Context context) {
         if (!mDownloading && mNetworkFragment != null) {
             // Execute the async download.
             mNetworkFragment.startDownload();
@@ -52,6 +52,7 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
     @Override
     public void updateFromDownload(String result) {
         if (result != null) {
+            Log.i("get_message",result);
             mDataText.setText(result);
             SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
             editor.putString("msg",result);
@@ -109,7 +110,8 @@ public class HttpActivity extends FragmentActivity implements DownloadCallback {
         do {
             //String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=12345";
             if (myUrl != null) {
-                startDownload(myUrl,getApplicationContext());
+                send(myUrl,getApplicationContext());
+                startDownload(getApplicationContext());
             }
             else{
                 Toast.makeText(getApplicationContext(), "no update needs to do", Toast.LENGTH_SHORT).show();

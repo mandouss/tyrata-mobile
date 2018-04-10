@@ -3,8 +3,10 @@ package edu.duke.ece651.tyrata.user;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -14,16 +16,23 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
 
+import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
-import edu.duke.ece651.tyrata.communication.HTTPsender;
-import edu.duke.ece651.tyrata.communication.HttpActivity;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 
 public class Log_in extends AppCompatActivity {
+
+    private String email;
+    private String password;
+    private int task = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,63 +40,173 @@ public class Log_in extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
     }
     public void switchto_main(View view) {
-        Intent intent = new Intent(Log_in.this, MainActivity.class);
 
         EditText input_email = (EditText) findViewById(R.id.input_email);
-        String message_email = input_email.getText().toString();
+        email = input_email.getText().toString();
 
         EditText inputPassword = findViewById(R.id.input_password);
-        String messagePassword = inputPassword.getText().toString();
+        password = inputPassword.getText().toString();
 
-        if(!authenticateUser(message_email, messagePassword)) {
-            // Authentication failed
-            String msg = "Incorrect credentials. Please enter the right information or register.";
-            notification(msg);
+        task = Common.GET_SALT;
+        sendLoginRequest();
+    }
+
+    private void sendLoginRequest(){
+        String login_message = "<message><authentication><email>" + email + "</email></authentication></message>";
+        String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + login_message;
+        Log.i("myUrl",myUrl);
+        send_message(myUrl);
+        Log.i("send_new_method","success");
+    }
+
+    private void send_message(String urlStr) {
+        final String url = urlStr;
+        String resource;
+        new Thread() {
+            public void run() {
+                InputStream in = null;
+                Message msg = Message.obtain();
+                msg.what = 1;
+                try {
+                    Log.i("send_url",url);
+                    in = openHttpConnection(url);
+                    String resource = new Scanner(in).useDelimiter("\\Z").next();
+                    Log.i("test_new_method",resource);
+                    Bundle b = new Bundle();
+                    b.putString("get_message", resource);
+                    msg.setData(b);
+                    in.close();
+                }catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                if(task == Common.GET_SALT) {
+                    saltHandler.sendMessage(msg);
+                    task = 0;
+                }
+                else if(task == Common.GET_AUTHENTICATION){
+                    SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
+                    String salt_get = editor_get.getString("salt","");
+                    Log.e("salt",salt_get);
+                    authenticationHandler.sendMessage(msg);
+                    task = 0;
+                }
+                else{
+                    databaseHandler.sendMessage(msg);
+                    task = 0;
+                }
+
+            }
+        }.start();
+    }
+
+    private InputStream openHttpConnection(String urlStr) {
+        InputStream in = null;
+        int resCode = -1;
+
+        try {
+            URL url = new URL(urlStr);
+            URLConnection urlConn = url.openConnection();
+
+            if (!(urlConn instanceof HttpURLConnection)) {
+                Log.i("new_method","wrong");
+                throw new IOException("URL is not an Http URL");
+            }
+
+            HttpURLConnection httpConn = (HttpURLConnection) urlConn;
+            httpConn.setAllowUserInteraction(false);
+            httpConn.setInstanceFollowRedirects(true);
+            httpConn.setRequestMethod("GET");
+            httpConn.connect();
+            resCode = httpConn.getResponseCode();
+
+            if (resCode == HttpURLConnection.HTTP_OK) {
+                Log.i("new_method","get");
+                in = httpConn.getInputStream();
+            }
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
-        else {
-            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-            int user_ID = Database.getUserID(message_email);
-            Database.myDatabase.close();
-            if (user_ID != -1) {
-                Log.i("exist", String.valueOf(user_ID));
-                intent.putExtra("USER_ID", user_ID);
-                startActivity(intent);
-            } else {
-                getDatabase(message_email);
+        return in;
+    }
+
+    private Handler saltHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String message = msg.getData().getString("get_message");
+
+            message = message.replace("<message><authentication>","");
+            message = message.replace("</authentication></message>","");
+
+            // get user salt and hashed password from server
+            byte salt[] = message.getBytes(); // from server
+
+
+            // re-calculate hashed password from user input and salt
+            byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
+
+            String hash_info = "<message><authentication><email>" + email
+                    + "</email><hash>" + String.valueOf(hashedPassword)
+                    + "</hash></authentication></message>";
+            String get_authentication = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + hash_info;
+            task = Common.GET_AUTHENTICATION;
+            send_message(get_authentication);
+        }
+    };
+
+    private Handler authenticationHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String message = msg.getData().getString("get_message");
+
+            if(message.equals("<message><authentication>success</authentication></message>")){
+                Intent intent = new Intent(Log_in.this, MainActivity.class);
                 Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-                user_ID = Database.getUserID(message_email);
+                int user_ID = Database.getUserID(email);
                 Database.myDatabase.close();
-                intent.putExtra("USER_ID", user_ID);
-                startActivity(intent);
+                if (user_ID != -1) {
+                    Log.i("exist", String.valueOf(user_ID));
+                    intent.putExtra("USER_ID", user_ID);
+                    startActivity(intent);
+                } else {
+                    String get_message = "<message><method>get</method><email>" + email + "</email></message>";
+                    String get_data = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + get_message;
+                    task = Common.GET_DATABASE;
+                    send_message(get_data);
+                }
+            }else{
+                String msg_notification = "Incorrect credentials. Please enter the right information or register.";
+                notification(msg_notification);
             }
         }
-    }
+    };
 
-    public void getDatabase(String email){
-        String get_message = "<message><method>get</method><email>" + email + "</email></message>";
-        String myUrl = getResources().getString(R.string.url) + get_message;
-        HttpActivity httpActivity = new HttpActivity();
-        SharedPreferences.Editor editor= getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
-        editor.putString("msg","");
-        editor.commit();
-        httpActivity.startDownload(myUrl,getApplicationContext());
+    private Handler databaseHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String message = msg.getData().getString("get_message");
 
-        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
-        String message = "";
-        do{
-            message= editor_get.getString("msg","");
-        }while (message == "");
+            ServerXmlParser parser = new ServerXmlParser();
+            InputStream msg_getdata = new ByteArrayInputStream(message.getBytes());
+            try {
+                parser.parse_server(msg_getdata, getApplicationContext());
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        ServerXmlParser parser = new ServerXmlParser();
-        InputStream msg = new ByteArrayInputStream(message.getBytes());
-        try {
-            parser.parse_server(msg, getApplicationContext());
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Intent intent = new Intent(Log_in.this, MainActivity.class);
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            int user_ID = Database.getUserID(email);
+            Database.myDatabase.close();
+            intent.putExtra("USER_ID", user_ID);
+            startActivity(intent);
         }
-    }
+    };
+
+
 
     public void switchto_register(View view) {
         Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
@@ -102,45 +221,5 @@ public class Log_in extends AppCompatActivity {
                 .setMessage(msg)
                 .setPositiveButton("OK", null)
                 .show();
-    }
-
-    private boolean authenticateUser(String email, String password) {
-        //@TODO athenticate user with server
-        String user = "<message><authentication><email>" + email + "</email></authentication></message>";
-        HTTPsender send_get = new HTTPsender();
-        String message = send_get.send_and_receive(user,getApplicationContext());
-        ServerXmlParser parser = new ServerXmlParser();
-        InputStream msg = new ByteArrayInputStream(message.getBytes());
-        try {
-            parser.parse_server(msg, getApplicationContext());
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
-        String salt_get = "";
-        do{
-            salt_get = editor_get.getString("salt","");
-        }while (salt_get == "");
-
-
-        // get user salt and hashed password from server
-        byte salt[] = salt_get.getBytes(); // from server
-
-        // re-calculate hashed password from user input and salt
-        byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
-
-        String hash_info = "<message><authentication><email>" + email
-                + "</email><hash>" + String.valueOf(hashedPassword)
-                + "</hash></authentication></message>";
-
-        // confirm password
-        message = send_get.send_and_receive(hash_info,getApplicationContext());
-        if(message.equals("<message><authentication>success</authentication></message>")){
-            return true;
-        }else{
-            return false;
-        }
     }
 }

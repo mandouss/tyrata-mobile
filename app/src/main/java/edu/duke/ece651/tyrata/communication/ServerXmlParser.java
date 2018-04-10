@@ -2,8 +2,6 @@ package edu.duke.ece651.tyrata.communication;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-
-import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
 
@@ -84,6 +82,7 @@ public class ServerXmlParser extends AppCompatActivity {
                 case "salt":
                     String salt = readcontent(parser, "salt");
                     editor.putString("salt",salt);
+                    Toast.makeText(context,salt,Toast.LENGTH_SHORT).show();
                     editor.commit();
                     break;
                 default:
