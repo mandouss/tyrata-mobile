@@ -45,6 +45,58 @@ public class Database extends AppCompatActivity {
 
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
+
+    /* Created by Zijie Wang on 4/7/2018. */
+    public static double get_mean_s11(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
+        if (c != null && c.moveToFirst()) {
+            if(c.getCount() < 10) {
+                //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
+                c.close();
+                return 0;
+            }
+            c.moveToLast();
+            double sum = 0;
+            int count = 0;
+            do {
+                count++;
+                sum += c.getDouble(c.getColumnIndex("S11"));
+            }while(c.moveToPrevious() && count < 10);
+            c.close();
+            return sum/10;
+        }
+        return 0;
+    }
+
+    public static double get_deviation_s11(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
+        double mean = get_mean_s11(sensor_id);
+        if (c != null && c.moveToFirst()) {
+            if(c.getCount() < 10) {
+                c.close();
+                return 0;
+            }
+            c.moveToLast();
+            double sum = 0;
+            int count = 0;
+            do {
+                count++;
+                sum += Math.pow((c.getDouble(c.getColumnIndex("S11")) - mean), 2);
+            }while(c.moveToPrevious() && count < 10);
+            c.close();
+
+            return sum/10;
+        }
+        return 0;
+    }
+
+    public static int get_outlier_num(String sensor_id) {
+        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
+
+        return c.getCount();
+    }
+
+
     /* Created by Yue Li and Zijie Wang on 3/4/2018. */
     /* Updated by De Lan on 3/4/2018. */
     public static void createTable() {
