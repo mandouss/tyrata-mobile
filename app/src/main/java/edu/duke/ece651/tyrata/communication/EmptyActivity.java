@@ -170,7 +170,28 @@ public class EmptyActivity extends AppCompatActivity {
                     //time_to_replacement = Integer.toString(days1);
                     c.close();
                 }
-                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, false, thickness, eol, time_to_replacement, longitude, lat);
+                boolean isoutlier = false;
+                double mean = Database.get_mean_s11(sensor_id);
+                Log.i("test outlier1", String.valueOf(mean));
+                Log.i("test outlier2", String.valueOf(s11));
+                //Database.testSnapTable();
+                double deviation = Database.get_deviation_s11(sensor_id);
+                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                    isoutlier = true;
+                }
+                Log.i("test outlier3", String.valueOf(isoutlier));
+                Log.i("test outlier4", String.valueOf(deviation));
+
+                //Database.testSnapTable();
+
+                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, isoutlier, thickness, eol, time_to_replacement, longitude, lat);
+
+                int outlier_num = Database.get_outlier_num(sensor_id);
+                //Log.i("TEST outliers NUM",String.valueOf(outlier_num));
+                if(outlier_num % 3 == 0 && isoutlier) {
+                    Log.i("notification: outliers",String.valueOf(outlier_num));
+                }
+
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {

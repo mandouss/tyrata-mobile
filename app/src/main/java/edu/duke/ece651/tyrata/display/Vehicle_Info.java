@@ -135,8 +135,17 @@ public class Vehicle_Info extends AppCompatActivity {
         if(curr_vehicle.getNumTires() == 4){
             imageView.setImageResource(R.drawable.four_wheel);
         }
+        else if(curr_vehicle.getNumTires() == 6){
+            imageView.setImageResource(R.drawable.six_wheel);
+        }
+        else if(curr_vehicle.getNumTires() == 8){
+            imageView.setImageResource(R.drawable.eight_wheel);
+        }
         else if(curr_vehicle.getNumTires() == 10){
             imageView.setImageResource(R.drawable.ten_wheel);
+        }
+        else if(curr_vehicle.getNumTires() == 14){
+            imageView.setImageResource(R.drawable.fourteen_wheel);
         }
         else if(curr_vehicle.getNumTires() == 18){
             imageView.setImageResource(R.drawable.eighteen_wheel);
@@ -145,8 +154,6 @@ public class Vehicle_Info extends AppCompatActivity {
             imageView.setImageResource(R.drawable.four_wheel);
         }
 
-
-        int axis_num = curr_vehicle.getNumAxis();
 
         buttonnumber=Integer.parseInt(message_tirenumber);
 
@@ -186,12 +193,12 @@ public class Vehicle_Info extends AppCompatActivity {
 
     private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
-        if(tirenum == 4){
+        if(tirenum == 4 || tirenum == 6 || tirenum == 8){
             axis_row = (index-1)/2+1;
             axis_index = 1;
             side = index%2;
         }
-        if(tirenum == 10 || tirenum == 18) {
+        if(tirenum == 10 || tirenum == 14 || tirenum == 18) {
             axis_row = (index + 1) / 4 + 1;
             if (index == 1) {
                 axis_index = 1;
