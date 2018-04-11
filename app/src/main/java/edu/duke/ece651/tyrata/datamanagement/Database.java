@@ -46,6 +46,7 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
+    /* Created by Zijie Wang on 4/7/2018. */
     public static double get_mean_s11(String sensor_id) {
         Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
