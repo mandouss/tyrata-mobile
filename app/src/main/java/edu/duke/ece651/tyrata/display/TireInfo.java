@@ -197,7 +197,7 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_Odometer = findViewById(R.id.textView_odometer);
         textView_Odometer.setText(message_Odometer);
 
-        Log.i("eol",message_EOL);
+        
         if(message_EOL == null || message_EOL.equals("Default")) {
             //message_EOL = "EOL from calculation";
             message_EOL = "";

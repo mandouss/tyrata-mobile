@@ -123,6 +123,7 @@ public class TireInfoInput extends AppCompatActivity {
             notification(msg);
         } else {
             try {
+                msg = "Please type in valid number between 5 and 15.";
                 Double thickness = Double.parseDouble(message_thickness);
                 if (thickness < 5.0 || thickness > 15.0) {
                     msg = "The initial tire thickness need to between 5mm and 15mm!";
