@@ -2,7 +2,9 @@ package edu.duke.ece651.tyrata.communication;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,32 +37,97 @@ public class ServerXmlParser extends AppCompatActivity {
             in.close();
         }
     }
-
-    private void readFeed(XmlPullParser parser, Context context) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "download");
-        while(parser.next() != XmlPullParser.END_TAG){
+    private void readFeed(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
+        parser.require(XmlPullParser.START_TAG, ns, "message");
+        while (parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            switch(name){
-                case "user":
-                    readuser(parser,context);
+            switch (name) {
+                case "download":
+                    readDownload(parser, context);
                     break;
-                case"vehicle":
-                    readvehicle(parser, context);
-                    break;
-                case "tire":
-                    readtire(parser,context);
-                    break;
-                case "snapshot":
-                    readsnapshot(parser,context);
+                case "ack":
+                    readAck(parser, context);
                     break;
                 default:
                     skip(parser);
                     break;
             }
         }
+    }
+
+    private void readAck(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
+        parser.require(XmlPullParser.START_TAG, ns, "ack");
+        String message;
+        while (parser.next() != XmlPullParser.END_TAG){
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            switch (name) {
+                case "success":
+                    readSuccess(parser,context);
+                    break;
+                case "error":
+                    message = readcontent(parser,"error");
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    skip(parser);
+                    break;
+            }
+        }
+    }
+
+    private void readSuccess(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
+        parser.require(XmlPullParser.START_TAG, ns, "success");
+        while (parser.next() != XmlPullParser.END_TAG){
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            switch (name) {
+                case "id":
+                    int id = Integer.valueOf(readcontent(parser,"id"));
+                    Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+                    Database.deleteTrace(id);
+                    Database.myDatabase.close();
+                    break;
+                default:
+                    skip(parser);
+                    break;
+            }
+        }
+    }
+
+    private void readDownload(XmlPullParser parser, Context context) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "download");
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    continue;
+                }
+                String name = parser.getName();
+                switch (name) {
+                    case "user":
+                        readuser(parser, context);
+                        break;
+                    case "vehicle":
+                        readvehicle(parser, context);
+                        break;
+                    case "tire":
+                        readtire(parser, context);
+                        break;
+                    case "snapshot":
+                        readsnapshot(parser, context);
+                        break;
+                    default:
+                        skip(parser);
+                        break;
+                }
+            }
+
     }
 
     private void readuser(XmlPullParser parser,Context context) throws IOException, XmlPullParserException {
@@ -146,7 +213,7 @@ public class ServerXmlParser extends AppCompatActivity {
         }
 
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeVehicleData(-1, vin, make, model, year, axis_num, tire_num, user_id);
+        Database.storeVehicleData("",-1, vin, make, model, year, axis_num, tire_num, user_id);
         Database.myDatabase.close();
     }
 
@@ -208,7 +275,7 @@ public class ServerXmlParser extends AppCompatActivity {
             }
         }
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-        Database.storeTireData(-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
+        Database.storeTireData("",-1, sensorId, manufacturer, model, sku, vin, axisRow, axisSide, axisIndex, init_thickness, INIT_SS_ID, CUR_SS_ID);
         Database.myDatabase.close();
 
     }

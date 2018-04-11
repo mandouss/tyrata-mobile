@@ -21,7 +21,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"/>
-        <activity android:name=".user.Log_in">
+        <activity
+            android:name=".user.Log_in"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,27 +31,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".calibration.Input_Vehicle_Info"/>
+            android:name=".calibration.Input_Vehicle_Info"
+            android:label="Input Vehicle Information"/>
             <!--android:parentActivityName=".MainActivity" />-->
         <activity
             android:name=".display.Vehicle_Info"
+            android:label="Vehicle Information"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".user.Register"
             android:parentActivityName=".user.Log_in" />
         <activity
-            android:name=".calibration.Report_accident"/>
-            <!--android:parentActivityName=".MainActivity" />-->
+            android:name=".calibration.Report_accident"
+            android:label="Report Accident"/>
         <activity android:name=".communication.BluetoothActivity" />
         <activity
             android:name=".display.TireInfo"
+            android:label="Tire Information"
             android:parentActivityName=".display.Vehicle_Info" />
         <activity
-            android:name=".calibration.TireInfoInput"/>
+            android:name=".calibration.TireInfoInput"
+            android:label="Input Tire Information"/>
             <!--android:parentActivityName=".display.TireInfo" />-->
         <activity android:name=".communication.EmptyActivity" />
         <activity android:name=".communication.BluetoothDeviceListActivity"></activity>
         <activity android:name=".communication.HttpActivity"></activity>
+        <activity android:name=".user.Edit_user_information"></activity>
     </application>
 
 </manifest>

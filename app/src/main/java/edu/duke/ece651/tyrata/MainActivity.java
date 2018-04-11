@@ -1,12 +1,15 @@
 package edu.duke.ece651.tyrata;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,10 +25,10 @@ import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
+import edu.duke.ece651.tyrata.user.Edit_user_information;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +37,10 @@ import java.util.Map;
 
 public class MainActivity extends EmptyActivity {
     private ListView vehicle_list;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
     private List<Map<String, Object>> list;
+    private NavigationView navigationView;
     private int user_ID;
 
     int notificationID = 1;
@@ -42,6 +48,49 @@ public class MainActivity extends EmptyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
+
+        navigationView = (NavigationView) findViewById(R.id.drawer_navigation) ;
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        switch (menuItem.getItemId()) {
+                            case R.id.edit_account:
+                                main_to_edit();
+                                return true;
+                            case R.id.log_out:
+                                main_to_login();
+                                return true;
+                        }
+                        return true;
+                    }
+                });
+
+        //set the user information in the drawer menu
+        Menu menu = navigationView.getMenu();
+        MenuItem menu_username = menu.findItem(R.id.d_name);
+        MenuItem menu_email = menu.findItem(R.id.d_email);
+        MenuItem menu_phone = menu.findItem(R.id.d_phone);
 
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("USER_ID", 0);
@@ -66,20 +115,18 @@ public class MainActivity extends EmptyActivity {
 
         TextView textView_username = findViewById(R.id.textView_user);
         textView_username.setText(curr_user.username);
+        menu_username.setTitle(curr_user.username);
+        menu_email.setTitle(curr_user.email);
+        menu_phone.setTitle(curr_user.phone);
+//        TextView textView_username_d = findViewById(R.id.d_name);
+//        textView_username_d.setText(curr_user.username);
 
-        TextView textView_email = findViewById(R.id.textView_email);
-        textView_email.setText(curr_user.email);
+//        TextView textView_email = findViewById(R.id.textView_email);
+//        textView_email.setText(curr_user.email);
 
-        TextView textView_phonenum = findViewById(R.id.textView_phone);
-        textView_phonenum.setText(curr_user.phone);
 
-        String message_report = intent.getStringExtra("REPORT");
-        if(message_report != null && !message_report.equals("")){
-            message_report = "User Report:\n" + message_report;
-            TextView textView_report = findViewById(R.id.main_notification);
-            textView_report.setText(message_report);
-            textView_report.setVisibility(View.VISIBLE);
-        }
+//        TextView textView_phonenum = findViewById(R.id.textView_phone);
+//        textView_phonenum.setText(curr_user.phone);
 
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
 
@@ -116,13 +163,19 @@ public class MainActivity extends EmptyActivity {
         return true;
     }
 
+
     private void initDataList(ArrayList<Vehicle> vehicles) {
         int number = vehicles.size();
         //图片资源
         int img[] ;
         img = new int[number];
         for(int i = 0;i < number; i++) {
-            img[i] = R.drawable.vehicle;
+            if(i%2==0) {
+                img[i] = R.drawable.vehicle_list2;
+            }
+            else{
+                img[i] = R.drawable.vehicle_list3;
+            }
         }
         list = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < number; i++) {
@@ -142,10 +195,10 @@ public class MainActivity extends EmptyActivity {
         //EmptyActivity emptyActivity = new EmptyActivity();
         switch (item.getItemId()) {
             case R.id.n_menu_addCar:
-                main_to_addcar();
+                //main_to_addcar();
                 return true;
             case R.id.n_menu_reportAccident:
-                main_to_report();
+                //main_to_report();
                 return true;
             case R.id.n_menu_signOut:
                 main_to_login();
@@ -165,7 +218,7 @@ public class MainActivity extends EmptyActivity {
                 goToHTTP();
                 return true;
             case R.id.n_submenu_tireSnapshot:
-                getTireSnapshotListFromXml();
+                //getTireSnapshotListFromXml();
                 return true;
             case R.id.n_submenu_XML:
                 testParseXml();
@@ -175,14 +228,22 @@ public class MainActivity extends EmptyActivity {
         }
     }
 
-    public void main_to_addcar() {
+    public void main_to_edit() {
+        Intent intent = new Intent(MainActivity.this, Edit_user_information.class);
+        //intent.putExtra("userID", user_ID);
+
+        startActivity(intent);
+        // Do something in response to button
+    }
+
+    public void main_to_addcar(View view) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
         intent.putExtra("userID", user_ID);
 
         startActivity(intent);
         // Do something in response to button
     }
-    public void main_to_report() {
+    public void main_to_report(View view) {
         Intent intent = new Intent(MainActivity.this, Report_accident.class);
         intent.putExtra("userID", user_ID);
 

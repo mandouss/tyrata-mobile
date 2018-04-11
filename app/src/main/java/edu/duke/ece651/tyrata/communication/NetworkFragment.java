@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class NetworkFragment extends Fragment {
      * Static initializer for NetworkFragment that sets the URL of the host it will be downloading
      * from.
      */
-    public static NetworkFragment getInstance(FragmentManager fragmentManager, String url) {
+    public static NetworkFragment getInstance(FragmentManager fragmentManager, String url,Context context) {
         // Recover NetworkFragment in case we are re-creating the Activity due to a config change.
         // This is necessary because NetworkFragment might have a task that began running before
         // the config change and has not finished yet.
@@ -64,7 +65,9 @@ public class NetworkFragment extends Fragment {
             Bundle args = new Bundle();
             args.putString(URL_KEY, url);
             networkFragment.setArguments(args);
+            Toast.makeText(context, "network wrong!!!!", Toast.LENGTH_SHORT).show();
             fragmentManager.beginTransaction().add(networkFragment, TAG).commit();
+
         }
         return networkFragment;
     }

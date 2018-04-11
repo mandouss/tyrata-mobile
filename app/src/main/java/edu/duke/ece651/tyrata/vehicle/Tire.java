@@ -149,6 +149,8 @@ public class Tire {
 
     public double get_CURR_THCK() { return mcurr_thickness; }
 
+    public void setMcurr_thickness(double mcurr_thickness){ this.mcurr_thickness = mcurr_thickness;}
+
     public int get_INIT_SS() {return INIT_SS_ID; }
 
     public int get_CUR_SS() {return CUR_SS_ID; }
@@ -158,8 +160,10 @@ public class Tire {
     public double getOdometer() { return mOdometer;}
 
     public String getEOL() { return meol;}
+    public void setMeol(String meol){this.meol = meol;}
 
     public String getRepTime() { return mrepTime;}
+    public void setMrepTime(String mrepTime){this.mrepTime = mrepTime;}
 
 
 //    public void setAxisIndex(int mAxisIndex) {
