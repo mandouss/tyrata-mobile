@@ -115,6 +115,14 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    private void writeSuccess() {
+        BluetoothAPI.write("S".getBytes());
+    }
+
+    private void writeFail() {
+        BluetoothAPI.write("F".getBytes());
+    }
+
     public void displayMsg(String msg, TextView textView) {
         textView.setText(msg);
     }
@@ -139,10 +147,12 @@ public class BluetoothActivity extends AppCompatActivity {
             StringBuilder parsedMsg = new StringBuilder();
             parsedMsg.append("Parsed " + tireSnapshotList.size() + " tires!\n");
             if (tireSnapshotList.isEmpty()){
+                writeFail();
                 Toast.makeText(getApplicationContext(),
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
+            writeSuccess();
             if (tireSnapshotList.size()<32) {
                 for (int i=0; i<tireSnapshotList.size(); i++) {
                     parsedMsg.append("Tire/Sensor ID: " + tireSnapshotList.get(i).getSensorId());
@@ -158,9 +168,11 @@ public class BluetoothActivity extends AppCompatActivity {
             displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         } catch (XmlPullParserException e) {
+            writeFail();
             displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         } catch (IOException e) {
+            writeFail();
             displayMsg(e.toString(), mTextViewParsed);
             e.printStackTrace();
         }
@@ -236,8 +248,11 @@ public class BluetoothActivity extends AppCompatActivity {
                     mSize += msg.arg1;
                     break;
                 case Common.MESSAGE_WRITE:
-                    Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
-                                    + " Bytes!", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Sent message with " + msg.arg1
+//                            + " Bytes!", Toast.LENGTH_LONG).show();
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    String writeMsg = new String(writeBuf, 0, msg.arg1);
+                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
                     break;
                 case Common.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
