@@ -13,12 +13,16 @@ import android.widget.TextView;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Tire;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
@@ -36,62 +40,7 @@ public class Database extends AppCompatActivity {
 
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
-
-    public static double get_mean_s11(String sensor_id) {
-        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and OUTLIER != 1";
-        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
-        if (c != null && c.moveToFirst()) {
-            if(c.getCount() < 10) {
-                //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
-                c.close();
-                return 0;
-            }
-            c.moveToLast();
-            double sum = 0;
-            int count = 0;
-            do {
-                count++;
-                sum += c.getDouble(c.getColumnIndex("S11"));
-            }while(c.moveToPrevious() && count < 10);
-            c.close();
-            return sum/10;
-        }
-        return 0;
-    }
-
-    public static double get_deviation_s11(String sensor_id) {
-        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
-        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
-        double mean = get_mean_s11(sensor_id);
-        if (c != null && c.moveToFirst()) {
-            if(c.getCount() < 10) {
-                c.close();
-                return 0;
-            }
-            c.moveToLast();
-            double sum = 0;
-            int count = 0;
-            do {
-                count++;
-                sum += Math.pow((c.getDouble(c.getColumnIndex("S11")) - mean), 2);
-            }while(c.moveToPrevious() && count < 10);
-            c.close();
-
-            return sum/10;
-        }
-        return 0;
-    }
-
-    public static int get_outlier_num(String sensor_id) {
-        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER = 1";
-        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
-
-        return c.getCount();
-    }
-
+    /* Created by Yue Li and Zijie Wang on 3/4/2018. */
     /* Updated by De Lan on 3/4/2018. */
     public static void createTable() {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
@@ -253,6 +202,19 @@ public class Database extends AppCompatActivity {
             return 0;
         }
     }
+    /* Created by Yue Li on 3/31/2018. */
+    public static double getInitMileage(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '" + sensor_id + "'", null);
+        if(c != null && c.moveToFirst()){
+            Double mile = c.getDouble(c.getColumnIndex("MILEAGE"));
+            c.close();
+            return mile;
+        }
+        else {
+            Log.i("In database", "Sensor id not found");
+            return 0;
+        }
+    }
 
     // Updated by Cheng Xing on 4/8/2018
     public static double[] getThickness(String sensor_id){
@@ -333,7 +295,25 @@ public class Database extends AppCompatActivity {
         return true;
     }
 
-    //Created by Cheng on 3/25/2018, Updated by De Lan
+    /*Created by Yue Li on 04/05/2018*/
+    public static String notification(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
+        c.moveToLast();
+        String timestamp = c.getString(c.getColumnIndex("TIMESTAMP"));
+        Calendar cal = TireSnapshot.convertStringToCalendar(timestamp);
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+        long start = cal.getTimeInMillis();
+        long end = today.getTimeInMillis();
+        long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
+        if(res>30){
+            String notification = "Disconnect Exceed 30 Days!";
+            return notification;
+        }
+        return "";
+
+
+    }
     public static void storeAccident(String record, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ID INTEGER PRIMARY KEY AUTOINCREMENT, DESCRIPTION VARCHAR, USER_ID INT, " +
                 "FOREIGN KEY(USER_ID)REFERENCES USER(ID) ON DELETE CASCADE)");
