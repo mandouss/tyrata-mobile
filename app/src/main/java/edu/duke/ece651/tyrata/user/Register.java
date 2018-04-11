@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
@@ -37,11 +38,11 @@ public class Register extends AppCompatActivity {
         if(message_username.equals("")){
             msg = "The username cannot be empty!";
         }
-        if(message_email.equals("")){
-            msg = "The email cannot be empty!";
+        if(message_email.equals("") || !isEmailValid(message_email)){
+            msg = "The email is illegal!";
         }
-        if(message_phone.equals("")){
-            msg = "The phone number cannot be empty!";
+        if(message_phone.equals("") || !isPhoneValid(message_phone)){
+            msg = "The phone number in illegal!";
         }
 
         try {
@@ -73,5 +74,12 @@ public class Register extends AppCompatActivity {
                 .setMessage(msg)
                 .setPositiveButton("Yes", null)
                 .show();
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    boolean isPhoneValid(String phone_number) {
+        return PhoneNumberUtils.isGlobalPhoneNumber(phone_number);
     }
 }

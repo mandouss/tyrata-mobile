@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.location.Location;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -128,7 +132,16 @@ public class EmptyActivity extends AppCompatActivity {
                 double init_thickness = Database.getInitThickness(sensor_id); //init_thickness
                 double thickness = init_thickness;
                 String eol = Double.toString((init_thickness - 3) * 5000);
-                String time_to_replacement = timestamp;
+                int days = (int) Double.parseDouble(eol)/20;
+                if(days < 30){
+                    String notification = "Need to Change Your Tire within 30 Days!";
+                }
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter=new SimpleDateFormat("MM-dd-yyyy");
+                calendar.add(Calendar.DATE, days);
+                Log.i("daysleft", Integer.toString(days));
+                String time_to_replacement = formatter.format(calendar.getTime());
+                //String time_to_replacement = Integer.toString(days);
                 double longitude = 0;
                 double lat = 0;
                 try {
@@ -141,15 +154,44 @@ public class EmptyActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
-                Cursor c = Database.myDatabase.rawQuery("SELECT S11 FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
+                /* Updated by Zijie and Yue on 3/31/2018. */
+                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                     thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
                     eol = Double.toString((thickness - 3) * 5000);
-                    time_to_replacement = timestamp;
+                    int days1 = (int) Double.parseDouble(eol)/20;
+                    if(days1 < 30){
+                        String notification = "Need to Change Your Tire within 30 Days!";
+                    }
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.add(Calendar.DATE, days1);
+                    time_to_replacement = formatter.format(calendar1.getTime());
+                    //time_to_replacement = Integer.toString(days1);
                     c.close();
                 }
-                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, false, thickness, eol, time_to_replacement, longitude, lat);
+                boolean isoutlier = false;
+                double mean = Database.get_mean_s11(sensor_id);
+                Log.i("test outlier1", String.valueOf(mean));
+                Log.i("test outlier2", String.valueOf(s11));
+                //Database.testSnapTable();
+                double deviation = Database.get_deviation_s11(sensor_id);
+                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                    isoutlier = true;
+                }
+                Log.i("test outlier3", String.valueOf(isoutlier));
+                Log.i("test outlier4", String.valueOf(deviation));
+
+                //Database.testSnapTable();
+
+                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, isoutlier, thickness, eol, time_to_replacement, longitude, lat);
+
+                int outlier_num = Database.get_outlier_num(sensor_id);
+                //Log.i("TEST outliers NUM",String.valueOf(outlier_num));
+                if(outlier_num % 3 == 0 && isoutlier) {
+                    Log.i("notification: outliers",String.valueOf(outlier_num));
+                }
+
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
