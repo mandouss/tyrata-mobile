@@ -285,7 +285,7 @@ class BluetoothAPI {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
-                    Log.d(Common.LOG_TAG_BT_API, "Bytes received: " + numBytes);
+//                    Log.d(Common.LOG_TAG_BT_API, "Bytes received: " + numBytes);
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = mHandler.obtainMessage(
                             Common.MESSAGE_READ, numBytes, -1, mmBuffer);
