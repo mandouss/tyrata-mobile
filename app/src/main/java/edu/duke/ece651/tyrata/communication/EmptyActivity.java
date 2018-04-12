@@ -140,8 +140,9 @@ public class EmptyActivity extends AppCompatActivity {
                 catch(Exception e){
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-
-                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
+                String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ?";
+                Cursor c = Database.myDatabase.rawQuery(sql, new String[] {sensor_id});
+//                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
                     thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
