@@ -1,13 +1,23 @@
 package edu.duke.ece651.tyrata.calibration;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+
+import android.graphics.Color;
+
+import android.support.v7.app.ActionBar;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -18,9 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.duke.ece651.tyrata.MainActivity;
+
+
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
-import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Input_Vehicle_Info extends AppCompatActivity {
@@ -30,16 +41,23 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     private int user_ID;
     private int vehicle_ID;
     String tirenumber;
+    String original_vin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);
         // If this page is switched from vehicle edit
         String vin = intent.getStringExtra("VIN");
         vehicle_ID = -1;
-        if(vin != null) {
+        if (vin != null) {
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             Vehicle cur_vehicle = Database.getVehicle(vin);
             vehicle_ID = Database.getVehicleID(vin);
@@ -53,8 +71,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             textView_model.setText(cur_vehicle.getModel());
             EditText textView_year = findViewById(R.id.edit_year);
             textView_year.setText(String.valueOf(cur_vehicle.getYear()));
-        }else{
+            original_vin = vin;
+        } else {
             Log.i("Vehicle Input add_car", "add_car");
+            original_vin = "";
         }
 
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
@@ -67,15 +87,15 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         dataList.add("14");
         dataList.add("18");
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataList);
+        adapter = new ArrayAdapter<String>(this, R.layout.my_spinner, dataList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_Tirenumber.setAdapter(adapter);
         spinner_Tirenumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               adapter.getItem(position);
-               tirenumber = dataList.get(position);
-               parent.setVisibility(View.VISIBLE);
+                adapter.getItem(position);
+                tirenumber = dataList.get(position);
+                parent.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -95,7 +115,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.homepage){
+        if (item.getItemId() == R.id.homepage) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -118,7 +138,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         EditText edit_vin = (EditText) findViewById(R.id.edit_vin);
         String message_vin = edit_vin.getText().toString();
 
-        if(message_make.equals("") || message_model.equals("") || message_year.equals("") || message_vin.equals("")){
+        if (message_make.equals("") || message_model.equals("") || message_year.equals("") || message_vin.equals("")) {
             msg = "You need to fill out all the fields!";
         }
 
@@ -137,13 +157,12 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             axis_num = 5;
         }
 
-        if(!msg.equals("")){
+        if (!msg.equals("")) {
             notification(msg);
-        }
-        else {
+        } else {
             try {
                 Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
-                boolean noConflict = Database.storeVehicleData(vehicle_ID, message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
+                boolean noConflict = Database.storeVehicleData(original_vin, vehicle_ID, message_vin, message_make, message_model, Integer.parseInt(message_year), axis_num, Integer.parseInt(tirenumber), user_ID);
                 Database.myDatabase.close();
                 if (!noConflict) {
                     msg = "The VIN already exists!";
@@ -158,7 +177,7 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         }
     }
 
-    private void notification(String msg){
+    private void notification(String msg) {
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
                 .setMessage(msg)

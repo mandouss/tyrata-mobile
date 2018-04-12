@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.os.Trace;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -13,13 +15,20 @@ import android.widget.TextView;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.calibration.TireInfoInput;
+import edu.duke.ece651.tyrata.communication.Trace_item;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.Tire;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
+
+import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertStringToCalendar;
 
 /**
  * Created by Yue Li and Zijie Wang on 3/4/18.
@@ -37,6 +46,7 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/4/2018. */
     public static SQLiteDatabase myDatabase;
 
+    /* Created by Zijie Wang on 4/7/2018. */
     public static double get_mean_s11(String sensor_id) {
         Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
@@ -86,6 +96,8 @@ public class Database extends AppCompatActivity {
         return c.getCount();
     }
 
+
+    /* Created by Yue Li and Zijie Wang on 3/4/2018. */
     /* Updated by De Lan on 3/4/2018. */
     public static void createTable() {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
@@ -97,7 +109,7 @@ public class Database extends AppCompatActivity {
                 "PRESSURE DOUBLE, TIRE_ID INT, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONGITUDE DOUBLE, LATITUDE DOUBLE, FOREIGN KEY(TIRE_ID) REFERENCES TIRE(ID) ON DELETE CASCADE)");
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ID INTEGER PRIMARY KEY AUTOINCREMENT, DESCRIPTION VARCHAR, USER_ID INT, " +
                 "FOREIGN KEY(USER_ID)REFERENCES USER(ID) ON DELETE CASCADE)");
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TRACE(ID INTEGER PRIMARY KEY AUTOINCREMENT, METHOD_NAME VARCHAR, TABLE_NAME VARCHAR, TARGET_ID INT, DELETE_INFO VARCHAR)");
+        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TRACE(ID INTEGER PRIMARY KEY AUTOINCREMENT, METHOD_NAME VARCHAR, TABLE_NAME VARCHAR, TARGET_ID INT, ORIGINAL_INFO VARCHAR)");
     }
 
     public static void dropAllTable() {
@@ -136,8 +148,7 @@ public class Database extends AppCompatActivity {
     }
 
     /* Updated by De Lan on 3/28/2018 */
-    // Updated by Cheng Xing on 4/8/2018
-    public static boolean storeVehicleData(int vehicle_ID, String vin, String carmake, String carmodel, int tireyear, int axisnum, int tirenum, int userid) {
+    public static boolean storeVehicleData(String original_vin, int vehicle_ID, String vin, String carmake, String carmodel, int tireyear, int axisnum, int tirenum, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS VEHICLE (ID INTEGER PRIMARY KEY AUTOINCREMENT, VIN VARCHAR UNIQUE, MAKE VARCHAR, MODEL VARCHAR, " +
                 "YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT, FOREIGN KEY(USER_ID) REFERENCES USER(ID))");
         ContentValues contentValues = new ContentValues();
@@ -160,7 +171,7 @@ public class Database extends AppCompatActivity {
             }
             Log.i("In database", "update vehicle");
             myDatabase.update("VEHICLE", contentValues, "ID = ?", new String[]{Integer.toString(vehicle_ID)});
-            updateTrace( "UPDATE", "VEHICLE", vehicle_ID,"");
+            updateTrace( "UPDATE", "VEHICLE", vehicle_ID,original_vin);
         }
         // Insert
         else {
@@ -181,8 +192,7 @@ public class Database extends AppCompatActivity {
     }
 
     // Updated by Yue Li and De Lan on 3/22/2018
-    // Updated by Cheng Xing on 4/8/2018
-    public static boolean storeTireData(int tire_ID, String sensor_id, String manufacturer, String model, String sku, String vin, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id) {
+    public static boolean storeTireData(String original_sensor, int tire_ID, String sensor_id, String manufacturer, String model, String sku, String vin, int axis_row, String axis_side, int axis_index, double init_thickness, int init_ss_id, int cur_ss_id) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS TIRE(ID INTEGER PRIMARY KEY AUTOINCREMENT, SENSOR_ID VARCHAR UNIQUE, MANUFACTURER VARCHAR, MODEL VARCHAR, " +
                 "SKU VARCHAR, VEHICLE_ID INT, AXIS_ROW INT, AXIS_SIDE CHAR, AXIS_INDEX INT, INIT_THICKNESS DOUBLE, INIT_SS_ID INT, CUR_SS_ID INT, FOREIGN KEY(VEHICLE_ID) REFERENCES VEHICLE(ID) ON DELETE CASCADE)");
         ContentValues contentValues = new ContentValues();
@@ -203,7 +213,7 @@ public class Database extends AppCompatActivity {
                 return false;
             }
             myDatabase.update("TIRE", contentValues, "ID = ?", new String[]{Integer.toString(tire_ID)});
-            updateTrace( "UPDATE", "TIRE", tire_ID,"");
+            updateTrace( "UPDATE", "TIRE", tire_ID,original_sensor);
         }
         // Insert
         else {
@@ -241,6 +251,19 @@ public class Database extends AppCompatActivity {
             Double ans = c.getDouble(c.getColumnIndex("INIT_THICKNESS"));
             c.close();
             return ans;
+        }
+        else {
+            Log.i("In database", "Sensor id not found");
+            return 0;
+        }
+    }
+    /* Created by Yue Li on 3/31/2018. */
+    public static double getInitMileage(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE TIRE_ID = '" + sensor_id + "'", null);
+        if(c != null && c.moveToFirst()){
+            Double mile = c.getDouble(c.getColumnIndex("MILEAGE"));
+            c.close();
+            return mile;
         }
         else {
             Log.i("In database", "Sensor id not found");
@@ -327,7 +350,25 @@ public class Database extends AppCompatActivity {
         return true;
     }
 
-    //Created by Cheng on 3/25/2018, Updated by De Lan
+    /*Created by Yue Li on 04/05/2018*/
+    public static String notification(String sensor_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
+        c.moveToLast();
+        String timestamp = c.getString(c.getColumnIndex("TIMESTAMP"));
+        Calendar cal = TireSnapshot.convertStringToCalendar(timestamp);
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+        long start = cal.getTimeInMillis();
+        long end = today.getTimeInMillis();
+        long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
+        if(res>30){
+            String notification = "Disconnect Exceed 30 Days!";
+            return notification;
+        }
+        return "";
+
+
+    }
     public static void storeAccident(String record, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ID INTEGER PRIMARY KEY AUTOINCREMENT, DESCRIPTION VARCHAR, USER_ID INT, " +
                 "FOREIGN KEY(USER_ID)REFERENCES USER(ID) ON DELETE CASCADE)");
@@ -377,12 +418,12 @@ public class Database extends AppCompatActivity {
     }
 
     /* Added by De Lan on 3/28/2018 */
-    private static void updateTrace( String methodName, String tableName, long ID, String deleteInfo){
+    private static void updateTrace( String methodName, String tableName, long ID, String originalInfo){
         ContentValues traceValues = new ContentValues();
         traceValues.put("METHOD_NAME", methodName);
         traceValues.put("TABLE_NAME", tableName);
         traceValues.put("TARGET_ID", ID);
-        traceValues.put("DELETE_INFO", deleteInfo);
+        traceValues.put("ORIGINAL_INFO", originalInfo);
         myDatabase.insertOrThrow("TRACE", null, traceValues);
     }
 
@@ -429,6 +470,56 @@ public class Database extends AppCompatActivity {
             c.close();
         }
         return res;
+    }
+
+    public static String getVin(int vehicle_id){
+        Cursor c = myDatabase.rawQuery("SELECT VIN FROM VEHICLE WHERE ID = '"+ vehicle_id+"'",null);
+        String vin = "";
+        if(c != null && c.moveToFirst()) {
+            vin = c.getString(c.getColumnIndex("VIN"));
+            c.close();
+        }
+        return vin;
+    }
+
+    public static String getVinFromTire(int tire_id){
+        Cursor c = myDatabase.rawQuery("SELECT VIN FROM VEHICLE, TIRE WHERE TIRE.ID = '"+ tire_id+"' and TIRE.VEHICLE_ID = VEHICLE.ID",null);
+        String vin = "";
+        if(c != null && c.moveToFirst()) {
+            vin = c.getString(c.getColumnIndex("VIN"));
+            c.close();
+        }
+        return vin;
+    }
+
+    public static String getEmail(int vehicle_id){
+        Cursor c = myDatabase.rawQuery("SELECT EMAIL FROM USER, VEHICLE WHERE VEHICLE.ID = '"+ vehicle_id+"' and VEHICLE.USER_ID = USER.ID",null);
+        String email = "";
+        if(c != null && c.moveToFirst()) {
+            email = c.getString(c.getColumnIndex("EMAIL"));
+            c.close();
+        }
+        return email;
+    }
+
+    public static String getEmailFromAccident(int accident_id){
+        Cursor c = myDatabase.rawQuery("SELECT EMAIL FROM USER, VEHICLE WHERE ACCIDENT.ID = '"+ accident_id+"' and ACCIDENT.USER_ID = USER.ID",null);
+        String email = "";
+        if(c != null && c.moveToFirst()) {
+            email = c.getString(c.getColumnIndex("EMAIL"));
+            c.close();
+        }
+        return email;
+    }
+
+    public static String getTireFromSSid(int ss_id){
+        Cursor c = myDatabase.rawQuery("SELECT SENSOR_ID FROM TIRE, SNAPSHOT WHERE SNAPSHOT.ID = '"+ ss_id+"' and SNAPSHOT.TIRE_ID = TIRE.ID",null);
+        String sensor_id = "";
+        if(c != null && c.moveToFirst()) {
+            sensor_id = c.getString(c.getColumnIndex("SENSOR_ID"));
+            c.close();
+        }
+        return sensor_id;
     }
 
 
@@ -499,6 +590,24 @@ public class Database extends AppCompatActivity {
         return curr_vehicle;
     }
 
+    public static Trace_item getTrace(){
+        //ArrayList<Trace_item> trace_list = new ArrayList<Trace_item>();
+        Trace_item trace_item = new Trace_item();
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE WHERE ID = (SELECT min(ID) FROM TRACE)",null);
+        if(c == null){
+            return null;
+        }
+        c.moveToFirst();
+        trace_item.setId(c.getInt(c.getColumnIndex("ID")));
+        trace_item.setMethod(c.getString(c.getColumnIndex("METHOD_NAME")));
+        trace_item.setTable_name(c.getString(c.getColumnIndex("TABLE_NAME")));
+        trace_item.setTarget_id(c.getInt(c.getColumnIndex("TARGET_ID")));
+        trace_item.setOrigin_info(c.getString(c.getColumnIndex("ORIGINAL_INFO")));
+        //trace_list.add(trace_item);
+        c.close();
+        return trace_item;
+    }
+
     /* Created by De Lan on 3/18/2018.*/
     // Updated by Cheng Xing on 4/8/2018
     public static Tire tireHelper(Cursor c){
@@ -551,7 +660,49 @@ public class Database extends AppCompatActivity {
         }
     }
 
-    //Created by Cheng Xing on 3/25/2018, updated by De Lan
+    public static Tire getTire(int id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE ID = '"+ id +"'", null);
+        if (c.moveToFirst()) {
+            Tire ans = tireHelper(c);
+            c.close();
+            return ans;
+        } else {
+            Log.i("getTire", "the tire not found!!!");
+            return null;
+        }
+    }
+
+    public static TireSnapshot getSnapshot(int ss_id){
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE ID = '"+ ss_id +"'",null);
+        if (c.moveToFirst()) {
+            TireSnapshot ans = new TireSnapshot();
+            ans.setS11(c.getDouble(c.getColumnIndex("S11")));
+            ans.setTimestamp(convertStringToCalendar(c.getString(c.getColumnIndex("TIMESTAMP"))));
+            ans.setOdometerMileage(c.getDouble(c.getColumnIndex("MILEAGE")));
+            ans.setPressure(c.getDouble(c.getColumnIndex("PRESSURE")));
+            ans.setMcurr_thickness(c.getDouble(c.getColumnIndex("THICKNESS")));
+            ans.setMeol(c.getString(c.getColumnIndex("EOL")));
+            ans.setMrepTime(c.getString(c.getColumnIndex("TIME_TO_REPLACEMENT")));
+            c.close();
+            return ans;
+        } else {
+            Log.i("getSnapshot", "the snapshot not found!!!");
+            return null;
+        }
+    }
+
+    public static String getAccident(int accident_id){
+        Cursor c = myDatabase.rawQuery("SELECT DESCRIPTION FROM ACCIDENT WHERE ID = '"+ accident_id +"'",null);
+        if(c.moveToNext()){
+            String description = c.getString(c.getColumnIndex("DESCRIPTION"));
+            c.close();
+            return description;
+        }else {
+            Log.i("getAccident", "the accident not found!!!");
+            return null;
+        }
+    }
+
     public static void deleteVehicle(String vin){
         /*
         updateTrace( "DELETE", "VEHICLE", 0, vin);
@@ -580,6 +731,12 @@ public class Database extends AppCompatActivity {
         SQLiteStatement s = myDatabase.compileStatement(del);
         s.bindString(1, sensor_ID);
         s.executeUpdateDelete();
+    }
+
+    public static void deleteTrace(int ID){
+        String del = "DELETE FROM TRACE WHERE ID = '" + ID + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
     }
 
     /* Created by YUE LI on 3/18/2018.*/

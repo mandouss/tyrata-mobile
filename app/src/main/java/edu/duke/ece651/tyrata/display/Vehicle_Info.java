@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +87,19 @@ public class Vehicle_Info extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new         Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
+
         //getVehicle
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
@@ -133,7 +147,7 @@ public class Vehicle_Info extends AppCompatActivity {
 
         ImageView imageView= findViewById(R.id.image_vehicle);
         if(curr_vehicle.getNumTires() == 4){
-            imageView.setImageResource(R.drawable.four_wheel);
+            imageView.setImageResource(R.drawable.four_wheel2);
         }
         else if(curr_vehicle.getNumTires() == 6){
             imageView.setImageResource(R.drawable.six_wheel);

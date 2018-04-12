@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.DragAndDropPermissions;
 import android.view.Menu;
@@ -31,12 +32,16 @@ public class TireInfoInput extends AppCompatActivity {
     int tire_ID;
     String vin;
     String msg;
+    String original_sensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tire_info_input);
         Intent intent = getIntent();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         axis_row = intent.getIntExtra("axis_ROW",0);
         axis_index = intent.getIntExtra("axis_IDX",0);
@@ -63,8 +68,10 @@ public class TireInfoInput extends AppCompatActivity {
             textView_sku.setText(curr_tire.getSku());
             EditText textView_thickness = findViewById(R.id.edit_thickness);
             textView_thickness.setText(String.valueOf(curr_tire.get_INIT_THICK()));
+            original_sensor = sensor_id;
         }else{
             Log.i("Vehicle Input add_car", "add_car");
+            original_sensor = "";
         }
     }
 
@@ -116,12 +123,13 @@ public class TireInfoInput extends AppCompatActivity {
             notification(msg);
         } else {
             try {
+                msg = "Please type in valid number between 5 and 15.";
                 Double thickness = Double.parseDouble(message_thickness);
                 if (thickness < 5.0 || thickness > 15.0) {
                     msg = "The initial tire thickness need to between 5mm and 15mm!";
                     throw new IOException();
                 }
-                boolean storeTire = Database.storeTireData(tire_ID, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
+                boolean storeTire = Database.storeTireData(original_sensor, tire_ID, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
                 Database.myDatabase.close();
                 if (!storeTire) {
                     msg = "The Sensor ID already exists!";
