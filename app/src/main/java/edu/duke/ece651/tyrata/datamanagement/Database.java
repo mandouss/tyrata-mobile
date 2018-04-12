@@ -48,7 +48,9 @@ public class Database extends AppCompatActivity {
 
     /* Created by Zijie Wang on 4/7/2018. */
     public static double get_mean_s11(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and OUTLIER != 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
                 //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
@@ -69,7 +71,9 @@ public class Database extends AppCompatActivity {
     }
 
     public static double get_deviation_s11(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
         double mean = get_mean_s11(sensor_id);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
@@ -91,9 +95,12 @@ public class Database extends AppCompatActivity {
     }
 
     public static int get_outlier_num(String sensor_id) {
-        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
-
-        return c.getCount();
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER = 1";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
+        int ans = c.getCount();
+        c.close();
+        return ans;
     }
 
 
@@ -361,13 +368,12 @@ public class Database extends AppCompatActivity {
         long start = cal.getTimeInMillis();
         long end = today.getTimeInMillis();
         long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
+        c.close();
         if(res>30){
             String notification = "Disconnect Exceed 30 Days!";
             return notification;
         }
         return "";
-
-
     }
     public static void storeAccident(String record, int userid) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS ACCIDENT(ID INTEGER PRIMARY KEY AUTOINCREMENT, DESCRIPTION VARCHAR, USER_ID INT, " +
