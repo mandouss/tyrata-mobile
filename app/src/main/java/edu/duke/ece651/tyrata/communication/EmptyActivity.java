@@ -24,6 +24,7 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -92,6 +93,7 @@ public class EmptyActivity extends AppCompatActivity {
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
+            HashSet<String> NotFoundSensorSet = new HashSet<String>();
             ArrayList<Double> GPS = GpsAPI.getGPS(this);
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
@@ -123,7 +125,13 @@ public class EmptyActivity extends AppCompatActivity {
                     }
                 }
                 catch(Exception e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                if(init_thickness == -1 && !NotFoundSensorSet.contains(sensor_id)){
+                    NotFoundSensorSet.add(sensor_id);
+                    String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
+                    Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                    continue;
                 }
                 /* Updated by Zijie and Yue on 3/31/2018. */
                 String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ?";
@@ -168,8 +176,8 @@ public class EmptyActivity extends AppCompatActivity {
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
-                        Database.myDatabase.close();
-                        throw new IOException();
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database snapshot!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -188,9 +196,8 @@ public class EmptyActivity extends AppCompatActivity {
         } catch (XmlPullParserException e) {
             notification(e.getMessage());
             e.printStackTrace();
-        } catch (IOException e) {
-            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
-            notification(msg);
+        } catch (Exception e) {
+            notification(e.getMessage());
             e.printStackTrace();
         }
     }

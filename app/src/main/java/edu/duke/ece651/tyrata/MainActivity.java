@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -255,10 +256,7 @@ public class MainActivity extends EmptyActivity {
 
     public void main_to_edit() {
         Intent intent = new Intent(MainActivity.this, Edit_user_information.class);
-        //intent.putExtra("userID", user_ID);
-
         startActivity(intent);
-        // Do something in response to button
     }
 
     public void main_to_addcar() {
@@ -266,28 +264,22 @@ public class MainActivity extends EmptyActivity {
         intent.putExtra("userID", user_ID);
 
         startActivity(intent);
-        // Do something in response to button
     }
     public void main_to_report(View view) {
         Intent intent = new Intent(MainActivity.this, Report_accident.class);
         intent.putExtra("userID", user_ID);
 
         startActivity(intent);
-        // Do something in response to button
     }
     public void main_to_login() {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.user.Log_in.class);
 
         startActivity(intent);
-        // Do something in response to button
     }
     public void main_to_vehicle_info(String vin) {
         Intent intent = new Intent(MainActivity.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
-//        intent.putExtra("userID", user_ID);
-
         startActivity(intent);
-        // Do something in response to button
     }
     public void main_to_communication(View view) {
         Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "main_to_communication()");
@@ -306,6 +298,7 @@ public class MainActivity extends EmptyActivity {
     private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
         // close bluetooth connection
         BluetoothAPI.disableBt();
+        HashSet<String> NotFoundSensorSet = new HashSet<String>();
 
         Toast.makeText(getApplicationContext(), "Received "
                 + snapshots.size() + " tire snapshots", Toast.LENGTH_SHORT).show();
@@ -323,7 +316,6 @@ public class MainActivity extends EmptyActivity {
                 double mileage = snapshots.get(i).getOdometerMileage();
                 double pressure = snapshots.get(i).getPressure();
                 String sensor_id = snapshots.get(i).getSensorId();
-
                 double init_thickness = Database.getInitThickness(sensor_id); //init_thickness
                 double thickness = init_thickness;
                 String eol = Double.toString((init_thickness - 3) * 5000);
@@ -346,6 +338,12 @@ public class MainActivity extends EmptyActivity {
                 }
                 catch(Exception e){
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                if(init_thickness == -1 && !NotFoundSensorSet.contains(sensor_id)){
+                    NotFoundSensorSet.add(sensor_id);
+                    String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
+                    Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                    continue;
                 }
                 /* Updated by Zijie and Yue on 3/31/2018. */
                 String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ?";
@@ -384,8 +382,8 @@ public class MainActivity extends EmptyActivity {
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
-                        Database.myDatabase.close();
-                        throw new IOException();
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database snapshot!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -394,9 +392,9 @@ public class MainActivity extends EmptyActivity {
             }
             Database.myDatabase.close();
         }
-        catch(IOException e){
-            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
-            notification(msg);
+        catch(Exception e){
+//            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
+            notification(e.getMessage());
             e.printStackTrace();
         }
     }

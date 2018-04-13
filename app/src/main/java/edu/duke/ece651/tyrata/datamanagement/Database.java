@@ -261,7 +261,7 @@ public class Database extends AppCompatActivity {
         }
         else {
             Log.i("In database", "Sensor id not found");
-            return 0;
+            return -1;
         }
     }
     /* Created by Yue Li on 3/31/2018. */
@@ -400,16 +400,15 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     //@TODO refine the calculation algorithm
     public static boolean updateTireSSID(String sensor_ID){
-        //Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
-        String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
-        Cursor sensorExist = myDatabase.rawQuery(sql, new String[] {sensor_ID});
-
-        if(sensorExist == null || !sensorExist.moveToFirst()){
-            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
-            return false;
-        }
-        sensorExist.close();
-
+//        //Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
+//        String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
+//        Cursor sensorExist = myDatabase.rawQuery(sql, new String[] {sensor_ID});
+//
+//        if(sensorExist == null || !sensorExist.moveToFirst()){
+//            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
+//            return false;
+//        }
+//        sensorExist.close();
         //Cursor curr = myDatabase.rawQuery("SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
         //Cursor init = myDatabase.rawQuery("SELECT MIN(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
         String sql_curr = "SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
