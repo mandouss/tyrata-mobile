@@ -1,9 +1,12 @@
 package edu.duke.ece651.tyrata;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,13 +23,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import edu.duke.ece651.tyrata.calibration.Report_accident;
+import edu.duke.ece651.tyrata.communication.BluetoothAPI;
+import edu.duke.ece651.tyrata.communication.BluetoothDeviceListActivity;
 import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.user.Edit_user_information;
 import edu.duke.ece651.tyrata.user.User;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 import java.util.ArrayList;
@@ -42,6 +50,8 @@ public class MainActivity extends EmptyActivity {
     private List<Map<String, Object>> list;
     private NavigationView navigationView;
     private int user_ID;
+    private StringBuilder mXmlStream;
+
 
     int notificationID = 1;
     @Override
@@ -54,6 +64,12 @@ public class MainActivity extends EmptyActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
+        mXmlStream = new StringBuilder();
+
+        // Enable Bluetooth
+        Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Enabling Bluetooth...");
+        BluetoothAPI.enableBt(this, mHandler);
+
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -163,6 +179,12 @@ public class MainActivity extends EmptyActivity {
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        BluetoothAPI.disableBt();
+    }
 
     private void initDataList(ArrayList<Vehicle> vehicles) {
         int number = vehicles.size();
@@ -264,11 +286,23 @@ public class MainActivity extends EmptyActivity {
         startActivity(intent);
         // Do something in response to button
     }
-    public void main_to_communication() {
-        Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.communication.EmptyActivity.class);
+    public void main_to_communication(View view) {
+        Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "discoverBluetooth()");
 
-        startActivity(intent);
-        // Do something in response to button
+        if (BluetoothAPI.isBtReady(this)) {
+            // Launch the DeviceListActivity to see devices and do scan
+            Intent discoverIntent = new Intent(this, BluetoothDeviceListActivity.class);
+            startActivityForResult(discoverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
+        }
+    }
+
+    private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
+        // close bluetooth connection
+        BluetoothAPI.disableBt();
+
+        // @TODO write code to store snapshots received from simulator
+        Toast.makeText(getApplicationContext(), "Received "
+                + snapshots.size() + " tire snapshots", Toast.LENGTH_SHORT).show();
     }
 
     private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
@@ -320,4 +354,98 @@ public class MainActivity extends EmptyActivity {
             e.printStackTrace();
         }
     }*/
+
+    /**
+     * Called when startActivityForResult finishes
+     * @param requestCode Constant integer representing the request that finished
+     * @param resultCode The result of the finished activity (e.g. OK, FAILED)
+     * @param data Data sent back from the finished activity
+     */
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Common.REQUEST_ENABLE_BT:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Bluetooth enable request canceled");
+                    Toast.makeText(getApplicationContext(),
+                            "Bluetooth request cancelled. Cannot connect to sensors...",
+                            Toast.LENGTH_LONG).show();
+                }
+                else if (resultCode == RESULT_OK) {
+                    Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Bluetooth enabled");
+                }
+                break;
+            case Common.REQUEST_ACCESS_COARSE_LOCATION:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Location access request cancelled");
+                    Toast.makeText(getApplicationContext(),
+                            "Location access request cancelled. Cannot discover Bluetooth devices...",
+                            Toast.LENGTH_LONG).show();
+                }
+                else if (resultCode == RESULT_OK) {
+                    Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Location access granted");
+                    //@todo this is not tested. Might not work here
+                    main_to_communication(null);
+//                    BluetoothAPI.discoverBtDevices(this);
+                }
+                break;
+            case Common.REQUEST_CONNECT_BT_DEVICE:
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(getApplicationContext(),
+                            "Connecting...", Toast.LENGTH_SHORT).show();
+                    BluetoothAPI.connectBt(data);
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Bluetooth connection Failed...",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Unknown REQUEST_CODE " + requestCode);
+                Toast.makeText(getApplicationContext(),
+                        "Something went wrong (Unknown REQUEST_CODE)...",
+                        Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    /**
+     * The Handler that gets information back from the BluetoothChatService
+     */
+    // @todo fix "This handler class should be static or leaks might occur" warning
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Common.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the msg
+                    String msgStr = new String(readBuf, 0, msg.arg1);
+                    mXmlStream.append(msgStr);
+                    if (readBuf[msg.arg1-1] == Common.SIMULATOR_EOF) { // reached end of message/file
+                        Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
+                        ArrayList<TireSnapshot> snapshots = BluetoothAPI.processMsg(mXmlStream.toString());
+                        handleReceivedSnapshots(snapshots);
+                    }
+                    break;
+                case Common.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    String writeMsg = new String(writeBuf, 0, msg.arg1);
+                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
+                    break;
+                case Common.MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
+                    break;
+                case Common.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    String deviceName = msg.getData().getString(Common.DEVICE_NAME);
+                    Toast.makeText(getApplicationContext(), "Connected to "
+                            + deviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Unknown message passed to handler: " + msg.what);
+            }
+        }
+    };
 }

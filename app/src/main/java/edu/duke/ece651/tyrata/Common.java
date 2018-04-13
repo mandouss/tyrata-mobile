@@ -15,12 +15,14 @@ public class Common {
     public static final String LOG_TAG_BT_API = "BluetoothAPI";
     public static final String LOG_TAG_BT_ACTIVITY = "BluetoothActivity";
     public static final String LOG_TAG_BT_DEVICE_LIST_ACTIVITY = "BtDeviceListActivity";
+    public static final String LOG_TAG_MAIN_ACTIVITY = "MainActivity";
 
     // Defines constants for bundle keywords/tags
     public static final String DEVICE_NAME = "device_name";
 
-    //@todo change UUID
+    // Defines constant values
     public static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+    public static byte SIMULATOR_EOF = 0; // End-of-File byte
 
     // Defines several constants used when transmitting messages between the
     // Bluetooth service and the UI.
