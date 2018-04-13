@@ -302,6 +302,17 @@ public class Database extends AppCompatActivity {
         }
     }
 
+    /* Added by De Lan on 04/13/2018*/
+    public static boolean tireSnapshotExist(String sensor_id){
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+        if(c.getCount() > 0){
+            c.close();
+            return true;
+        }
+        return false;
+    }
+
     /* Created by Zijie Wang on 3/26/2018. */
     // Updated by Cheng Xing on 4/8/2018
     public static ArrayList<Pair<String, Double>> get_thickness_and_timestamp (String sensor_id) {

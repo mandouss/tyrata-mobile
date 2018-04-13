@@ -244,7 +244,7 @@ public class MainActivity extends EmptyActivity {
                 goToHTTP();
                 return true;
             case R.id.n_submenu_tireSnapshot:
-//                getTireSnapshotListFromXml();
+                getTireSnapshotListFromXml();
                 return true;
             case R.id.n_submenu_XML:
                 testParseXml();
