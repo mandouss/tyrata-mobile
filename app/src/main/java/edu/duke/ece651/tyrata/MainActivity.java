@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
@@ -37,7 +38,10 @@ import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,7 +244,7 @@ public class MainActivity extends EmptyActivity {
                 goToHTTP();
                 return true;
             case R.id.n_submenu_tireSnapshot:
-                //getTireSnapshotListFromXml();
+//                getTireSnapshotListFromXml();
                 return true;
             case R.id.n_submenu_XML:
                 testParseXml();
@@ -303,6 +307,98 @@ public class MainActivity extends EmptyActivity {
         // @TODO write code to store snapshots received from simulator
         Toast.makeText(getApplicationContext(), "Received "
                 + snapshots.size() + " tire snapshots", Toast.LENGTH_SHORT).show();
+        if(snapshots.size() <= 0){
+            return;
+        }
+        try{
+            /* Updated by Zijie and Yue on 3/24/2018. */
+            /* Updated by Saeed and De Lan on 4/13/2018. */
+            ArrayList<Double> GPS = getGPS();
+            Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+            for (int i = 0; i < snapshots.size(); i++) {
+                double s11 = snapshots.get(i).getS11();
+                String timestamp = TireSnapshot.convertCalendarToString(snapshots.get(i).getTimestamp());
+                double mileage = snapshots.get(i).getOdometerMileage();
+                double pressure = snapshots.get(i).getPressure();
+                String sensor_id = snapshots.get(i).getSensorId();
+
+                double init_thickness = Database.getInitThickness(sensor_id); //init_thickness
+                double thickness = init_thickness;
+                String eol = Double.toString((init_thickness - 3) * 5000);
+                int days = (int) Double.parseDouble(eol)/20;
+                if(days < 30){
+                    String notification = "Need to Change Your Tire within 30 Days!";
+                }
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat formatter=new SimpleDateFormat("MM-dd-yyyy");
+                calendar.add(Calendar.DATE, days);
+                Log.i("daysleft", Integer.toString(days));
+                String time_to_replacement = formatter.format(calendar.getTime());
+                double longitude = 0;
+                double lat = 0;
+                try {
+                    if (GPS != null) {
+                        longitude = GPS.get(0);
+                        lat = GPS.get(1);
+                    }
+                }
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                /* Updated by Zijie and Yue on 3/31/2018. */
+                String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ?";
+                Cursor c = Database.myDatabase.rawQuery(sql, new String[] {sensor_id});
+                if (c != null && c.moveToFirst()) {
+                    double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
+                    thickness = snapshots.get(i).calculateTreadThickness(init_mS11, init_thickness);
+                    eol = Double.toString((thickness - 3) * 5000);
+                    int days1 = (int) Double.parseDouble(eol)/20;
+                    if(days1 < 30){
+                        String notification = "Need to Change Your Tire within 30 Days!";
+                    }
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.add(Calendar.DATE, days1);
+                    time_to_replacement = formatter.format(calendar1.getTime());
+                    c.close();
+                }
+                boolean isoutlier = false;
+                double mean = Database.get_mean_s11(sensor_id);
+                Log.i("test outlier1", String.valueOf(mean));
+                Log.i("test outlier2", String.valueOf(s11));
+                //Database.testSnapTable();
+                double deviation = Database.get_deviation_s11(sensor_id);
+                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                    isoutlier = true;
+                }
+                Log.i("test outlier3", String.valueOf(isoutlier));
+                Log.i("test outlier4", String.valueOf(deviation));
+                //Database.testSnapTable();
+                boolean notDupSanpShot  = Database.storeSnapshot(s11, timestamp, mileage, pressure, sensor_id, isoutlier, thickness, eol, time_to_replacement, longitude, lat);
+                int outlier_num = Database.get_outlier_num(sensor_id);
+                //Log.i("TEST outliers NUM",String.valueOf(outlier_num));
+                if(outlier_num % 3 == 0 && isoutlier) {
+                    Log.i("notification: outliers",String.valueOf(outlier_num));
+                }
+                if(notDupSanpShot){
+                    boolean sensorExist = Database.updateTireSSID(sensor_id);
+                    if (!sensorExist) {
+                        Database.myDatabase.close();
+                        throw new IOException();
+                    }
+                }
+                else{
+                    Log.i("In Empty Activity","Dup SanpShot!");
+                }
+                if(i > 2)
+                    continue;
+            }
+            Database.myDatabase.close();
+        }
+        catch(IOException e){
+            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
+            notification(msg);
+            e.printStackTrace();
+        }
     }
 
     private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {

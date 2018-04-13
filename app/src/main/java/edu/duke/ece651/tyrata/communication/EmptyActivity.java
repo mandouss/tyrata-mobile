@@ -234,7 +234,7 @@ public class EmptyActivity extends AppCompatActivity {
         }
     }
 
-    private void notification(String msg){
+    public void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
                 .setMessage(msg)
