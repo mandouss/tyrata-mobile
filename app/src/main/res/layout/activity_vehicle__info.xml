@@ -57,7 +57,7 @@
                                     android:layout_gravity="center"
                                     android:textStyle="bold"
                                     android:textColor="@color/darkblue"
-                                    android:textSize="30dp" />
+                                    android:textSize="20dp" />
 
                                 <ImageView
                                     android:layout_width="200dp"

@@ -9,7 +9,7 @@
     </user>
     <vehicle>
         <vin>1HGBH41JXMN109186</vin>
-        <make>Toyota</make>
+        <make>Ford</make>
         <model>Mustang</model>
         <year>2016</year>
         <axis_num>2</axis_num>
@@ -19,7 +19,7 @@
     <vehicle>
         <vin>2HGBH41HSTG106732</vin>
         <make>Ford</make>
-        <model>Prius</model>
+        <model>Mustang</model>
         <year>2013</year>
         <axis_num>5</axis_num>
         <tire_num>18</tire_num>
