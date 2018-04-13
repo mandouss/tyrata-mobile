@@ -26,11 +26,12 @@ public class Common {
     public static final String LOG_TAG_COMMON = "Common";
 
     // Defines constants for bundle keywords/tags
-    public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_NAME = "DEVICE_NAME";
+    public static final String TOAST_MSG = "TOAST_MSG";
 
     // Defines constant values
     public static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-    public static byte SIMULATOR_EOF = 0; // End-of-File byte
+    public static final byte SIMULATOR_EOF = 0; // End-of-File byte
 
     // Defines several constants used when transmitting messages between the
     // Bluetooth service and the UI.

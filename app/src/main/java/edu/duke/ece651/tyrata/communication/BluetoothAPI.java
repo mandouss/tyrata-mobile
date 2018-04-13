@@ -67,6 +67,7 @@ public class BluetoothAPI {
         }
 
         mHandler = handler;
+
         return true;
     }
 
@@ -216,7 +217,7 @@ public class BluetoothAPI {
     }
 
     public static ArrayList<TireSnapshot> processMsg(String msg) {
-        ArrayList<TireSnapshot> tireSnapshotList = null;
+        ArrayList<TireSnapshot> tireSnapshotList = new ArrayList<>();
         try {
             InputStream in = new ByteArrayInputStream(msg.getBytes("UTF-8"));
             // parse the message
@@ -228,13 +229,13 @@ public class BluetoothAPI {
             }
             writeSuccess();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
         } catch (XmlPullParserException e) {
             writeFail();
-            e.printStackTrace();
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
         } catch (IOException e) {
             writeFail();
-            e.printStackTrace();
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
         }
 
         return tireSnapshotList;
@@ -378,7 +379,7 @@ public class BluetoothAPI {
                 Message writeErrorMsg =
                         mHandler.obtainMessage(Common.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
-                bundle.putString("toast",
+                bundle.putString(Common.TOAST_MSG,
                         "Couldn't send data to the other device");
                 writeErrorMsg.setData(bundle);
                 mHandler.sendMessage(writeErrorMsg);

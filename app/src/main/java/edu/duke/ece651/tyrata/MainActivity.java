@@ -296,14 +296,22 @@ public class MainActivity extends EmptyActivity {
     }
 
     private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
+        //@TODO hide the loading icon
+
         // close bluetooth connection
         BluetoothAPI.disableBt();
         HashSet<String> NotFoundSensorSet = new HashSet<String>();
 
-        Toast.makeText(getApplicationContext(), "Received "
-                + snapshots.size() + " tire snapshots", Toast.LENGTH_SHORT).show();
+
         if(snapshots.isEmpty()){
+            Toast.makeText(getApplicationContext(),
+                    "Transfer failed...",
+                    Toast.LENGTH_SHORT).show();
             return;
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Received " + snapshots.size() + " tire snapshots",
+                    Toast.LENGTH_SHORT).show();
         }
         try{
             /* Updated by Zijie and Yue on 3/24/2018. */
@@ -337,7 +345,8 @@ public class MainActivity extends EmptyActivity {
                     }
                 }
                 catch(Exception e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(Common.LOG_TAG_MAIN_ACTIVITY, "Error aquiring GPS", e);
+//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 if(init_thickness == -1 && !NotFoundSensorSet.contains(sensor_id)){
                     NotFoundSensorSet.add(sensor_id);
@@ -467,7 +476,6 @@ public class MainActivity extends EmptyActivity {
                 }
                 else if (resultCode == RESULT_OK) {
                     Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Bluetooth enabled");
-                    //@todo this is not tested. Might not work here
                     main_to_communication(null);
                 }
                 break;
@@ -486,6 +494,7 @@ public class MainActivity extends EmptyActivity {
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(getApplicationContext(),
                             "Connecting...", Toast.LENGTH_SHORT).show();
+                    // @TODO show a loading icon
                     BluetoothAPI.connectBt(data);
                 } else {
                     Toast.makeText(getApplicationContext(),
@@ -525,10 +534,15 @@ public class MainActivity extends EmptyActivity {
                 case Common.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMsg = new String(writeBuf, 0, msg.arg1);
-                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
+                    Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Sent " + writeMsg);
+//                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
                     break;
                 case Common.MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
+                    // save the connected device's name
+                    String toastMsg = msg.getData().getString(Common.TOAST_MSG);
+                    Toast.makeText(getApplicationContext(),
+                            "Error occurred: " + toastMsg,
+                            Toast.LENGTH_SHORT).show();
                     break;
                 case Common.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
