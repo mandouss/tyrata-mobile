@@ -389,8 +389,6 @@ public class MainActivity extends EmptyActivity {
                 else{
                     Log.i("In Empty Activity","Dup SanpShot!");
                 }
-                if(i > 2)
-                    continue;
             }
             Database.myDatabase.close();
         }
