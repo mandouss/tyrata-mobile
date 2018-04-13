@@ -127,10 +127,13 @@ public class EmptyActivity extends AppCompatActivity {
                 catch(Exception e){
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                if(init_thickness == -1 && !NotFoundSensorSet.contains(sensor_id)){
-                    NotFoundSensorSet.add(sensor_id);
-                    String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
-                    Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                // init_thickness is -1 when the sensor_id is not found in database
+                if(init_thickness == -1 ){
+                    if(!NotFoundSensorSet.contains(sensor_id)){
+                        NotFoundSensorSet.add(sensor_id);
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                    }
                     continue;
                 }
                 /* Updated by Zijie and Yue on 3/31/2018. */

@@ -348,10 +348,12 @@ public class MainActivity extends EmptyActivity {
                     Log.e(Common.LOG_TAG_MAIN_ACTIVITY, "Error aquiring GPS", e);
 //                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-                if(init_thickness == -1 && !NotFoundSensorSet.contains(sensor_id)){
-                    NotFoundSensorSet.add(sensor_id);
-                    String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
-                    Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                if(init_thickness == -1){
+                    if(!NotFoundSensorSet.contains(sensor_id)){
+                        NotFoundSensorSet.add(sensor_id);
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                    }
                     continue;
                 }
                 /* Updated by Zijie and Yue on 3/31/2018. */
