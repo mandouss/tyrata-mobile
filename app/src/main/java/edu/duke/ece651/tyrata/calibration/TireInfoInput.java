@@ -118,18 +118,24 @@ public class TireInfoInput extends AppCompatActivity {
         Log.i("axis_SIDE", String.valueOf(axis_side));
         Log.i("sensor_ID", message_sensorID);
         Log.i("VIN", vin);
+        Double thickness = 0.0;
+        try {
+            thickness = Double.parseDouble(message_thickness);
+            if (thickness < 5.0 || thickness > 15.0) {
+                msg = "The initial tire thickness need to between 5mm and 15mm!";
+                notification(msg);
+            }
+        }
+        catch (Exception e){
+            msg = "Please type in valid number between 5 and 15.";
+            notification(msg);
+        }
 
         if(!msg.equals("")){
             notification(msg);
         } else {
             try {
-                msg = "Please type in valid number between 5 and 15.";
-                Double thickness = Double.parseDouble(message_thickness);
-                if (thickness < 5.0 || thickness > 15.0) {
-                    msg = "The initial tire thickness need to between 5mm and 15mm!";
-                    throw new IOException();
-                }
-                boolean storeTire = Database.storeTireData(original_sensor, tire_ID, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, Double.parseDouble(message_thickness), 0, 0);
+                boolean storeTire = Database.storeTireData(original_sensor, tire_ID, message_sensorID, message_manufacturer, message_model, message_SKU, vin, axis_row, String.valueOf(axis_side), axis_index, thickness, 0, 0);
                 Database.myDatabase.close();
                 if (!storeTire) {
                     msg = "The Sensor ID already exists!";
