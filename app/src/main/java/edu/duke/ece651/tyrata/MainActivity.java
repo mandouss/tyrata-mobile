@@ -494,6 +494,7 @@ public class MainActivity extends EmptyActivity {
                 break;
             case Common.REQUEST_CONNECT_BT_DEVICE:
                 if (resultCode == RESULT_OK) {
+                    mXmlStream = new StringBuilder();
                     Toast.makeText(getApplicationContext(),
                             "Connecting...", Toast.LENGTH_SHORT).show();
                     // @TODO show a loading icon
