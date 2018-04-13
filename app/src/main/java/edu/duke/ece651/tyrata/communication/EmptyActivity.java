@@ -28,6 +28,7 @@ import java.util.Calendar;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.processing.GPStracker;
+import edu.duke.ece651.tyrata.processing.GpsAPI;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 public class EmptyActivity extends AppCompatActivity {
@@ -38,36 +39,7 @@ public class EmptyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_empty);
     }
 
-    public ArrayList<Double> getGPS() {
-        ArrayList<Double> ans = new ArrayList<>();
-        try {
-            // Check for location permission
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                // Request permission for location
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        123);
-            }
 
-            GPStracker g = new GPStracker(getApplicationContext());
-            Location l = g.getLocation();
-            if (l != null) {
-                Double lat = l.getLatitude();
-                Double lon = l.getLongitude();
-                ans.add(lat);
-                ans.add(lon);
-                Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
-            }
-        }
-        catch(Exception e){
-            String msg = "The GPS information cannot be fetched!";
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        }
-        return ans;
-    }
 
     public void goToBluetooth() {
         Intent intent = new Intent(this, BluetoothActivity.class);
@@ -120,7 +92,7 @@ public class EmptyActivity extends AppCompatActivity {
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
-            ArrayList<Double> GPS = getGPS();
+            ArrayList<Double> GPS = GpsAPI.getGPS(this);
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
                 double s11 = tireSnapshotList.get(i).getS11();

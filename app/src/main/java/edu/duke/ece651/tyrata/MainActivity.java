@@ -33,6 +33,7 @@ import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
+import edu.duke.ece651.tyrata.processing.GpsAPI;
 import edu.duke.ece651.tyrata.user.Edit_user_information;
 import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
@@ -69,10 +70,6 @@ public class MainActivity extends EmptyActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
         mXmlStream = new StringBuilder();
-
-        // Enable Bluetooth
-        Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Enabling Bluetooth...");
-        BluetoothAPI.enableBt(this, mHandler);
 
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -173,6 +170,8 @@ public class MainActivity extends EmptyActivity {
                 main_to_vehicle_info(str);
             }
         });
+
+        Common.requestAccessCoarseLocation(this);
     }
 
     @Override
@@ -238,7 +237,7 @@ public class MainActivity extends EmptyActivity {
                 startActivity(intent);
                 return true;
             case R.id.n_submenu_GPS:
-                getGPS();
+                GpsAPI.getGPS(this);
                 return true;
             case R.id.n_submenu_Http:
                 goToHTTP();
@@ -291,12 +290,16 @@ public class MainActivity extends EmptyActivity {
         // Do something in response to button
     }
     public void main_to_communication(View view) {
-        Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "discoverBluetooth()");
+        Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "main_to_communication()");
 
-        if (BluetoothAPI.isBtReady(this)) {
+        if (BluetoothAPI.isBtReady(this, mHandler)) {
             // Launch the DeviceListActivity to see devices and do scan
             Intent discoverIntent = new Intent(this, BluetoothDeviceListActivity.class);
             startActivityForResult(discoverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
+        } else {
+            Toast.makeText(this,
+                    "Grant Location Access and try again",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -304,16 +307,15 @@ public class MainActivity extends EmptyActivity {
         // close bluetooth connection
         BluetoothAPI.disableBt();
 
-        // @TODO write code to store snapshots received from simulator
         Toast.makeText(getApplicationContext(), "Received "
                 + snapshots.size() + " tire snapshots", Toast.LENGTH_SHORT).show();
-        if(snapshots.size() <= 0){
+        if(snapshots.isEmpty()){
             return;
         }
         try{
             /* Updated by Zijie and Yue on 3/24/2018. */
             /* Updated by Saeed and De Lan on 4/13/2018. */
-            ArrayList<Double> GPS = getGPS();
+            ArrayList<Double> GPS = GpsAPI.getGPS(this);
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < snapshots.size(); i++) {
                 double s11 = snapshots.get(i).getS11();
@@ -467,20 +469,19 @@ public class MainActivity extends EmptyActivity {
                 }
                 else if (resultCode == RESULT_OK) {
                     Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Bluetooth enabled");
+                    //@todo this is not tested. Might not work here
+                    main_to_communication(null);
                 }
                 break;
             case Common.REQUEST_ACCESS_COARSE_LOCATION:
                 if (resultCode == RESULT_CANCELED) {
                     Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Location access request cancelled");
                     Toast.makeText(getApplicationContext(),
-                            "Location access request cancelled. Cannot discover Bluetooth devices...",
-                            Toast.LENGTH_LONG).show();
+                            "Access Coarse Location denied. Cannot use Bluetooth functions",
+                            Toast.LENGTH_SHORT).show();
                 }
                 else if (resultCode == RESULT_OK) {
                     Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Location access granted");
-                    //@todo this is not tested. Might not work here
-                    main_to_communication(null);
-//                    BluetoothAPI.discoverBtDevices(this);
                 }
                 break;
             case Common.REQUEST_CONNECT_BT_DEVICE:

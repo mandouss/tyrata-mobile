@@ -46,7 +46,8 @@ public class BluetoothAPI {
     private static Handler mHandler; // handler that gets info from Bluetooth service
 
     /* Functions */
-    public static void enableBt(Activity activity, Handler handler) {
+    static boolean enableBt(Activity activity, Handler handler) {
+        Log.v(Common.LOG_TAG_BT_API, "enableBt()");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device doesn't support BluetoothAPI
@@ -54,16 +55,19 @@ public class BluetoothAPI {
             Toast.makeText(activity.getApplicationContext(),
                     "Device doesn't support Bluetooth. Cannot connect to sensors...",
                     Toast.LENGTH_LONG).show();
-            return ;
+            return false;
         }
 
         // Check if BluetoothAPI is enabled
         if (!mBluetoothAdapter.isEnabled()) {
+            Log.d(Common.LOG_TAG_BT_API, "Enabling Bluetooth...");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(activity, enableBtIntent, Common.REQUEST_ENABLE_BT, null);
+            return false;
         }
 
         mHandler = handler;
+        return true;
     }
 
     public static void disableBt() {
@@ -90,50 +94,34 @@ public class BluetoothAPI {
         }
     }
 
-    public static boolean isBtReady(Activity activity) {
+    public static boolean isBtReady(Activity activity, Handler handler) {
         Log.d(Common.LOG_TAG_BT_API, "isBtReady()");
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Request permission for location
-            Log.d(Common.LOG_TAG_BT_API, "Requesting location access...");
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    Common.REQUEST_ACCESS_COARSE_LOCATION);
+
+        // Enable Bluetooth
+        if (!enableBt(activity, handler))
             return false;
-        } else {
-            Log.d(Common.LOG_TAG_BT_API, "Location access already granted");
-            return true;
+        Log.v(Common.LOG_TAG_BT_API, "Bluetooth is already enabled");
+
+        if (!Common.requestAccessCoarseLocation(activity)) {
+            return false;
         }
+        Log.v(Common.LOG_TAG_BT_API, "Bluetooth enabled and location access already granted");
+
+        return true;
     }
-    public static boolean discoverBtDevices(Activity activity) {
+    static boolean discoverBtDevices(Activity activity) {
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
             Log.d(Common.LOG_TAG_BT_API, "cancelDiscovery()");
             mBluetoothAdapter.cancelDiscovery();
         }
 
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Request permission for location
-            Log.d(Common.LOG_TAG_BT_API, "Requesting location access...");
-            ActivityCompat.requestPermissions(activity,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                Common.REQUEST_ACCESS_COARSE_LOCATION);
-            return false;
-        } else {
-            // Permission has already been granted
-            // Request discover from BluetoothAdapter
-            boolean discoverySuccess = mBluetoothAdapter.startDiscovery();
-            Log.d(Common.LOG_TAG_BT_API,
-                    "startDiscovery() " + (discoverySuccess? "successful":"failed"));
-            return discoverySuccess;
-        }
+        // Request discover from BluetoothAdapter
+        boolean discoverySuccess = mBluetoothAdapter.startDiscovery();
+        Log.d(Common.LOG_TAG_BT_API,
+                "startDiscovery() " + (discoverySuccess? "successful":"failed"));
+
+        return discoverySuccess;
     }
 
     static void cancelBtDiscovery() {
