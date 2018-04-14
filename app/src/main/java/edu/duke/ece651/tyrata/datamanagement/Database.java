@@ -730,6 +730,7 @@ public class Database extends AppCompatActivity {
         String sql = "DELETE FROM VEHICLE WHERE VIN = ?";
         SQLiteStatement s = myDatabase.compileStatement(sql);
         s.bindString(1, vin);
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
         s.executeUpdateDelete();
     }
 
@@ -746,6 +747,7 @@ public class Database extends AppCompatActivity {
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = ?";
         SQLiteStatement s = myDatabase.compileStatement(del);
         s.bindString(1, sensor_ID);
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
         s.executeUpdateDelete();
     }
 
