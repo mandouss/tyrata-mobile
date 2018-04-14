@@ -221,7 +221,7 @@ public class MainActivity extends EmptyActivity {
         //EmptyActivity emptyActivity = new EmptyActivity();
         switch (item.getItemId()) {
             case R.id.n_menu_addCar:
-                main_to_addcar();
+//                main_to_addcar();
                 return true;
             case R.id.n_menu_reportAccident:
                 //main_to_report();
@@ -259,7 +259,7 @@ public class MainActivity extends EmptyActivity {
         startActivity(intent);
     }
 
-    public void main_to_addcar() {
+    public void main_to_addcar(View view) {
         Intent intent = new Intent(MainActivity.this, edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info.class);
         intent.putExtra("userID", user_ID);
 
