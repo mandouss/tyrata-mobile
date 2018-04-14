@@ -4,49 +4,40 @@
     <user>
         <user_id>2</user_id>
         <name>ming2</name>
-        <email>163</email>
+        <email>mng@163.com</email>
         <phone_number>1234567</phone_number>
     </user>
     <vehicle>
-        <vin>vin1-1</vin>
-        <make>make1</make>
-        <model>model1</model>
+        <vin>1HGBH41JXMN109186</vin>
+        <make>Ford</make>
+        <model>Mustang</model>
         <year>2016</year>
         <axis_num>2</axis_num>
         <tire_num>4</tire_num>
         <user_id>1</user_id>
     </vehicle>
     <vehicle>
-        <vin>vin1-2</vin>
-        <make>make2</make>
-        <model>model2</model>
+        <vin>2HGBH41HSTG106732</vin>
+        <make>Ford</make>
+        <model>Mustang</model>
         <year>2013</year>
         <axis_num>5</axis_num>
         <tire_num>18</tire_num>
         <user_id>1</user_id>
     </vehicle>
     <vehicle>
-        <vin>vin2-1</vin>
-        <make>make2</make>
-        <model>model2</model>
+        <vin>9HGBH23OGSSC136732</vin>
+        <make>Honda</make>
+        <model>Pontiac</model>
         <year>2013</year>
         <axis_num>5</axis_num>
         <tire_num>18</tire_num>
         <user_id>2</user_id>
     </vehicle>
     <vehicle>
-        <vin>vin2-2</vin>
-        <make>make2</make>
-        <model>model2</model>
-        <year>2013</year>
-        <axis_num>5</axis_num>
-        <tire_num>18</tire_num>
-        <user_id>2</user_id>
-    </vehicle>
-    <vehicle>
-        <vin>vin2-3</vin>
-        <make>make2</make>
-        <model>model2</model>
+        <vin>6HGBH783TSVC135212</vin>
+        <make>Peugeot</make>
+        <model>Pontiac</model>
         <year>2013</year>
         <axis_num>5</axis_num>
         <tire_num>18</tire_num>
@@ -54,10 +45,10 @@
     </vehicle>
     <tire>
         <sensor_id>C-1234</sensor_id>
-        <manufacturer>manufacture1</manufacturer>
-        <model>model1</model>
-        <sku>sku1</sku>
-        <vehicle_id>vin1-1</vehicle_id>
+        <manufacturer>APPOLO</manufacturer>
+        <model>P225/45R17 91V</model>
+        <sku>CM01-R</sku>
+        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
         <axis_row>1</axis_row>
         <axis_side>L</axis_side>
         <axis_index>1</axis_index>
@@ -67,10 +58,10 @@
     </tire>
     <tire>
         <sensor_id>C-1302</sensor_id>
-        <manufacturer>manufacture2</manufacturer>
-        <model>model2</model>
-        <sku>sku2</sku>
-        <vehicle_id>vin1-1</vehicle_id>
+        <manufacturer>MECHELIN</manufacturer>
+        <model>P215/65R17 98T</model>
+        <sku>CM01-W</sku>
+        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
         <axis_row>1</axis_row>
         <axis_side>R</axis_side>
         <axis_index>1</axis_index>
@@ -80,10 +71,10 @@
     </tire>
     <tire>
         <sensor_id>C-4124</sensor_id>
-        <manufacturer>manufacture3</manufacturer>
-        <model>model3</model>
-        <sku>sku3</sku>
-        <vehicle_id>vin1-1</vehicle_id>
+        <manufacturer>MAXXI</manufacturer>
+        <model>P225/45R17 91V</model>
+        <sku>CM01-B</sku>
+        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
         <axis_row>2</axis_row>
         <axis_side>L</axis_side>
         <axis_index>1</axis_index>
@@ -93,10 +84,10 @@
     </tire>
     <tire>
         <sensor_id>C-9175</sensor_id>
-        <manufacturer>manufacture4</manufacturer>
-        <model>model4</model>
-        <sku>sku4</sku>
-        <vehicle_id>vin1-1</vehicle_id>
+        <manufacturer>YOKOHAMA</manufacturer>
+        <model>P215/65R17 98T</model>
+        <sku>CM01-J</sku>
+        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
         <axis_row>2</axis_row>
         <axis_side>R</axis_side>
         <axis_index>1</axis_index>

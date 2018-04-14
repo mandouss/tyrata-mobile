@@ -1,5 +1,12 @@
 package edu.duke.ece651.tyrata;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
 import java.util.UUID;
 
 /**
@@ -15,12 +22,16 @@ public class Common {
     public static final String LOG_TAG_BT_API = "BluetoothAPI";
     public static final String LOG_TAG_BT_ACTIVITY = "BluetoothActivity";
     public static final String LOG_TAG_BT_DEVICE_LIST_ACTIVITY = "BtDeviceListActivity";
+    public static final String LOG_TAG_MAIN_ACTIVITY = "MainActivity";
+    public static final String LOG_TAG_COMMON = "Common";
 
     // Defines constants for bundle keywords/tags
-    public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_NAME = "DEVICE_NAME";
+    public static final String TOAST_MSG = "TOAST_MSG";
 
-    //@todo change UUID
+    // Defines constant values
     public static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+    public static final byte SIMULATOR_EOF = 0; // End-of-File byte
 
     // Defines several constants used when transmitting messages between the
     // Bluetooth service and the UI.
@@ -37,4 +48,24 @@ public class Common {
 
 
     /* GLOBAL VARIABLES */
+
+    /* COMMON METHODS */
+    public static boolean requestAccessCoarseLocation(Activity activity) {
+        Log.v(Common.LOG_TAG_COMMON, "requestAccessCoarseLocation");
+
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Request permission for location
+            Log.d(Common.LOG_TAG_COMMON, "Requesting location access...");
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    Common.REQUEST_ACCESS_COARSE_LOCATION);
+            return false;
+        }
+
+        return true;
+    }
 }

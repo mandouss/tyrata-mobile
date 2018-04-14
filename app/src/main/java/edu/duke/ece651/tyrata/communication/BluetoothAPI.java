@@ -15,12 +15,18 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Set;
 
 import edu.duke.ece651.tyrata.Common;
+import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
@@ -30,7 +36,7 @@ import static android.support.v4.app.ActivityCompat.startActivityForResult;
  * Created by Saeed on 2/25/2018.
  */
 
-class BluetoothAPI {
+public class BluetoothAPI {
     /* Constants */
 
     /* GLOBAL */
@@ -40,7 +46,8 @@ class BluetoothAPI {
     private static Handler mHandler; // handler that gets info from Bluetooth service
 
     /* Functions */
-    static void enableBt(Activity activity, Handler handler) {
+    static boolean enableBt(Activity activity, Handler handler) {
+        Log.v(Common.LOG_TAG_BT_API, "enableBt()");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device doesn't support BluetoothAPI
@@ -48,19 +55,23 @@ class BluetoothAPI {
             Toast.makeText(activity.getApplicationContext(),
                     "Device doesn't support Bluetooth. Cannot connect to sensors...",
                     Toast.LENGTH_LONG).show();
-            return ;
+            return false;
         }
 
         // Check if BluetoothAPI is enabled
         if (!mBluetoothAdapter.isEnabled()) {
+            Log.d(Common.LOG_TAG_BT_API, "Enabling Bluetooth...");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(activity, enableBtIntent, Common.REQUEST_ENABLE_BT, null);
+            return false;
         }
 
         mHandler = handler;
+
+        return true;
     }
 
-    static void disableBt() {
+    public static void disableBt() {
         // Make sure we're not doing discovery anymore
         cancelBtDiscovery();
         closeBtConnection();
@@ -84,30 +95,34 @@ class BluetoothAPI {
         }
     }
 
-    static void discoverBtDevices(Activity activity) {
+    public static boolean isBtReady(Activity activity, Handler handler) {
+        Log.d(Common.LOG_TAG_BT_API, "isBtReady()");
+
+        // Enable Bluetooth
+        if (!enableBt(activity, handler))
+            return false;
+        Log.v(Common.LOG_TAG_BT_API, "Bluetooth is already enabled");
+
+        if (!Common.requestAccessCoarseLocation(activity)) {
+            return false;
+        }
+        Log.v(Common.LOG_TAG_BT_API, "Bluetooth enabled and location access already granted");
+
+        return true;
+    }
+    static boolean discoverBtDevices(Activity activity) {
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
             Log.d(Common.LOG_TAG_BT_API, "cancelDiscovery()");
             mBluetoothAdapter.cancelDiscovery();
         }
 
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Request permission for location
-            Log.d(Common.LOG_TAG_BT_API, "Requesting location access...");
-            ActivityCompat.requestPermissions(activity,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                Common.REQUEST_ACCESS_COARSE_LOCATION);
-        } else {
-            // Permission has already been granted
-            // Request discover from BluetoothAdapter
-            boolean discoverySuccess = mBluetoothAdapter.startDiscovery();
-            Log.d(Common.LOG_TAG_BT_API,
-                    "startDiscovery() " + (discoverySuccess? "successful":"failed"));
-        }
+        // Request discover from BluetoothAdapter
+        boolean discoverySuccess = mBluetoothAdapter.startDiscovery();
+        Log.d(Common.LOG_TAG_BT_API,
+                "startDiscovery() " + (discoverySuccess? "successful":"failed"));
+
+        return discoverySuccess;
     }
 
     static void cancelBtDiscovery() {
@@ -117,8 +132,21 @@ class BluetoothAPI {
         }
     }
 
+    public static void connectBt(Intent data) {
+        Log.d(Common.LOG_TAG_BT_API, "connectBt()");
+        Bundle extras = data.getExtras();
+        if (extras != null) {
+            String address = extras.getString(BluetoothDeviceListActivity.EXTRA_DEVICE_ADDRESS);
+            Log.d(Common.LOG_TAG_BT_API, "Connecting to " + address);
+            BluetoothAPI.connectBt(address);
+        }
+        else {
+            Log.w(Common.LOG_TAG_BT_API, "No device selected to connect to");
+        }
+    }
+
     private static void connectBt(BluetoothDevice device) {
-        Log.d(Common.LOG_TAG_BT_API, "ConnectThread() called");
+        Log.d(Common.LOG_TAG_BT_API, "ConnectBt()");
 
         // Close any previous attempts to connect
         if (mConnectThread != null)
@@ -178,6 +206,39 @@ class BluetoothAPI {
         } else {
             Log.d(Common.LOG_TAG_BT_API, "No ConnectedThread Available");
         }
+    }
+
+    private static void writeSuccess() {
+        write("S".getBytes());
+    }
+
+    private static void writeFail() {
+        write("F".getBytes());
+    }
+
+    public static ArrayList<TireSnapshot> processMsg(String msg) {
+        ArrayList<TireSnapshot> tireSnapshotList = new ArrayList<>();
+        try {
+            InputStream in = new ByteArrayInputStream(msg.getBytes("UTF-8"));
+            // parse the message
+            BluetoothXmlParser btXmlParser = new BluetoothXmlParser();
+            tireSnapshotList = btXmlParser.parseToTireSnapshotList(in);
+            if (tireSnapshotList.isEmpty()){
+                writeFail();
+                return tireSnapshotList;
+            }
+            writeSuccess();
+        } catch (UnsupportedEncodingException e) {
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
+        } catch (XmlPullParserException e) {
+            writeFail();
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
+        } catch (IOException e) {
+            writeFail();
+            Log.e(Common.LOG_TAG_BT_API, "Bluetooth processMsg failed", e);
+        }
+
+        return tireSnapshotList;
     }
 
     static String getDeviceName() {
@@ -318,7 +379,7 @@ class BluetoothAPI {
                 Message writeErrorMsg =
                         mHandler.obtainMessage(Common.MESSAGE_TOAST);
                 Bundle bundle = new Bundle();
-                bundle.putString("toast",
+                bundle.putString(Common.TOAST_MSG,
                         "Couldn't send data to the other device");
                 writeErrorMsg.setData(bundle);
                 mHandler.sendMessage(writeErrorMsg);

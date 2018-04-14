@@ -24,10 +24,12 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.processing.GPStracker;
+import edu.duke.ece651.tyrata.processing.GpsAPI;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 public class EmptyActivity extends AppCompatActivity {
@@ -38,36 +40,7 @@ public class EmptyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_empty);
     }
 
-    public ArrayList<Double> getGPS() {
-        ArrayList<Double> ans = new ArrayList<>();
-        try {
-            // Check for location permission
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                // Request permission for location
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        123);
-            }
 
-            GPStracker g = new GPStracker(getApplicationContext());
-            Location l = g.getLocation();
-            if (l != null) {
-                Double lat = l.getLatitude();
-                Double lon = l.getLongitude();
-                ans.add(lat);
-                ans.add(lon);
-                Toast.makeText(getApplicationContext(), "LAT: " + lat + " \n LON : " + lon, Toast.LENGTH_LONG).show();
-            }
-        }
-        catch(Exception e){
-            String msg = "The GPS information cannot be fetched!";
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        }
-        return ans;
-    }
 
     public void goToBluetooth() {
         Intent intent = new Intent(this, BluetoothActivity.class);
@@ -110,7 +83,7 @@ public class EmptyActivity extends AppCompatActivity {
 
     /* Updated by Zijie and Yue on 3/24/2018. */
     /* Updated by Saeed and De Lan on 3/25/2018. */
-    public void getTireSnapshotListFromXml(View view) {
+    public void getTireSnapshotListFromXml() {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();
         try {
             ArrayList<TireSnapshot> tireSnapshotList = xmlParser.parseToTireSnapshotList(
@@ -120,7 +93,8 @@ public class EmptyActivity extends AppCompatActivity {
                         "Failed to obtain TireSnapshot from message received...",
                         Toast.LENGTH_LONG).show();
             }
-            ArrayList<Double> GPS = getGPS();
+            HashSet<String> NotFoundSensorSet = new HashSet<String>();
+            ArrayList<Double> GPS = GpsAPI.getGPS(this);
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             for (int i = 0; i < tireSnapshotList.size(); i++) {
                 double s11 = tireSnapshotList.get(i).getS11();
@@ -151,7 +125,16 @@ public class EmptyActivity extends AppCompatActivity {
                     }
                 }
                 catch(Exception e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                // init_thickness is -1 when the sensor_id is not found in database
+                if(init_thickness == -1 ){
+                    if(!NotFoundSensorSet.contains(sensor_id)){
+                        NotFoundSensorSet.add(sensor_id);
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database, please check and enter valid sensor ID!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+                    }
+                    continue;
                 }
                 /* Updated by Zijie and Yue on 3/31/2018. */
                 String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ?";
@@ -196,8 +179,8 @@ public class EmptyActivity extends AppCompatActivity {
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
                     if (!sensorExist) {
-                        Database.myDatabase.close();
-                        throw new IOException();
+                        String info = "The sensor ID <"+sensor_id+">does not exist in local database snapshot!";
+                        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -216,9 +199,8 @@ public class EmptyActivity extends AppCompatActivity {
         } catch (XmlPullParserException e) {
             notification(e.getMessage());
             e.printStackTrace();
-        } catch (IOException e) {
-            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
-            notification(msg);
+        } catch (Exception e) {
+            notification(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -234,7 +216,7 @@ public class EmptyActivity extends AppCompatActivity {
         }
     }
 
-    private void notification(String msg){
+    public void notification(String msg){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
                 .setMessage(msg)

@@ -261,7 +261,7 @@ public class Database extends AppCompatActivity {
         }
         else {
             Log.i("In database", "Sensor id not found");
-            return 0;
+            return -1;
         }
     }
     /* Created by Yue Li on 3/31/2018. */
@@ -300,6 +300,17 @@ public class Database extends AppCompatActivity {
             Log.i("snapshotTable", "There is nothing in snapshotTable");
             return null;
         }
+    }
+
+    /* Added by De Lan on 04/13/2018*/
+    public static boolean tireSnapshotExist(String sensor_id){
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
+        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+        if(c.getCount() > 0){
+            c.close();
+            return true;
+        }
+        return false;
     }
 
     /* Created by Zijie Wang on 3/26/2018. */
@@ -389,16 +400,15 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     //@TODO refine the calculation algorithm
     public static boolean updateTireSSID(String sensor_ID){
-        //Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
-        String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
-        Cursor sensorExist = myDatabase.rawQuery(sql, new String[] {sensor_ID});
-
-        if(sensorExist == null || !sensorExist.moveToFirst()){
-            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
-            return false;
-        }
-        sensorExist.close();
-
+//        //Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
+//        String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
+//        Cursor sensorExist = myDatabase.rawQuery(sql, new String[] {sensor_ID});
+//
+//        if(sensorExist == null || !sensorExist.moveToFirst()){
+//            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
+//            return false;
+//        }
+//        sensorExist.close();
         //Cursor curr = myDatabase.rawQuery("SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
         //Cursor init = myDatabase.rawQuery("SELECT MIN(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
         String sql_curr = "SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
@@ -720,6 +730,7 @@ public class Database extends AppCompatActivity {
         String sql = "DELETE FROM VEHICLE WHERE VIN = ?";
         SQLiteStatement s = myDatabase.compileStatement(sql);
         s.bindString(1, vin);
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
         s.executeUpdateDelete();
     }
 
@@ -736,6 +747,7 @@ public class Database extends AppCompatActivity {
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = ?";
         SQLiteStatement s = myDatabase.compileStatement(del);
         s.bindString(1, sensor_ID);
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
         s.executeUpdateDelete();
     }
 
