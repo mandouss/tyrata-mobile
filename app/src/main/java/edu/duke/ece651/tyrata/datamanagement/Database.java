@@ -313,11 +313,11 @@ public class Database extends AppCompatActivity {
         return false;
     }
 
-    /* Created by Zijie Wang on 3/26/2018. */
+    /* Created by Zijie Wang on 3/26/2018 and updated on 4/15/2018. */
     // Updated by Cheng Xing on 4/8/2018
     public static ArrayList<Pair<String, Double>> get_thickness_and_timestamp (String sensor_id) {
         //Cursor c = myDatabase.rawQuery("SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID =  TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
-        String sql = "SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID =  TIRE.ID and TIRE.SENSOR_ID = ?";
+        String sql = "SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID =  TIRE.ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
         ArrayList<Pair<String, Double>> ans = new ArrayList<>();
