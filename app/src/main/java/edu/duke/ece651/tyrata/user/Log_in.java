@@ -140,14 +140,24 @@ public class Log_in extends AppCompatActivity {
             message = message.replace("</authentication></message>","");
 
             // get user salt and hashed password from server
-            byte salt[] = message.getBytes(); // from server
+            byte salt[] = new byte[message.length()/2];
+            int b = 0;
+            for(int i = 0; i < message.length(); i+=2){
+                salt[i/2] = (byte)((Character.digit(message.charAt(i),16)<<4)+ Character.digit(message.charAt(i+1),16));
+            }
 
 
             // re-calculate hashed password from user input and salt
             byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
 
+            StringBuilder hash_sb = new StringBuilder();
+            for (byte hash_byte : hashedPassword) {
+                hash_sb.append(Integer.toString((hash_byte & 0xff) + 0x100, 16).substring(1));
+            }
+            String hash_string = hash_sb.toString();
+
             String hash_info = "<message><authentication><email>" + email
-                    + "</email><hash>" + String.valueOf(hashedPassword)
+                    + "</email><hash>" + hash_string
                     + "</hash></authentication></message>";
             String get_authentication = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + hash_info;
             task = Common.GET_AUTHENTICATION;
@@ -170,7 +180,7 @@ public class Log_in extends AppCompatActivity {
                     intent.putExtra("USER_ID", user_ID);
                     startActivity(intent);
                 } else {
-                    String get_message = "<message><method>get</method><email>" + email + "</email></message>";
+                    String get_message = "<message><method>get</method><user><email>" + email + "</email></user></message>";
                     String get_data = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + get_message;
                     task = Common.GET_DATABASE;
                     send_message(get_data);

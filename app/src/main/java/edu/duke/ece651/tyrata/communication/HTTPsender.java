@@ -1,9 +1,7 @@
 package edu.duke.ece651.tyrata.communication;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.user.User;
@@ -14,32 +12,10 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertCalendarToString;
 
 /**
- * Created by zhanglian1 on 2018-03-29.
+ * Created by Naixin Yu on 2018-03-29.
  */
 
 public class HTTPsender extends AppCompatActivity {
-
-
-
-    public String send_and_receive(String message, Context context){
-        String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
-        HttpActivity httpActivity = new HttpActivity();
-        //httpActivity.mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), myUrl, context);
-        SharedPreferences.Editor editor= context.getSharedPreferences("msg_from_server",MODE_PRIVATE).edit();
-        editor.putString("msg","");
-        editor.commit();
-        Log.i("send",myUrl);
-        httpActivity.send(myUrl,context);
-        httpActivity.startDownload(context);
-
-        SharedPreferences editor_get = getSharedPreferences("msg_from_server",MODE_PRIVATE);
-        String message_get = "";
-        do{
-            message_get= editor_get.getString("msg","");
-        }while (message_get == "");
-        Log.i("receive",message_get);
-        return message_get;
-    }
 
     public String send_to_cloud(Context context){
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
@@ -48,28 +24,43 @@ public class HTTPsender extends AppCompatActivity {
         if(trace_item != null) {
             String message = "<message>";
             message = message + "<id>" + String.valueOf(trace_item.getId()) + "</id><method>" + trace_item.getMethod() + "</method>";
-            switch (trace_item.getTable_name()) {
-                case "USER":
-                    message = message + userMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "VEHICLE":
-                    message = message + vehicleMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "TIRE":
-                    message = message + tireMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "SNAPSHOT":
-                    message = message + snapshotMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "ACCIDENT":
-                    message = message + accidentMessage(trace_item.getTarget_id(), context);
-                    break;
-                default:
-                    break;
-            }
-            message = message + "<original_info>" + trace_item.getOrigin_info() + "</original_info>";
+            if(trace_item.getTarget_id() != 0) {
+                switch (trace_item.getTable_name()) {
+                    case "USER":
+                        message = message + userMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "VEHICLE":
+                        message = message + vehicleMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "TIRE":
+                        message = message + tireMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "SNAPSHOT":
+                        message = message + snapshotMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "ACCIDENT":
+                        message = message + accidentMessage(trace_item.getTarget_id(), context);
+                        break;
+                    default:
+                        break;
+                }
 
+                message = message + "<original_info>" + trace_item.getOrigin_info() + "</original_info>";
+            }
+            else{
+                switch (trace_item.getTable_name()){
+                    case "VEHICLE":
+                        message = message + "<vehicle><vin>" + trace_item.getOrigin_info() + "</vin></vehicle><original_info></original_info>";
+                        break;
+                    case "TIRE":
+                        message = message + "<tire><sensorid>" + trace_item.getOrigin_info() + "</sensorid></tire><original_info></original_info>";
+                        break;
+                    default:
+                        break;
+                }
+            }
             message = message + "</message>";
+
             //HttpActivity httpActivity = new HttpActivity();
             String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
             return myUrl;
@@ -85,10 +76,12 @@ public class HTTPsender extends AppCompatActivity {
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         User user = Database.getUser(id);
         Database.myDatabase.close();
+
         m = m + "<user><name>" + user.username +
                 "</name><email>" + user.email +
                 "</email><phone_num>" + user.phone +
                 "</phone_num></user>";
+
         return  m;
     }
 
@@ -158,11 +151,5 @@ public class HTTPsender extends AppCompatActivity {
                 "</email></accident>";
         return m;
     }
-
-
-
-
-
-
 
 }

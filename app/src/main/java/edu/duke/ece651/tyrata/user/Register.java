@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
 
+import edu.duke.ece651.tyrata.Common;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
@@ -92,11 +93,27 @@ public class Register extends AppCompatActivity {
         byte salt[] = AuthenticationAPI.generateSalt();
         byte hashedPassword[] = AuthenticationAPI.hashPass(password, salt);
 
+        StringBuilder salt_sb = new StringBuilder();
+        for (byte salt_byte : salt) {
+            salt_sb.append(Integer.toString((salt_byte & 0xff) + 0x100, 16).substring(1));
+        }
+        String salt_string = salt_sb.toString();
+
+        Log.i(Common.LOG_TAG_AUTHENTICATION_API, "salt hex format: " + salt_sb.toString());
+
+        StringBuilder hash_sb = new StringBuilder();
+        for (byte hash_byte : hashedPassword) {
+            hash_sb.append(Integer.toString((hash_byte & 0xff) + 0x100, 16).substring(1));
+        }
+        String hash_string = hash_sb.toString();
+
+
+
         String create_user = "<message><id>0</id><method>create</method><user><name>" + username
                 + "</name><email>" + email
                 + "</email><phone_num>" + phone
-                + "</phone_num><hash>" + String.valueOf(hashedPassword)
-                + "</hash><salt>" + String.valueOf(salt)
+                + "</phone_num><hash>" + hash_string
+                + "</hash><salt>" + salt_string
                 + "</salt></user><original_info></original_info></message>";
 
         //@TODO register user with server and return success/fail

@@ -1,7 +1,6 @@
 package edu.duke.ece651.tyrata.calibration;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,8 +11,6 @@ import android.widget.EditText;
 
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
-import edu.duke.ece651.tyrata.communication.DownloadCallback;
-import edu.duke.ece651.tyrata.communication.HttpActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 
 public class Report_accident extends AppCompatActivity {
@@ -50,12 +47,6 @@ public class Report_accident extends AppCompatActivity {
         //Store the accident into the database.
         Database.storeAccident(message_report, user_ID);
         Database.myDatabase.close();
-        HttpActivity send = new HttpActivity();
-        try {
-            send.startDownload();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         startActivity(intent);
 

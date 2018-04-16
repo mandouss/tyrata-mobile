@@ -6,19 +6,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-import edu.duke.ece651.tyrata.datamanagement.Database;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.R;
@@ -70,10 +67,6 @@ public class EmptyActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToHTTP() {
-        Intent intent = new Intent(this, HttpActivity.class);
-        startActivity(intent);
-    }
 
     public void testParseXml() {
         BluetoothXmlParser xmlParser = new BluetoothXmlParser();

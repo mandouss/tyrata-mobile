@@ -109,7 +109,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("PHONE_NUMBER", phone);
             Log.i("In database", "insert user");
             long ID = myDatabase.insert("USER", null, contentValues);
-            updateTrace("CREATE", "USER", ID, "");
+            //updateTrace("CREATE", "USER", ID, "");
             return false;
         }
     }
@@ -135,7 +135,7 @@ public class Database extends AppCompatActivity {
             }
             Log.i("In database", "update vehicle");
             myDatabase.update("VEHICLE", contentValues, "ID = ?", new String[]{Integer.toString(vehicle_ID)});
-            updateTrace( "UPDATE", "VEHICLE", vehicle_ID,original_vin);
+            updateTrace( "update", "VEHICLE", vehicle_ID,original_vin);
         }
         // Insert
         else {
@@ -148,7 +148,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("USER_ID", userid);
             Log.i("In database", "insert vehicle");
             long ID = myDatabase.insert("VEHICLE", null, contentValues);
-            updateTrace( "CREATE", "VEHICLE", ID,"");
+            updateTrace( "create", "VEHICLE", ID,"");
         }
         return true;
     }
@@ -172,7 +172,7 @@ public class Database extends AppCompatActivity {
                 return false;
             }
             myDatabase.update("TIRE", contentValues, "ID = ?", new String[]{Integer.toString(tire_ID)});
-            updateTrace( "UPDATE", "TIRE", tire_ID,original_sensor);
+            updateTrace( "update", "TIRE", tire_ID,original_sensor);
         }
         // Insert
         else {
@@ -191,7 +191,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("CUR_SS_ID", cur_ss_id);
             Log.i("In database", "insert tire");
             long ID = myDatabase.insert("TIRE", null, contentValues);
-            updateTrace( "CREATE", "TIRE", ID,"");
+            updateTrace( "create", "TIRE", ID,"");
         }
         return true;
     }
@@ -273,7 +273,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("LATITUDE", lat);
         Log.i("Snapshot Insertion", "New insert!!!");
         long ID = myDatabase.insert("SNAPSHOT", null, contentValues);
-        updateTrace( "CREATE", "SNAPSHOT", ID,"");
+        updateTrace( "create", "SNAPSHOT", ID,"");
         return true;
     }
 
@@ -284,7 +284,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("DESCRIPTION", record);
         contentValues.put("USER_ID", userid);
         long ID = myDatabase.insert("ACCIDENT", null, contentValues);
-        updateTrace( "CREATE", "ACCIDENT", ID,"");
+        updateTrace( "create", "ACCIDENT", ID,"");
     }
 
     // Added by De Lan on 03/23/2018
@@ -417,7 +417,7 @@ public class Database extends AppCompatActivity {
         if (!c.moveToFirst()) {
             return null;
         }
-        c.moveToFirst();
+//        c.moveToFirst();
         String name = c.getString(c.getColumnIndex("NAME"));
         String email = c.getString(c.getColumnIndex("EMAIL"));
         String phonenum = c.getString(c.getColumnIndex("PHONE_NUMBER"));
@@ -444,10 +444,9 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     public static Vehicle getVehicle(String vin) {
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
-        if (c == null) {
+        if (c == null || !c.moveToFirst()) {
             return null;
         }
-        c.moveToFirst();
         String make = c.getString(c.getColumnIndex("MAKE"));
         String model = c.getString(c.getColumnIndex("MODEL"));
         int year = c.getInt(c.getColumnIndex("YEAR"));
@@ -466,15 +465,14 @@ public class Database extends AppCompatActivity {
         tire_cursor.close();
         return curr_vehicle;
     }
-
+    /* Created by Ming Yang*/
     public static Trace_item getTrace(){
-        //ArrayList<Trace_item> trace_list = new ArrayList<Trace_item>();
         Trace_item trace_item = new Trace_item();
         Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE WHERE ID = (SELECT min(ID) FROM TRACE)",null);
-        if(c == null){
+        if(c == null || !c.moveToFirst()){
             return null;
         }
-        c.moveToFirst();
+        Log.i("database_trace",String.valueOf(c.getInt(c.getColumnIndex("ID"))));
         trace_item.setId(c.getInt(c.getColumnIndex("ID")));
         trace_item.setMethod(c.getString(c.getColumnIndex("METHOD_NAME")));
         trace_item.setTable_name(c.getString(c.getColumnIndex("TABLE_NAME")));
@@ -531,6 +529,7 @@ public class Database extends AppCompatActivity {
         }
     }
 
+    /* Created by Ming Yang*/
     public static Tire getTire(int id){
         Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE ID = '"+ id +"'", null);
         if (c.moveToFirst()) {
@@ -575,7 +574,7 @@ public class Database extends AppCompatActivity {
     }
 
     public static void deleteVehicle(String vin){
-        updateTrace( "DELETE", "VEHICLE", 0, vin);
+        updateTrace( "delete", "VEHICLE", 0, vin);
         String del = "DELETE FROM VEHICLE WHERE VIN = '" + vin + "'";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
@@ -583,18 +582,20 @@ public class Database extends AppCompatActivity {
 
 
     public static void deleteTire(String sensor_ID ) {
-        updateTrace( "DELETE", "TIRE", 0, sensor_ID);
+        updateTrace( "delete", "TIRE", 0, sensor_ID);
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = '" + sensor_ID + "'";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
     }
 
+    /* Created by Ming Yang*/
     public static void deleteTrace(int ID){
         String del = "DELETE FROM TRACE WHERE ID = '" + ID + "'";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
     }
 
+    /* Created by Ming Yang*/
     public static void deleteNewestTrace(){
         String del = "DELETE FROM TRACE WHERE ID = (SELECT MAX(ID) FROM TRACE)";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");

@@ -29,6 +29,13 @@ class AuthenticationAPI {
                 rawBytes[i] = i < pwBytes.length ? pwBytes[i] : salt[i - pwBytes.length];
             }
 
+            StringBuilder sb_salt = new StringBuilder();
+            for (byte saltByte : salt) {
+                sb_salt.append(Integer.toString((saltByte & 0xff) + 0x100, 16).substring(1));
+            }
+
+            Log.d(Common.LOG_TAG_AUTHENTICATION_API, "salt hex format: " + sb_salt.toString());
+
             // Hash password + salt
             md.update(rawBytes);
             hashedBytes = md.digest();

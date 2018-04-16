@@ -12,16 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
-import edu.duke.ece651.tyrata.communication.HttpActivity;
 import edu.duke.ece651.tyrata.datamanagement.Database;
-import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 public class Input_Vehicle_Info extends AppCompatActivity {
@@ -146,9 +143,8 @@ public class Input_Vehicle_Info extends AppCompatActivity {
                 if (!noConflict) {
                     msg = "The VIN already exists!";
                     notification(msg);
-                } else {
-                    HttpActivity send = new HttpActivity();
-                    send.startDownload();
+                }
+                else{
                     startActivity(intent);
                 }
             } catch (Exception e) {
