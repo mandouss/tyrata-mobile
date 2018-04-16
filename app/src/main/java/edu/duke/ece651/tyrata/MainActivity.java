@@ -389,6 +389,7 @@ public class MainActivity extends EmptyActivity {
                 //Log.i("TEST outliers NUM",String.valueOf(outlier_num));
                 if(outlier_num % 3 == 0 && isoutlier) {
                     Log.i("notification: outliers",String.valueOf(outlier_num));
+                    notification("OUTLIERS FOR THREE DAYS!");
                 }
                 if(notDupSanpShot){
                     boolean sensorExist = Database.updateTireSSID(sensor_id);
