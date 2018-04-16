@@ -44,7 +44,7 @@
         <user_id>2</user_id>
     </vehicle>
     <tire>
-        <sensor_id>C-1234</sensor_id>
+        <sensor_id>T-0001</sensor_id>
         <manufacturer>APPOLO</manufacturer>
         <model>P225/45R17 91V</model>
         <sku>CM01-R</sku>
@@ -57,7 +57,7 @@
         <init_thickness>15</init_thickness>
     </tire>
     <tire>
-        <sensor_id>C-1302</sensor_id>
+        <sensor_id>T-0002</sensor_id>
         <manufacturer>MECHELIN</manufacturer>
         <model>P215/65R17 98T</model>
         <sku>CM01-W</sku>
@@ -70,7 +70,7 @@
         <init_thickness>14</init_thickness>
     </tire>
     <tire>
-        <sensor_id>C-4124</sensor_id>
+        <sensor_id>T-0003</sensor_id>
         <manufacturer>MAXXI</manufacturer>
         <model>P225/45R17 91V</model>
         <sku>CM01-B</sku>
@@ -83,7 +83,7 @@
         <init_thickness>13</init_thickness>
     </tire>
     <tire>
-        <sensor_id>C-9175</sensor_id>
+        <sensor_id>T-0004</sensor_id>
         <manufacturer>YOKOHAMA</manufacturer>
         <model>P215/65R17 98T</model>
         <sku>CM01-J</sku>
