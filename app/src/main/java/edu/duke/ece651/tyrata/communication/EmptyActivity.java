@@ -108,14 +108,15 @@ public class EmptyActivity extends AppCompatActivity {
                 String eol = Double.toString((init_thickness - 3) * 5000);
                 int days = (int) Double.parseDouble(eol)/20;
                 if(days < 30){
-                    String notification = "Need to Change Your Tire within 30 Days!";
+                    String notifi = "Need to Change Your Tire within 30 Days!";
+                    notification(notifi);
                 }
                 Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat formatter=new SimpleDateFormat("MM-dd-yyyy");
+                SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
                 calendar.add(Calendar.DATE, days);
                 Log.i("daysleft", Integer.toString(days));
                 String time_to_replacement = formatter.format(calendar.getTime());
-                //String time_to_replacement = Integer.toString(days);
+
                 double longitude = 0;
                 double lat = 0;
                 try {
@@ -146,8 +147,9 @@ public class EmptyActivity extends AppCompatActivity {
                     eol = Double.toString((thickness - 3) * 5000);
                     int days1 = (int) Double.parseDouble(eol)/20;
                     if(days1 < 30){
-                        String notification = "Need to Change Your Tire within 30 Days!";
+                        notification(sensor_id +"Need to Change Your Tire within 30 Days!");
                     }
+                    Log.i("days1", Integer.toString(days1));
                     Calendar calendar1 = Calendar.getInstance();
                     calendar1.add(Calendar.DATE, days1);
                     time_to_replacement = formatter.format(calendar1.getTime());
@@ -194,6 +196,7 @@ public class EmptyActivity extends AppCompatActivity {
                 info += "\nMileage: " + tireSnapshotList.get(i).getOdometerMileage();
                 info += "\nTimestamp: " + TireSnapshot.convertCalendarToString(tireSnapshotList.get(i).getTimestamp());
                 Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+
             }
             Database.myDatabase.close();
         } catch (XmlPullParserException e) {

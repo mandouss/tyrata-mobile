@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends EmptyActivity {
@@ -129,6 +130,22 @@ public class MainActivity extends EmptyActivity {
 //        Database.testTraceTable();
 
         User curr_user = Database.getUser(user_ID);
+        String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID";
+        Cursor c = Database.myDatabase.rawQuery(sql, null);
+        if(c!=null && c.moveToLast()){
+            String lasttime = c.getString(c.getColumnIndex("TIMESTAMP"));
+            Calendar cal = TireSnapshot.convertStringToCalendar(lasttime);
+            Calendar today = Calendar.getInstance();
+            //SimpleDateFormat formatter1 =new SimpleDateFormat("yyyy-MM-dd");
+            long start = cal.getTimeInMillis();
+            long end = today.getTimeInMillis();
+            long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
+            c.close();
+            Log.i("res", Long.toString(res));
+            if(res > 30){
+                notification("Disconnect Exceed 30 Days!");
+            }
+        }
         Database.myDatabase.close();
 
         TextView textView_username = findViewById(R.id.textView_user);
@@ -329,7 +346,8 @@ public class MainActivity extends EmptyActivity {
                 String eol = Double.toString((init_thickness - 3) * 5000);
                 int days = (int) Double.parseDouble(eol)/20;
                 if(days < 30){
-                    String notification = "Need to Change Your Tire within 30 Days!";
+                    String notification1 = "Need to Change Your Tire within 30 Days!";
+                    notification(notification1);
                 }
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat formatter=new SimpleDateFormat("MM-dd-yyyy");
@@ -365,12 +383,27 @@ public class MainActivity extends EmptyActivity {
                     eol = Double.toString((thickness - 3) * 5000);
                     int days1 = (int) Double.parseDouble(eol)/20;
                     if(days1 < 30){
-                        String notification = "Need to Change Your Tire within 30 Days!";
+                        String notification1 = "Need to Change Your Tire within 30 Days!";
+                        notification(notification1);
                     }
                     Calendar calendar1 = Calendar.getInstance();
                     calendar1.add(Calendar.DATE, days1);
                     time_to_replacement = formatter.format(calendar1.getTime());
+                    //c.close();
+                }
+                if(c!= null && c.moveToLast()){
+                    String lasttime = c.getString(c.getColumnIndex("TIMESTAMP"));
+                    Calendar cal = TireSnapshot.convertStringToCalendar(lasttime);
+                    Calendar today = Calendar.getInstance();
+                    SimpleDateFormat formatter1 =new SimpleDateFormat("yyyy-MM-dd");
+                    long start = cal.getTimeInMillis();
+                    long end = today.getTimeInMillis();
+                    long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
                     c.close();
+                    Log.i("res", Long.toString(res));
+                    if(res > 30){
+                        notification("Disconnect Exceed 30 Days!");
+                    }
                 }
                 boolean isoutlier = false;
                 double mean = Database.get_mean_s11(sensor_id);
