@@ -17,13 +17,7 @@ which is 96% of Android devices on market.
     At the top right corner, you can see the two-level navigation hamburger button: 
 * Add Car
 * Report Accident
-* Communication
-    * GPS
-    * BLUETOOTH
-    * HTTP TEST
-    * TEST XML
-    * GET TIRESNAPSHOT LIST
-    * GET DATABASE
+* BLUETOOTH
 * Sign Out
     
 #### 3. Calibration activity (vehicle and tire)
