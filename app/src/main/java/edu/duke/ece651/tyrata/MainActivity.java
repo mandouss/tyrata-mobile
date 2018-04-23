@@ -136,15 +136,6 @@ public class MainActivity extends EmptyActivity {
         menu_username.setTitle(curr_user.username);
         menu_email.setTitle(curr_user.email);
         menu_phone.setTitle(curr_user.phone);
-//        TextView textView_username_d = findViewById(R.id.d_name);
-//        textView_username_d.setText(curr_user.username);
-
-//        TextView textView_email = findViewById(R.id.textView_email);
-//        textView_email.setText(curr_user.email);
-
-
-//        TextView textView_phonenum = findViewById(R.id.textView_phone);
-//        textView_phonenum.setText(curr_user.phone);
 
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
 

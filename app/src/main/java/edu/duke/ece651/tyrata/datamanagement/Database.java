@@ -50,7 +50,6 @@ public class Database extends AppCompatActivity {
     public static double get_mean_s11(String sensor_id) {
         String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and OUTLIER != 1";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"' and OUTLIER != 1", null);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
                 //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
@@ -73,7 +72,6 @@ public class Database extends AppCompatActivity {
     public static double get_deviation_s11(String sensor_id) {
         String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'and SNAPSHOT.OUTLIER != 1", null);
         double mean = get_mean_s11(sensor_id);
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
@@ -97,7 +95,6 @@ public class Database extends AppCompatActivity {
     public static int get_outlier_num(String sensor_id) {
         String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER = 1";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-//        Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '" + sensor_id + "' and SNAPSHOT.OUTLIER = 1", null);
         int ans = c.getCount();
         c.close();
         return ans;
@@ -133,7 +130,6 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     public static boolean storeUserData(String name, String email, String phone) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
-        //Cursor emailCursor = myDatabase.rawQuery("SELECT * FROM USER WHERE EMAIL = '"+email+"'", null);
         String sql = "SELECT * FROM USER WHERE EMAIL = ?";
         Cursor emailCursor = myDatabase.rawQuery(sql, new String[] {email});
 
@@ -167,7 +163,6 @@ public class Database extends AppCompatActivity {
         contentValues.put("TIRE_NUM", tirenum);
         // Update
         if (vehicle_ID > 0) {
-            //Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
             String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
             Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
 
@@ -182,7 +177,6 @@ public class Database extends AppCompatActivity {
         }
         // Insert
         else {
-            //Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '"+vin+"'", null);
             String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
             Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
             if(c != null && c.moveToFirst()){
@@ -210,7 +204,6 @@ public class Database extends AppCompatActivity {
         contentValues.put("SENSOR_ID", sensor_id);
         // Update
         if (tire_ID > 0) {
-            //Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
             String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
             Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -224,7 +217,6 @@ public class Database extends AppCompatActivity {
         }
         // Insert
         else {
-            //Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
             String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
             Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -250,7 +242,6 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/24/2018. */
     // Updated by Cheng Xing on 4/8/2018
     public static double getInitThickness(String sensor_id) {
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '" + sensor_id + "'", null);
         String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -280,7 +271,6 @@ public class Database extends AppCompatActivity {
 
     // Updated by Cheng Xing on 4/8/2018
     public static double[] getThickness(String sensor_id){
-        //Cursor c = myDatabase.rawQuery("SELECT THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '" + sensor_id + "'", null);
         String sql = "SELECT THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -316,7 +306,6 @@ public class Database extends AppCompatActivity {
     /* Created by Zijie Wang on 3/26/2018 and updated on 4/15/2018. */
     // Updated by Cheng Xing on 4/8/2018
     public static ArrayList<Pair<String, Double>> get_thickness_and_timestamp (String sensor_id) {
-        //Cursor c = myDatabase.rawQuery("SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID =  TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
         String sql = "SELECT TIMESTAMP, THICKNESS FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID =  TIRE.ID and TIRE.SENSOR_ID = ? and SNAPSHOT.OUTLIER != 1";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -340,7 +329,6 @@ public class Database extends AppCompatActivity {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS SNAPSHOT(ID INTEGER PRIMARY KEY AUTOINCREMENT, S11 DOUBLE, TIMESTAMP VARCHAR, MILEAGE DOUBLE, " +
                 "PRESSURE DOUBLE, TIRE_ID INT, OUTLIER BOOL, THICKNESS DOUBLE, EOL VARCHAR, TIME_TO_REPLACEMENT VARCHAR, LONGITUDE DOUBLE, LATITUDE DOUBLE, FOREIGN KEY(TIRE_ID) REFERENCES TIRE(ID) ON DELETE CASCADE)");
         // avoid duplication
-       // Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIMESTAMP = '"+timestamp+"' and SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
         String sql = "SELECT * FROM SNAPSHOT, TIRE WHERE TIMESTAMP = ? and SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {timestamp, sensor_id});
 
@@ -400,17 +388,6 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     //@TODO refine the calculation algorithm
     public static boolean updateTireSSID(String sensor_ID){
-//        //Cursor sensorExist = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_ID+"'", null);
-//        String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
-//        Cursor sensorExist = myDatabase.rawQuery(sql, new String[] {sensor_ID});
-//
-//        if(sensorExist == null || !sensorExist.moveToFirst()){
-//            Log.i("In updateTireSSID ", sensor_ID+" The sensor_ID is not found in TIRE!");
-//            return false;
-//        }
-//        sensorExist.close();
-        //Cursor curr = myDatabase.rawQuery("SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
-        //Cursor init = myDatabase.rawQuery("SELECT MIN(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_ID+"'", null);
         String sql_curr = "SELECT MAX(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
         String sql_init = "SELECT MIN(SNAPSHOT.ID) FROM SNAPSHOT, TIRE WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
         Cursor curr = myDatabase.rawQuery(sql_curr, new String[] {sensor_ID});
@@ -448,7 +425,6 @@ public class Database extends AppCompatActivity {
     // Updated by Cheng Xing on 4/8/2018
     public static int getUserID(String email) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
-        //Cursor c = myDatabase.rawQuery("SELECT ID FROM USER WHERE EMAIL = '" + email + "'", null);
         String sql = "SELECT ID FROM USER WHERE EMAIL = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {email});
 
@@ -462,7 +438,6 @@ public class Database extends AppCompatActivity {
 
     // Updated by Cheng Xing on 4/8/2018
     public static int getVehicleID(String vin){
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
         String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
 
@@ -476,7 +451,6 @@ public class Database extends AppCompatActivity {
 
     // Updated by Cheng Xing on 4/8/2018
     public static int getTireID(String sensor_id){
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE SENSOR_ID = '"+sensor_id+"'", null);
         String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
 
@@ -542,7 +516,6 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     // Updated by Cheng Xing on 4/8/2018
     public static User getUser(int user_id) {
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM USER WHERE ID = " + user_id + "", null);
         String sql = "SELECT * FROM USER WHERE ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {String.valueOf(user_id)});
         if (!c.moveToFirst()) {
@@ -554,7 +527,6 @@ public class Database extends AppCompatActivity {
         String phonenum = c.getString(c.getColumnIndex("PHONE_NUMBER"));
         User curr_user = new User(name, email, phonenum);
         c.close();
-        //Cursor vehicle_cursor = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE USER_ID = " + user_id + "", null);
         sql = "SELECT * FROM VEHICLE WHERE USER_ID = ?";
         Cursor vehicle_cursor = myDatabase.rawQuery(sql, new String[] {String.valueOf(user_id)});
 
@@ -577,7 +549,6 @@ public class Database extends AppCompatActivity {
     /* Created by De Lan on 3/18/2018.*/
     // Updated by Cheng Xing on 4/8/2018
     public static Vehicle getVehicle(String vin) {
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE WHERE VIN = '" + vin + "'", null);
         String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
         if (c == null) {
@@ -592,7 +563,6 @@ public class Database extends AppCompatActivity {
         Vehicle curr_vehicle = new Vehicle(vin, make, model, year, axis_num, tire_num);
         c.close();
 
-        //Cursor tire_cursor = myDatabase.rawQuery("SELECT * FROM TIRE, VEHICLE WHERE TIRE.VEHICLE_ID = VEHICLE.ID and VEHICLE.VIN = '"+vin+"'", null);
         sql = "SELECT * FROM TIRE, VEHICLE WHERE TIRE.VEHICLE_ID = VEHICLE.ID and VEHICLE.VIN = ?";
         Cursor tire_cursor = myDatabase.rawQuery(sql, new String[] {vin});
 
@@ -607,7 +577,6 @@ public class Database extends AppCompatActivity {
     }
 
     public static Trace_item getTrace(){
-        //ArrayList<Trace_item> trace_list = new ArrayList<Trace_item>();
         Trace_item trace_item = new Trace_item();
         Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE WHERE ID = (SELECT min(ID) FROM TRACE)",null);
         if(c == null){
@@ -642,7 +611,6 @@ public class Database extends AppCompatActivity {
         double odometer = 0;
         String eol = "Default";
         String repTime = "Default";
-        //Cursor curr_snap = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE ID = "+t_curr,null);
         String sql = "SELECT * FROM SNAPSHOT WHERE ID = ?";
         Cursor curr_snap = myDatabase.rawQuery(sql, new String[] {String.valueOf(t_curr)});
         if(curr_snap.moveToFirst()){
@@ -663,7 +631,6 @@ public class Database extends AppCompatActivity {
     /* Updated by De Lan on 3/24/2018 */
     // Updated by Cheng Xing on 4/8/2018
     public static Tire getTire(int axis_row, int axis_index, char axis_side, int vehicle_ID) {
-        //Cursor c = myDatabase.rawQuery("SELECT * FROM TIRE WHERE VEHICLE_ID = "+vehicle_ID+" and AXIS_ROW = " + axis_row + " and AXIS_INDEX = " + axis_index + " and AXIS_SIDE = '" + axis_side + "'", null);
         String sql = "SELECT * FROM TIRE WHERE VEHICLE_ID = ? and AXIS_ROW = ? and AXIS_INDEX = ? and AXIS_SIDE = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {String.valueOf(vehicle_ID), String.valueOf(axis_row), String.valueOf(axis_index), String.valueOf(axis_side)});
         if (c.moveToFirst()) {
@@ -720,12 +687,6 @@ public class Database extends AppCompatActivity {
     }
 
     public static void deleteVehicle(String vin){
-        /*
-        updateTrace( "DELETE", "VEHICLE", 0, vin);
-        String del = "DELETE FROM VEHICLE WHERE VIN = '" + vin + "'";
-        myDatabase.execSQL("PRAGMA foreign_keys = on;");
-        myDatabase.execSQL(del);
-        */
         updateTrace( "DELETE", "VEHICLE", 0, vin);
         String sql = "DELETE FROM VEHICLE WHERE VIN = ?";
         SQLiteStatement s = myDatabase.compileStatement(sql);
@@ -737,12 +698,6 @@ public class Database extends AppCompatActivity {
 
     //Created by Cheng Xing on 3/25/2018, updated by De Lan.
     public static void deleteTire(String sensor_ID ) {
-        /*
-        updateTrace( "DELETE", "TIRE", 0, sensor_ID);
-        String del = "DELETE FROM TIRE WHERE SENSOR_ID = '" + sensor_ID + "'";
-        myDatabase.execSQL("PRAGMA foreign_keys = on;");
-        myDatabase.execSQL(del);
-        */
         updateTrace( "DELETE", "TIRE", 0, sensor_ID);
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = ?";
         SQLiteStatement s = myDatabase.compileStatement(del);
@@ -775,7 +730,7 @@ public class Database extends AppCompatActivity {
     }
 
     /* Created by De Lan on 3/25/2018.*/
-    public static void testVehicleTable() {//VIN VARCHAR, MAKE VARCHAR, MODEL VARCHAR, YEAR INT, AXIS_NUM INT, TIRE_NUM INT, USER_ID INT
+    public static void testVehicleTable() {
         Cursor c = myDatabase.rawQuery("SELECT * FROM VEHICLE", null);
         if (c.moveToFirst()) {
             do {
