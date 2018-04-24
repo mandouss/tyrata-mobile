@@ -1,18 +1,14 @@
 package edu.duke.ece651.tyrata;
 
 import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +31,6 @@ import edu.duke.ece651.tyrata.communication.EmptyActivity;
 import edu.duke.ece651.tyrata.communication.HTTPsender;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
-import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.processing.GpsAPI;
 import edu.duke.ece651.tyrata.user.Edit_user_information;
@@ -513,6 +508,7 @@ public class MainActivity extends EmptyActivity {
         }
     };
 
+    // This method open a new thread to send and receive message from server
     private void send_message(String urlStr) {
         final String url = urlStr;
         String resource;

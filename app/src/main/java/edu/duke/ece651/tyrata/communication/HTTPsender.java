@@ -14,9 +14,7 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertCalendarToString;
 
-/**
- * Created by zhanglian1 on 2018-03-29.
- */
+/*Created by Naixin on 2018-03-29*/
 
 public class HTTPsender extends AppCompatActivity {
 

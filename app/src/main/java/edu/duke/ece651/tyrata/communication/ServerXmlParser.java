@@ -13,11 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import edu.duke.ece651.tyrata.datamanagement.Database;
-//import static edu.duke.ece651.tyrata.datamanagement.Database.myDatabase;
 
-/**
- * Created by yangm on 2018/3/24.
- */
+/*Created by Ming Yang on 2018/3/24*/
 
 public class ServerXmlParser extends AppCompatActivity {
     private static final String ns = null;
