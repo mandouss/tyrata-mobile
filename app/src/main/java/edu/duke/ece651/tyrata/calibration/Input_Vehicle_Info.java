@@ -43,6 +43,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     String tirenumber;
     String original_vin;
 
+    /**
+     * Display the vehicle data if this is the edit page
+     * Display the default vehicle data if this vehicle is newly added and been calibrated
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +54,6 @@ public class Input_Vehicle_Info extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);
@@ -122,8 +125,11 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Called to save the vehicle data into database
+     * Notify the user of invalid input
+     */
     public void saveMessage(View view) {
-
         String msg = "";
         Intent intent = new Intent(this, MainActivity.class);
         EditText edit_make = (EditText) findViewById(R.id.edit_make);

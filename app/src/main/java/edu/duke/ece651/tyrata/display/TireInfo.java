@@ -111,6 +111,9 @@ public class TireInfo extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Display the tire data: display the default data if there is no processed data for this tire
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +137,6 @@ public class TireInfo extends AppCompatActivity {
         axis_index = intent.getIntExtra("AXIS_INDEX",0);
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
-
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         vehicle_ID = Database.getVehicleID(vin);
@@ -176,20 +178,11 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
-        //TODO: calculate thickness
-
         if(message_Thickness == null)
             //message_Thickness = "Need init THICKNESS";
             message_Thickness = "";
         TextView textView_Thickness = findViewById(R.id.textView_thickness);
         textView_Thickness.setText(message_Thickness);
-
-
-        /* @TODO: read S11 and odometer from database, sync with BT*/
-        /*if(message_S11 == null)
-            message_S11 = "S11 from BT";
-        TextView textView_S11 = findViewById(R.id.textView_S11);
-        textView_S11.setText(message_S11);*/
 
         if(message_Odometer == null || message_Odometer.equals("0.00"))
             //message_Odometer = "odometer from BT";
@@ -197,7 +190,6 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_Odometer = findViewById(R.id.textView_odometer);
         textView_Odometer.setText(message_Odometer);
 
-        
         if(message_EOL == null || message_EOL.equals("Default")) {
             //message_EOL = "EOL from calculation";
             message_EOL = "";
@@ -238,6 +230,10 @@ public class TireInfo extends AppCompatActivity {
         }
 
     }
+
+    /**
+     * Called to switch to edit: the TireInfoInput page
+     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
@@ -255,6 +251,9 @@ public class TireInfo extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Called to get back to the vehicle page
+     */
     public void BackToVehicle(View view) {
         Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
@@ -263,6 +262,9 @@ public class TireInfo extends AppCompatActivity {
 
 
     /* Added by De Lan on 3/25/2018 */
+    /**
+     * Called to delete this tire
+     */
     public void DeleteTire(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

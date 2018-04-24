@@ -286,6 +286,10 @@ public class MainActivity extends EmptyActivity {
         }
     }
 
+    /**
+     * Called to process and save snapshots into database
+     * @param snapshots the TireSnapshot list fetched from the simulator
+     */
     private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
         //@TODO hide the loading icon
 
@@ -402,6 +406,13 @@ public class MainActivity extends EmptyActivity {
         }
     }
 
+    /**
+     * Called to display the notification of one tire of the vehicle for user
+     * @param vin the vehicle unique vin
+     * @param axis_row the tire axis_row
+     * @param axis_side the tire axis_side
+     * @param axis_index the tire axis_row
+     */
     private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
         Intent i = new Intent(this, TireInfo.class);
         i.putExtra("notificationID", notificationID);

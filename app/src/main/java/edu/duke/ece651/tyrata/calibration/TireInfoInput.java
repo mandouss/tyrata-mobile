@@ -35,6 +35,10 @@ public class TireInfoInput extends AppCompatActivity {
     String vin;
     String original_sensor;
 
+    /**
+     * Display the tire data if this is the edit page
+     * Display the default tire data if this tire is newly added and been calibrated
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +78,6 @@ public class TireInfoInput extends AppCompatActivity {
                 textView_thickness.setKeyListener(null);
                 String info = "This tire already has processed thickness history, you cannot edit the initial thickness.";
                 Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
-//                notification(info);
             }
             original_sensor = sensor_id;
         }else{
@@ -95,7 +98,10 @@ public class TireInfoInput extends AppCompatActivity {
         return true;
     }
 
-    /** Called when the user taps the Submit button */
+    /**
+     * Called to save the tire data into database and return to the vehicle page
+     * Notify the user of invalid input
+     */
     public void saveMessage(View view) {
         Intent intent = new Intent(this, TireInfo.class);
         EditText edit_manufacturer = (EditText) findViewById(R.id.edit_manufacturer);
@@ -107,7 +113,6 @@ public class TireInfoInput extends AppCompatActivity {
         EditText edit_SKU = (EditText) findViewById(R.id.edit_SKU);
         String message_SKU = edit_SKU.getText().toString();
 
-        //TODO: calculate thickness from init_ss_id, store initial thickness
         EditText edit_thickness = (EditText) findViewById(R.id.edit_thickness);
         String message_thickness = edit_thickness.getText().toString();
 
