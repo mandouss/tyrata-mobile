@@ -14,7 +14,6 @@ import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 
 public class Register extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +21,9 @@ public class Register extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
+    /**
+     * Save the valid user register data into database and return to the login page
+     */
     public void Register_to_login(View view) {
         Intent intent = new Intent(Register.this, edu.duke.ece651.tyrata.user.Log_in.class);
 
@@ -49,7 +51,7 @@ public class Register extends AppCompatActivity {
             if(msg.equals("")){
                 Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
                 // For test, drop and create tables
-                Database.dropAllTable();
+//                Database.dropAllTable();
                 Database.createTable();
                 boolean emailExist = Database.storeUserData(message_username, message_email, message_phone);
                 Database.myDatabase.close();
@@ -76,9 +78,15 @@ public class Register extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Check if the email is valid
+     */
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+    /**
+     * Check if the phone number is valid
+     */
     boolean isPhoneValid(String phone_number) {
         return PhoneNumberUtils.isGlobalPhoneNumber(phone_number);
     }
