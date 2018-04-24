@@ -127,10 +127,16 @@ public class Edit_user_information extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Check if the email is valid
+     */
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * Check if the phone number is valid
+     */
     boolean isPhoneValid(String phone_number) {
         return PhoneNumberUtils.isGlobalPhoneNumber(phone_number);
     }

@@ -142,15 +142,6 @@ public class MainActivity extends EmptyActivity {
         menu_username.setTitle(curr_user.username);
         menu_email.setTitle(curr_user.email);
         menu_phone.setTitle(curr_user.phone);
-//        TextView textView_username_d = findViewById(R.id.d_name);
-//        textView_username_d.setText(curr_user.username);
-
-//        TextView textView_email = findViewById(R.id.textView_email);
-//        textView_email.setText(curr_user.email);
-
-
-//        TextView textView_phonenum = findViewById(R.id.textView_phone);
-//        textView_phonenum.setText(curr_user.phone);
 
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
 
@@ -292,9 +283,11 @@ public class MainActivity extends EmptyActivity {
         }
     }
 
+    /**
+     * Called to process and save snapshots into database
+     * @param snapshots the TireSnapshot list fetched from the simulator
+     */
     private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
-        //@TODO hide the loading icon
-
         // close bluetooth connection
         BluetoothAPI.disableBt();
         HashSet<String> NotFoundSensorSet = new HashSet<String>();
@@ -343,7 +336,6 @@ public class MainActivity extends EmptyActivity {
                 }
                 catch(Exception e){
                     Log.e(Common.LOG_TAG_MAIN_ACTIVITY, "Error aquiring GPS", e);
-//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 if(init_thickness == -1){
                     if(!NotFoundSensorSet.contains(sensor_id)){
@@ -402,7 +394,6 @@ public class MainActivity extends EmptyActivity {
             Database.myDatabase.close();
         }
         catch(Exception e){
-//            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
             notification(e.getMessage());
             e.printStackTrace();
         }

@@ -39,6 +39,10 @@ public class Log_in extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
     }
+
+    /**
+     * Authenticated user will successfully login and goes to the main page
+     */
     public void switchto_main(View view) {
         Intent intent = new Intent(Log_in.this, MainActivity.class);
 
@@ -50,7 +54,6 @@ public class Log_in extends AppCompatActivity {
 
         task = Common.GET_SALT;
         sendLoginRequest();
-
     }
 
     private void sendLoginRequest(){
@@ -230,6 +233,9 @@ public class Log_in extends AppCompatActivity {
         }
     };
 
+    /**
+     * Switch to the register page
+     */
     public void switchto_register(View view) {
         Intent intent = new Intent(Log_in.this, edu.duke.ece651.tyrata.user.Register.class);
 

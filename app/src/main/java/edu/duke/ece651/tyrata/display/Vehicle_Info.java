@@ -83,6 +83,9 @@ public class Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Display the Vehicle data: display the default data if there is no saved data for this vehicle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -212,6 +215,11 @@ public class Vehicle_Info extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called to calculate the relative tire location
+     * @param tirenum is the total tire numbers for this vehicle
+     * @param index is the tire index for the chosen tire
+     */
     private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
         if(tirenum == 4 || tirenum == 6 || tirenum == 8){
@@ -281,12 +289,18 @@ public class Vehicle_Info extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called to get back to main page
+     */
     public void BackToMain(View view) {
         Intent intent = new Intent(Vehicle_Info.this, MainActivity.class);
         intent.putExtra("USER_ID", user_id);
         startActivity(intent);
     }
 
+    /**
+     * Called to switch to the edit page: Input_Vehicle_Info
+     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
         intent.putExtra("userID", user_id);
@@ -294,6 +308,10 @@ public class Vehicle_Info extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
+
+    /**
+     * Called to get into the tire page: TireInfo
+     */
     public void vehicle_to_tire () {
         Intent intent = new Intent(Vehicle_Info.this, TireInfo.class);
         intent.putExtra("AXIS_ROW", axis_row);
@@ -306,6 +324,9 @@ public class Vehicle_Info extends AppCompatActivity {
     }
 
     /* Added by De Lan on 3/25/2018 */
+    /**
+     * Called to delete the vehicle
+     */
     public void delete_vehicle(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
