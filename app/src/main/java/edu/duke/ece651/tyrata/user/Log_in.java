@@ -40,8 +40,6 @@ public class Log_in extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
     }
     public void switchto_main(View view) {
-        Intent intent = new Intent(Log_in.this, MainActivity.class);
-
         EditText input_email = (EditText) findViewById(R.id.input_email);
         email = input_email.getText().toString();
 
@@ -175,6 +173,8 @@ public class Log_in extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String message = msg.getData().getString("get_message");
+            Log.i("show message",message);
+            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
 
             if(message.equals("<message><authentication>success</authentication></message>")){
                 Intent intent = new Intent(Log_in.this, MainActivity.class);
@@ -191,7 +191,7 @@ public class Log_in extends AppCompatActivity {
                     task = Common.GET_DATABASE;
                     send_message(get_data);
                 }
-            }else{
+            }else if (message.equals("<message><authentication>failure</authentication></message>")){
                 String msg_notification = "Incorrect credentials. Please enter the right information or register.";
                 notification(msg_notification);
             }

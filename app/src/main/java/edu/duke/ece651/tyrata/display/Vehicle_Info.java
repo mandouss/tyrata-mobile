@@ -1,8 +1,6 @@
 package edu.duke.ece651.tyrata.display;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,13 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +29,11 @@ import edu.duke.ece651.tyrata.calibration.Input_Vehicle_Info;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Tire;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
+
+/**
+ * Created by Ming .
+ * the java code of the activity_vehicle_info.xml page
+ */
 
 public class Vehicle_Info extends AppCompatActivity {
     private Integer buttonnumber = 0;
@@ -88,6 +88,7 @@ public class Vehicle_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle__info);
 
+        //add toolbar to the page
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,7 +101,7 @@ public class Vehicle_Info extends AppCompatActivity {
             }
         });
 
-        //getVehicle
+
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         vin = intent.getStringExtra("VIN");
@@ -110,7 +111,7 @@ public class Vehicle_Info extends AppCompatActivity {
             vin = editor.getString("VIN","");
             Log.i("In VehicleInfo",vin);
         }
-
+        //getVehicle
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
         user_id = editor.getInt("USER_ID",0);
@@ -120,20 +121,18 @@ public class Vehicle_Info extends AppCompatActivity {
         Log.i("In vehicle info, VIN", vin);
         Log.i("In vehicle info, user", String.valueOf(user_id));
 
+        //show the info of the vehicle
         String message_make = curr_vehicle.getMake();
         TextView textView_make = findViewById(R.id.textView_make);
         textView_make.setText(message_make);
-
 
         String message_model = curr_vehicle.getModel();
         TextView textView_model = findViewById(R.id.textView_model);
         textView_model.setText(message_model);
 
-
         String message_year = String.valueOf(curr_vehicle.getYear());
         TextView textView_year = findViewById(R.id.textView_year);
         textView_year.setText(message_year);
-
 
         TextView textView_vin = findViewById(R.id.textView_vin);
         textView_vin.setText(vin);
@@ -145,6 +144,7 @@ public class Vehicle_Info extends AppCompatActivity {
         TextView textView_tirenumber = findViewById(R.id.textView_tirenumber);
         textView_tirenumber.setText(message_tirenumber);
 
+        //set the image of the vehicle
         ImageView imageView= findViewById(R.id.image_vehicle);
         ImageView vehicle_image = findViewById(R.id.vehicle_image);
         if(curr_vehicle.getNumTires() == 4){
@@ -175,22 +175,20 @@ public class Vehicle_Info extends AppCompatActivity {
             imageView.setImageResource(R.drawable.four_wheel);
         }
 
-
         buttonnumber=Integer.parseInt(message_tirenumber);
 
+        //set the list of the tires
         tire_list = (ListView) findViewById(R.id.tire_list);
         initDataList(buttonnumber,curr_vehicle.mTires);
 
         String[] from = { "img", "tire number","replace" };
-        // 列表项组件Id 数组
+
         int[] to = { R.id.item_img, R.id.item_tire, R.id.item_replace };
         final SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_view_layout, from, to);
 
         tire_list.setAdapter(adapter);
-        /**
-         * 单击
-         */
+
         tire_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -212,6 +210,12 @@ public class Vehicle_Info extends AppCompatActivity {
         });
     }
 
+    /**
+     * Calculate the location of the tire according to the tire index
+     *
+     * @param tirenum the number of the tires of the vehicle
+     * @param index the index of the tire that user selected
+     */
     private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
         if(tirenum == 4 || tirenum == 6 || tirenum == 8){
@@ -251,9 +255,13 @@ public class Vehicle_Info extends AppCompatActivity {
         Log.i("row", Integer.toString(axis_row));
     }
 
-
+    /**
+     * Initialize the list of the tires
+     *
+     * @param number the number of the tires
+     * @param tires the arraylist of the info of the tires
+     */
     private void initDataList(int number, ArrayList<Tire> tires) {
-        //图片资源
         int img[] = null;
         img = new int[number];
         for(int i = 0;i < number; i++) {
@@ -281,19 +289,28 @@ public class Vehicle_Info extends AppCompatActivity {
         }
     }
 
+    /** Switch to the main page
+     * @param view called after clicking "yes" of the dialogue (delete the vehicle)
+     */
     public void BackToMain(View view) {
         Intent intent = new Intent(Vehicle_Info.this, MainActivity.class);
         intent.putExtra("USER_ID", user_id);
         startActivity(intent);
     }
 
+    /** Switch to the input vehicle info page
+     * @param view called by the button "edit"
+     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
         intent.putExtra("userID", user_id);
         intent.putExtra("VIN", vin);
         startActivity(intent);
-        // Do something in response to button
     }
+
+    /** Switch to the tire info page
+    *called by clicking the item in the vehicle list
+    */
     public void vehicle_to_tire () {
         Intent intent = new Intent(Vehicle_Info.this, TireInfo.class);
         intent.putExtra("AXIS_ROW", axis_row);
@@ -302,7 +319,6 @@ public class Vehicle_Info extends AppCompatActivity {
         intent.putExtra("VIN", vin);
 
         startActivity(intent);
-        // Do something in response to button
     }
 
     /* Added by De Lan on 3/25/2018 */

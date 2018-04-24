@@ -14,11 +14,18 @@ import java.io.InputStream;
 
 import edu.duke.ece651.tyrata.datamanagement.Database;
 
-/*Created by Ming Yang on 2018/3/24*/
+/*Created by Ming Yang on 2018/3/24
+* used to parse the message from the cloud database
+*/
 
 public class ServerXmlParser extends AppCompatActivity {
     private static final String ns = null;
 
+    /**read in the message from the server
+     *
+     * @param in The message from the cloud database
+     * @param context The context of the current page
+     */
     public void parse_server(InputStream in, Context context) throws XmlPullParserException, IOException {
         parse(in, context);
     }
@@ -34,6 +41,12 @@ public class ServerXmlParser extends AppCompatActivity {
             in.close();
         }
     }
+
+    /**Process the message from the server
+     *
+     * @param parser transferred message
+     * @param context The context of the current page
+     */
     private void readFeed(XmlPullParser parser, Context context)throws XmlPullParserException, IOException{
         parser.require(XmlPullParser.START_TAG, ns, "message");
         String message;
@@ -257,7 +270,7 @@ public class ServerXmlParser extends AppCompatActivity {
                     axisIndex = Integer.valueOf(readcontent(parser,"axisindex"));
                     break;
                 case "initthickness":
-                    init_thickness = Integer.valueOf(readcontent(parser,"initthickness"));
+                    init_thickness = Double.valueOf(readcontent(parser,"initthickness"));
                     break;
                 default:
                     skip(parser);

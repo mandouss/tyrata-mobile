@@ -30,6 +30,10 @@ import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
+/**
+ * Created by Ming .
+ * the java code of the activity_register.xml page
+ */
 
 public class Register extends AppCompatActivity {
 
@@ -132,15 +136,8 @@ public class Register extends AppCompatActivity {
                 + "</hash><salt>" + salt_string
                 + "</salt></user><original_info></original_info></message>";
 
-        //@TODO register user with server and return success/fail
-//        HTTPsender send_get = new HTTPsender();
-//        String message = send_get.send_and_receive(create_user,getApplicationContext());
-
         String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + create_user;
         Log.i("myUrl", myUrl);
-
-        //send(myUrl, getApplicationContext());
-        //Log.i("send","success");
 
         send_message(myUrl);
         Log.i("send_new_method", "success");
@@ -176,7 +173,6 @@ public class Register extends AppCompatActivity {
 
     private void send_message(String urlStr) {
         final String url = urlStr;
-        String resource;
         new Thread() {
             public void run() {
                 InputStream in = null;

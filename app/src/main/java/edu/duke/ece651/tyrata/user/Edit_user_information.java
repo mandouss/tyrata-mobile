@@ -46,6 +46,8 @@ public class Edit_user_information extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_information);
+
+        //add the toolbar to the page
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -59,9 +61,11 @@ public class Edit_user_information extends AppCompatActivity {
             }
         });
 
+        //get user id
         SharedPreferences editor = getSharedPreferences("user_data",MODE_PRIVATE);
         user_ID = editor.getInt("USER_ID",0);
 
+        //get original user info from database and show on the edittext
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         User curr_user = Database.getUser(user_ID);
         Database.myDatabase.close();

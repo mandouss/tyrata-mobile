@@ -34,6 +34,10 @@ import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
+/*Created by Ming Yang
+ * the java code of the activity_input_vehicle_info.xml page
+ */
+
 public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
     private List<String> dataList;
@@ -48,15 +52,18 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
 
+        //add toolbar to the page
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);
-        // If this page is switched from vehicle edit
+
         String vin = intent.getStringExtra("VIN");
         vehicle_ID = -1;
+
+        //if the vehicle already exist, show the origin info on the edittext
         if (vin != null) {
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             Vehicle cur_vehicle = Database.getVehicle(vin);
@@ -72,11 +79,14 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             EditText textView_year = findViewById(R.id.edit_year);
             textView_year.setText(String.valueOf(cur_vehicle.getYear()));
             original_vin = vin;
-        } else {
+        }
+        //if the vehicle doesn't exist, add a new vehicle
+        else {
             Log.i("Vehicle Input add_car", "add_car");
             original_vin = "";
         }
 
+        //set the spinner for the tire number
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
         dataList = new ArrayList<String>();
@@ -122,8 +132,11 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
+    /**Save the vehicle info message that the user typed in
+     *
+     * @param view called by the button "submit"
+     */
     public void saveMessage(View view) {
-
         String msg = "";
         Intent intent = new Intent(this, MainActivity.class);
         EditText edit_make = (EditText) findViewById(R.id.edit_make);
@@ -177,6 +190,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         }
     }
 
+    /**Show the notification
+     *
+     * @param msg the message string that will show on the notification dialogue
+     */
     private void notification(String msg) {
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

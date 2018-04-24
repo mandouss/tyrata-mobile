@@ -14,6 +14,10 @@ import edu.duke.ece651.tyrata.MainActivity;
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 
+/*Created by Ming Yang
+ * the java code of the activity_report_accident.xml page
+ */
+
 public class Report_accident extends AppCompatActivity {
     int user_ID;
 
@@ -22,6 +26,7 @@ public class Report_accident extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_accident);
 
+        //add toolbar to the page
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -35,6 +40,7 @@ public class Report_accident extends AppCompatActivity {
             }
         });
 
+        //get user id from the main page
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);
     }
@@ -51,21 +57,25 @@ public class Report_accident extends AppCompatActivity {
         return true;
     }
 
+    /**Save the accident message that the user typed in
+     *
+     * @param view called by the button "submit"
+     */
     public void sendReportToMain(View view) {
 
         Intent intent = new Intent(this, edu.duke.ece651.tyrata.MainActivity.class);
+
+        //get the message from the edittext
         EditText edit_report = (EditText) findViewById(R.id.report_editText);
         String message_report = edit_report.getText().toString();
-        intent.putExtra("REPORT", message_report);
-        intent.putExtra("USER_ID", user_ID);
-        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
+
         //Store the accident into the database.
+        Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         Database.storeAccident(message_report, user_ID);
         Database.myDatabase.close();
 
+        //switch to main page
         startActivity(intent);
-
-        // Do something in response to button
     }
 
 }

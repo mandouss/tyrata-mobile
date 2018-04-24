@@ -137,12 +137,13 @@ public class TireInfo extends AppCompatActivity {
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
 
-
+        //get the tire info from the database
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         vehicle_ID = Database.getVehicleID(vin);
         Tire curr_tire = Database.getTire(axis_row, axis_index, axis_side, vehicle_ID);
         Database.myDatabase.close();
 
+        //show the tire info on the page
         if(curr_tire != null) {
             message_manufacturer = curr_tire.getManufacturer();
             message_sensorID = curr_tire.getSensor();
@@ -178,30 +179,17 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
-        //TODO: calculate thickness
-
         if(message_Thickness == null)
-            //message_Thickness = "Need init THICKNESS";
             message_Thickness = "";
         TextView textView_Thickness = findViewById(R.id.textView_thickness);
         textView_Thickness.setText(message_Thickness);
 
-
-        /* @TODO: read S11 and odometer from database, sync with BT*/
-        /*if(message_S11 == null)
-            message_S11 = "S11 from BT";
-        TextView textView_S11 = findViewById(R.id.textView_S11);
-        textView_S11.setText(message_S11);*/
-
         if(message_Odometer == null || message_Odometer.equals("0.00"))
-            //message_Odometer = "odometer from BT";
             message_Odometer = "";
         TextView textView_Odometer = findViewById(R.id.textView_odometer);
         textView_Odometer.setText(message_Odometer);
 
-        
         if(message_EOL == null || message_EOL.equals("Default")) {
-            //message_EOL = "EOL from calculation";
             message_EOL = "";
         }else {
             double d_eol = Double.valueOf(message_EOL);
@@ -211,11 +199,11 @@ public class TireInfo extends AppCompatActivity {
         textView_EOL.setText(message_EOL);
 
         if(message_rep == null || message_rep.equals("Default"))
-            //message_rep = "time to rep from calculation";
             message_rep = "";
         TextView textView_rep = findViewById(R.id.textView_replace);
         textView_rep.setText(message_rep);
 
+        //get the line chart data from the database
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         ArrayList<Pair<String, Double>> line_data = Database.get_thickness_and_timestamp(message_sensorID);
         Database.myDatabase.close();
@@ -229,11 +217,12 @@ public class TireInfo extends AppCompatActivity {
             score[i] = line_data.get(i).second.floatValue();
         }
 
+        //set the line chart
         TextView title = findViewById(R.id.chart_title);
         lineChart = (LineChartView)findViewById(R.id.line_chart);
-        getAxisXYLables();//获取x轴的标注
-        getAxisPoints();//获取坐标点
-        initLineChart();//初始化
+        getAxisXYLables();
+        getAxisPoints();
+        initLineChart();
         if(curr_tire==null){
             title.setVisibility(View.GONE);
             lineChart.setVisibility(View.GONE);
@@ -282,6 +271,10 @@ public class TireInfo extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Initialize the XY labels of the line chart
+     * added by Ming Yang
+     */
     private void getAxisXYLables(){
         for (int i = 0; i < date.length; i++) {
             mAxisXValues.add(new AxisValue(i).setLabel(date[i]));
@@ -292,16 +285,23 @@ public class TireInfo extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initialize the point data of the line chart
+     * added by Ming Yang
+     */
     private void getAxisPoints() {
         max_point = 0;
         for (int i = 0; i < score.length; i++) {
             if(score[i] > max_point) max_point = score[i];
-            //mPointValues.add(new PointValue(i, score[i]));
             mPointValues.add(new PointValue(i, score[i]).setLabel(String.format("%.3f",score[i])));
             thresholdPointValues.add(new PointValue(i, 3));
         }
     }
 
+    /**
+     * Initialize the settings of the line chart
+     * added by Ming Yang
+     */
     private void initLineChart(){
         Line line = new Line(mPointValues).setColor(Color.parseColor("#00bcd4"));  //color of the line（orange）
         List<Line> lines = new ArrayList<Line>();
@@ -309,7 +309,7 @@ public class TireInfo extends AppCompatActivity {
         line.setCubic(false);//curve or broken line
         line.setFilled(false);
         line.setHasLabels(false);
-        line.setHasLabelsOnlyForSelected(true);//点击数据坐标提示数据（设置了这个line.setHasLabels(true);就无效）
+        line.setHasLabelsOnlyForSelected(true);
         line.setHasLines(true);//whether have line
         line.setHasPoints(true);
         lines.add(line);
@@ -325,15 +325,14 @@ public class TireInfo extends AppCompatActivity {
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
-
         //X axis
         Axis axisX = new Axis();
         axisX.setHasTiltedLabels(true);  //whether the x axis text is italic
         axisX.setTextColor(Color.WHITE);  //text color
         //axisX.setName("The thickness of the tire");  //axis name
         axisX.setTextSize(14);//text size
-        axisX.setMaxLabelChars(8); //最多几个X轴坐标，意思就是你的缩放让X轴上数据的个数7<=x<=mAxisXValues.length
-        axisX.setValues(mAxisXValues);  //填充X轴的坐标名称
+        axisX.setMaxLabelChars(8);
+        axisX.setValues(mAxisXValues);
         data.setAxisXBottom(axisX); //x axis is at bottom
         axisX.setHasLines(true); //x axis dividing rules
 
@@ -347,19 +346,13 @@ public class TireInfo extends AppCompatActivity {
         data.setAxisYLeft(axisY);  //Y axis is on the left
         axisY.setHasLines(true);
 
-
-
-
-        //设置行为属性，支持缩放、滑动以及平移
         lineChart.setInteractive(true);
         lineChart.setZoomType(ZoomType.HORIZONTAL);
-        lineChart.setMaxZoom((float) 2);//最大方法比例
+        lineChart.setMaxZoom((float) 2);
         lineChart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
         lineChart.setLineChartData(data);
         lineChart.setVisibility(View.VISIBLE);
-        /**注：下面的7，10只是代表一个数字去类比而已
-         * 当时是为了解决X轴固定数据个数。见（http://forum.xda-developers.com/tools/programming/library-hellocharts-charting-library-t2904456/page2）;
-         */
+
         Viewport v = new Viewport(lineChart.getMaximumViewport());
         v.bottom = 0;
         v.top = max_point + 5;
