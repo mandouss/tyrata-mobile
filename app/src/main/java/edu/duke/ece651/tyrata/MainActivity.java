@@ -212,7 +212,7 @@ public class MainActivity extends EmptyActivity {
                 img[i] = R.drawable.vehicle_list3;
             }
             else if(tirenum_list == 10){
-                img[i] = R.drawable.vehicle_list3;
+                img[i] = R.drawable.vehicle_list_10tires;
             }
             else if(tirenum_list == 14){
                 img[i] = R.drawable.vehicle_list3;

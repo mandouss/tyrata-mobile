@@ -161,7 +161,7 @@ public class Vehicle_Info extends AppCompatActivity {
         }
         else if(curr_vehicle.getNumTires() == 10){
             imageView.setImageResource(R.drawable.ten_wheel);
-            vehicle_image.setImageResource(R.drawable.vehicle_list_6tires);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_10tires);
         }
         else if(curr_vehicle.getNumTires() == 14){
             imageView.setImageResource(R.drawable.fourteen_wheel);
