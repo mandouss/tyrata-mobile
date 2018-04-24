@@ -64,8 +64,10 @@ public class TireInfo extends AppCompatActivity {
     String[] date = {};//X轴的标注
     float[] score = {};//图表的数据点
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
+    private List<PointValue> thresholdPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
     private List<AxisValue> mAxisYValues = new ArrayList<AxisValue>();
+    private float max_point;
 
     @Override
     protected void onStop(){
@@ -111,9 +113,6 @@ public class TireInfo extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Display the tire data: display the default data if there is no processed data for this tire
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +136,7 @@ public class TireInfo extends AppCompatActivity {
         axis_index = intent.getIntExtra("AXIS_INDEX",0);
         axis_side = intent.getCharExtra("AXIS_SIDE",'a');
         vin = intent.getStringExtra("VIN");
+
 
         Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         vehicle_ID = Database.getVehicleID(vin);
@@ -178,11 +178,20 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_SKU = findViewById(R.id.textView_SKU);
         textView_SKU.setText(message_SKU);
 
+        //TODO: calculate thickness
+
         if(message_Thickness == null)
             //message_Thickness = "Need init THICKNESS";
             message_Thickness = "";
         TextView textView_Thickness = findViewById(R.id.textView_thickness);
         textView_Thickness.setText(message_Thickness);
+
+
+        /* @TODO: read S11 and odometer from database, sync with BT*/
+        /*if(message_S11 == null)
+            message_S11 = "S11 from BT";
+        TextView textView_S11 = findViewById(R.id.textView_S11);
+        textView_S11.setText(message_S11);*/
 
         if(message_Odometer == null || message_Odometer.equals("0.00"))
             //message_Odometer = "odometer from BT";
@@ -190,6 +199,7 @@ public class TireInfo extends AppCompatActivity {
         TextView textView_Odometer = findViewById(R.id.textView_odometer);
         textView_Odometer.setText(message_Odometer);
 
+        
         if(message_EOL == null || message_EOL.equals("Default")) {
             //message_EOL = "EOL from calculation";
             message_EOL = "";
@@ -230,10 +240,6 @@ public class TireInfo extends AppCompatActivity {
         }
 
     }
-
-    /**
-     * Called to switch to edit: the TireInfoInput page
-     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
@@ -251,9 +257,6 @@ public class TireInfo extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * Called to get back to the vehicle page
-     */
     public void BackToVehicle(View view) {
         Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
@@ -262,9 +265,6 @@ public class TireInfo extends AppCompatActivity {
 
 
     /* Added by De Lan on 3/25/2018 */
-    /**
-     * Called to delete this tire
-     */
     public void DeleteTire(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
@@ -293,9 +293,12 @@ public class TireInfo extends AppCompatActivity {
     }
 
     private void getAxisPoints() {
+        max_point = 0;
         for (int i = 0; i < score.length; i++) {
+            if(score[i] > max_point) max_point = score[i];
             //mPointValues.add(new PointValue(i, score[i]));
             mPointValues.add(new PointValue(i, score[i]).setLabel(String.format("%.3f",score[i])));
+            thresholdPointValues.add(new PointValue(i, 3));
         }
     }
 
@@ -310,6 +313,15 @@ public class TireInfo extends AppCompatActivity {
         line.setHasLines(true);//whether have line
         line.setHasPoints(true);
         lines.add(line);
+
+        Line threshold_line = new Line(thresholdPointValues).setColor(Color.parseColor("#F44336"));
+        threshold_line.setHasPoints(false);
+        threshold_line.setCubic(false);
+        threshold_line.setFilled(false);
+        threshold_line.setHasLabels(false);
+        threshold_line.setHasLines(true);
+        lines.add(threshold_line);
+
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
@@ -350,7 +362,7 @@ public class TireInfo extends AppCompatActivity {
          */
         Viewport v = new Viewport(lineChart.getMaximumViewport());
         v.bottom = 0;
-        v.top = 20;
+        v.top = max_point + 5;
         lineChart.setMaximumViewport(v);
         v.left = 0;
         v.right= 7;

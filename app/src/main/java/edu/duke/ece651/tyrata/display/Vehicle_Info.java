@@ -83,9 +83,6 @@ public class Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Display the Vehicle data: display the default data if there is no saved data for this vehicle
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,23 +146,30 @@ public class Vehicle_Info extends AppCompatActivity {
         textView_tirenumber.setText(message_tirenumber);
 
         ImageView imageView= findViewById(R.id.image_vehicle);
+        ImageView vehicle_image = findViewById(R.id.vehicle_image);
         if(curr_vehicle.getNumTires() == 4){
             imageView.setImageResource(R.drawable.four_wheel2);
+            vehicle_image.setImageResource(R.drawable.liyue_vehicle);
         }
         else if(curr_vehicle.getNumTires() == 6){
             imageView.setImageResource(R.drawable.six_wheel);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_6tires);
         }
         else if(curr_vehicle.getNumTires() == 8){
             imageView.setImageResource(R.drawable.eight_wheel);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_6tires);
         }
         else if(curr_vehicle.getNumTires() == 10){
             imageView.setImageResource(R.drawable.ten_wheel);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_6tires);
         }
         else if(curr_vehicle.getNumTires() == 14){
             imageView.setImageResource(R.drawable.fourteen_wheel);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_6tires);
         }
         else if(curr_vehicle.getNumTires() == 18){
             imageView.setImageResource(R.drawable.eighteen_wheel);
+            vehicle_image.setImageResource(R.drawable.vehicle_list_18tires);
         }
         else{
             imageView.setImageResource(R.drawable.four_wheel);
@@ -208,11 +212,6 @@ public class Vehicle_Info extends AppCompatActivity {
         });
     }
 
-    /**
-     * Called to calculate the relative tire location
-     * @param tirenum is the total tire numbers for this vehicle
-     * @param index is the tire index for the chosen tire
-     */
     private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
         if(tirenum == 4 || tirenum == 6 || tirenum == 8){
@@ -282,18 +281,12 @@ public class Vehicle_Info extends AppCompatActivity {
         }
     }
 
-    /**
-     * Called to get back to main page
-     */
     public void BackToMain(View view) {
         Intent intent = new Intent(Vehicle_Info.this, MainActivity.class);
         intent.putExtra("USER_ID", user_id);
         startActivity(intent);
     }
 
-    /**
-     * Called to switch to the edit page: Input_Vehicle_Info
-     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
         intent.putExtra("userID", user_id);
@@ -301,10 +294,6 @@ public class Vehicle_Info extends AppCompatActivity {
         startActivity(intent);
         // Do something in response to button
     }
-
-    /**
-     * Called to get into the tire page: TireInfo
-     */
     public void vehicle_to_tire () {
         Intent intent = new Intent(Vehicle_Info.this, TireInfo.class);
         intent.putExtra("AXIS_ROW", axis_row);
@@ -317,9 +306,6 @@ public class Vehicle_Info extends AppCompatActivity {
     }
 
     /* Added by De Lan on 3/25/2018 */
-    /**
-     * Called to delete the vehicle
-     */
     public void delete_vehicle(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

@@ -51,10 +51,8 @@ public class Report_accident extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Save the report data into database and get back to main page
-     */
     public void sendReportToMain(View view) {
+
         Intent intent = new Intent(this, edu.duke.ece651.tyrata.MainActivity.class);
         EditText edit_report = (EditText) findViewById(R.id.report_editText);
         String message_report = edit_report.getText().toString();
@@ -64,7 +62,10 @@ public class Report_accident extends AppCompatActivity {
         //Store the accident into the database.
         Database.storeAccident(message_report, user_ID);
         Database.myDatabase.close();
+
         startActivity(intent);
+
+        // Do something in response to button
     }
 
 }

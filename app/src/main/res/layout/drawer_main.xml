@@ -7,7 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#f2f2f2">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -166,13 +167,6 @@
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 
-
-
-
-
-
-
-
                 </GridLayout>
             </LinearLayout>
 
@@ -182,7 +176,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="90dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/child4"
+                android:src="@drawable/alan"
 
                 />
 
@@ -203,20 +197,9 @@
                     android:id="@+id/vehicle_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:dividerHeight="0dp"
                     android:background="#f2f2f2" />
-
-                <Button
-                    android:id="@+id/notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="8dp"
-                    android:onClick="onClick"
-                    android:text="Notification"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/vehicle_list" />
 
             </LinearLayout>
         </ScrollView>

@@ -47,7 +47,7 @@
                     android:padding="8dp"
                     android:hint="0 - 20 characters"
                     android:textSize="18dp"
-                    android:textColorHint="@color/white"
+                    android:textColorHint="@color/transparent_white"
                     android:textColor="@color/white"
                     android:maxLines="1" />
 
@@ -76,7 +76,7 @@
                     android:padding="8dp"
                     android:hint="0 - 20 characters"
                     android:textSize="18dp"
-                    android:textColorHint="@color/white"
+                    android:textColorHint="@color/transparent_white"
                     android:textColor="@color/white"
                     android:maxLines="1" />
 
@@ -105,7 +105,7 @@
                     android:padding="8dp"
                     android:hint="0 - 20 characters"
                     android:textSize="18dp"
-                    android:textColorHint="@color/white"
+                    android:textColorHint="@color/transparent_white"
                     android:textColor="@color/white"
                     android:maxLines="1" />
 
@@ -157,7 +157,7 @@
                         android:padding="8dp"
                         android:hint="XXXX"
                         android:textSize="18dp"
-                        android:textColorHint="@color/white"
+                        android:textColorHint="@color/transparent_white"
                         android:textColor="@color/white"
                         android:maxLines="1" />
 
