@@ -1,35 +1,21 @@
 package edu.duke.ece651.tyrata.calibration;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-
-import android.graphics.Color;
-
-import android.support.v7.app.ActionBar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.duke.ece651.tyrata.MainActivity;
-
-
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
@@ -47,6 +33,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
     String tirenumber;
     String original_vin;
 
+    /**
+     * Display the vehicle data if this is the edit page
+     * Display the default vehicle data if this vehicle is newly added and been calibrated
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,9 +122,9 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
-    /**Save the vehicle info message that the user typed in
-     *
-     * @param view called by the button "submit"
+    /**
+     * Called to save the vehicle data into database
+     * Notify the user of invalid input
      */
     public void saveMessage(View view) {
         String msg = "";

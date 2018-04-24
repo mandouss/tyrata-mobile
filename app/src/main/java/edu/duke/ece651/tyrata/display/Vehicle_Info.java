@@ -83,6 +83,9 @@ public class Vehicle_Info extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Display the Vehicle data: display the default data if there is no saved data for this vehicle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,10 +214,16 @@ public class Vehicle_Info extends AppCompatActivity {
     }
 
     /**
+<<<<<<< HEAD
      * Calculate the location of the tire according to the tire index
      *
      * @param tirenum the number of the tires of the vehicle
      * @param index the index of the tire that user selected
+=======
+     * Called to calculate the relative tire location
+     * @param tirenum is the total tire numbers for this vehicle
+     * @param index is the tire index for the chosen tire
+>>>>>>> 1e04ad23abe545af951e8ce590f47d880e267e2c
      */
     private void calculate_location(int tirenum, int index){
         int side = -1;   //left-1,right-0
@@ -289,8 +298,13 @@ public class Vehicle_Info extends AppCompatActivity {
         }
     }
 
+<<<<<<< HEAD
     /** Switch to the main page
      * @param view called after clicking "yes" of the dialogue (delete the vehicle)
+=======
+    /**
+     * Called to get back to main page
+>>>>>>> 1e04ad23abe545af951e8ce590f47d880e267e2c
      */
     public void BackToMain(View view) {
         Intent intent = new Intent(Vehicle_Info.this, MainActivity.class);
@@ -298,8 +312,13 @@ public class Vehicle_Info extends AppCompatActivity {
         startActivity(intent);
     }
 
+<<<<<<< HEAD
     /** Switch to the input vehicle info page
      * @param view called by the button "edit"
+=======
+    /**
+     * Called to switch to the edit page: Input_Vehicle_Info
+>>>>>>> 1e04ad23abe545af951e8ce590f47d880e267e2c
      */
     public void switchToEdit(View view) {
         Intent intent = new Intent(Vehicle_Info.this, Input_Vehicle_Info.class);
@@ -308,9 +327,15 @@ public class Vehicle_Info extends AppCompatActivity {
         startActivity(intent);
     }
 
+<<<<<<< HEAD
     /** Switch to the tire info page
     *called by clicking the item in the vehicle list
     */
+=======
+    /**
+     * Called to get into the tire page: TireInfo
+     */
+>>>>>>> 1e04ad23abe545af951e8ce590f47d880e267e2c
     public void vehicle_to_tire () {
         Intent intent = new Intent(Vehicle_Info.this, TireInfo.class);
         intent.putExtra("AXIS_ROW", axis_row);
@@ -322,6 +347,9 @@ public class Vehicle_Info extends AppCompatActivity {
     }
 
     /* Added by De Lan on 3/25/2018 */
+    /**
+     * Called to delete the vehicle
+     */
     public void delete_vehicle(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

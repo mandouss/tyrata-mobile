@@ -57,12 +57,10 @@ public class Report_accident extends AppCompatActivity {
         return true;
     }
 
-    /**Save the accident message that the user typed in
-     *
-     * @param view called by the button "submit"
+    /**
+     * Save the report data into database and get back to main page
      */
     public void sendReportToMain(View view) {
-
         Intent intent = new Intent(this, edu.duke.ece651.tyrata.MainActivity.class);
 
         //get the message from the edittext

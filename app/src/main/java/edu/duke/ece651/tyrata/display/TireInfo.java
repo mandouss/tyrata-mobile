@@ -113,6 +113,9 @@ public class TireInfo extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Display the tire data: display the default data if there is no processed data for this tire
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,6 +233,10 @@ public class TireInfo extends AppCompatActivity {
         }
 
     }
+
+    /**
+     * Called to switch to edit: the TireInfoInput page
+     */
     public void switchToEdit(View view) {
         Intent intent = new Intent(TireInfo.this, TireInfoInput.class);
 
@@ -247,6 +254,9 @@ public class TireInfo extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Called to get back to the vehicle page
+     */
     public void BackToVehicle(View view) {
         Intent intent = new Intent(TireInfo.this, Vehicle_Info.class);
         intent.putExtra("VIN", vin);
@@ -255,6 +265,9 @@ public class TireInfo extends AppCompatActivity {
 
 
     /* Added by De Lan on 3/25/2018 */
+    /**
+     * Called to delete this tire
+     */
     public void DeleteTire(final View view){
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")
