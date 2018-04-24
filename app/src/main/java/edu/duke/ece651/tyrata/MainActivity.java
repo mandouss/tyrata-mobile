@@ -375,7 +375,7 @@ public class MainActivity extends EmptyActivity {
                 Log.i("test outlier2", String.valueOf(s11));
                 //Database.testSnapTable();
                 double deviation = Database.get_deviation_s11(sensor_id);
-                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                if((s11 < mean - 3 * 0.01 || s11 > mean + 3 * 0.01) && mean != 0) {
                     isoutlier = true;
                 }
                 Log.i("test outlier3", String.valueOf(isoutlier));

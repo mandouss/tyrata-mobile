@@ -89,7 +89,7 @@ public class Database extends AppCompatActivity {
             }while(c.moveToPrevious() && count < 10);
             c.close();
 
-            return sum/10;
+            return Math.sqrt(sum/10);
         }
         return 0;
     }

@@ -211,6 +211,7 @@ public class TireInfo extends AppCompatActivity {
         date = new String[line_data.size()];
         score = new float[line_data.size()];
 
+
         for(int i = 0;i<line_data.size();i++){
             date[i] = line_data.get(i).first;
             Log.i("score",String.valueOf(line_data.get(i).second));
