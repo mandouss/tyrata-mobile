@@ -3,6 +3,7 @@ package edu.duke.ece651.tyrata;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -57,6 +58,8 @@ public class MainActivity extends EmptyActivity {
     private NavigationView navigationView;
     private int user_ID;
     private StringBuilder mXmlStream;
+    private ProgressDialog mProgressDialog;
+
 
 
     int notificationID = 1;
@@ -463,6 +466,22 @@ public class MainActivity extends EmptyActivity {
         }
     }*/
 
+    private void showProgressDialog(String msg) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.setMessage(msg);
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
     /**
      * Called when startActivityForResult finishes
      * @param requestCode Constant integer representing the request that finished
@@ -527,14 +546,20 @@ public class MainActivity extends EmptyActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case Common.MESSAGE_READ:
+                    showProgressDialog("Receiving message...");
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
                     mXmlStream.append(msgStr);
                     if (readBuf[msg.arg1-1] == Common.SIMULATOR_EOF) { // reached end of message/file
                         Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
+//                        hideProgressDialog();
+                        showProgressDialog("Parsing message...");
                         ArrayList<TireSnapshot> snapshots = BluetoothAPI.processMsg(mXmlStream.toString());
+//                        hideProgressDialog();
+                        showProgressDialog("Storing tire snapshots...");
                         handleReceivedSnapshots(snapshots);
+                        hideProgressDialog();
                     }
                     break;
                 case Common.MESSAGE_WRITE:
@@ -542,6 +567,7 @@ public class MainActivity extends EmptyActivity {
                     String writeMsg = new String(writeBuf, 0, msg.arg1);
                     Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Sent " + writeMsg);
 //                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
+                    hideProgressDialog();
                     break;
                 case Common.MESSAGE_TOAST:
                     // save the connected device's name
@@ -555,6 +581,7 @@ public class MainActivity extends EmptyActivity {
                     String deviceName = msg.getData().getString(Common.DEVICE_NAME);
                     Toast.makeText(getApplicationContext(), "Connected to "
                             + deviceName, Toast.LENGTH_SHORT).show();
+                    showProgressDialog("Waiting for message...");
                     break;
                 default:
                     Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Unknown message passed to handler: " + msg.what);
