@@ -275,6 +275,11 @@ public class MainActivity extends EmptyActivity {
         intent.putExtra("VIN", vin);
         startActivity(intent);
     }
+
+    /**
+     * Discover nearby bluetooth devices and establish a connection on select
+     * @param view The button that was clicked
+     */
     public void main_to_communication(View view) {
         Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "main_to_communication()");
 
@@ -294,8 +299,6 @@ public class MainActivity extends EmptyActivity {
      * @param snapshots the TireSnapshot list fetched from the simulator
      */
     private void handleReceivedSnapshots(ArrayList<TireSnapshot> snapshots) {
-        //@TODO hide the loading icon
-
         // close bluetooth connection
         BluetoothAPI.disableBt();
         HashSet<String> NotFoundSensorSet = new HashSet<String>();
@@ -466,6 +469,10 @@ public class MainActivity extends EmptyActivity {
         }
     }*/
 
+    /**
+     * Show a progress dialog with a message
+     * @param msg The message to display on the dialog
+     */
     private void showProgressDialog(String msg) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -476,6 +483,9 @@ public class MainActivity extends EmptyActivity {
         mProgressDialog.show();
     }
 
+    /**
+     * Hide the progress dialog
+     */
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
@@ -519,7 +529,6 @@ public class MainActivity extends EmptyActivity {
                     mXmlStream = new StringBuilder();
                     Toast.makeText(getApplicationContext(),
                             "Connecting...", Toast.LENGTH_SHORT).show();
-                    // @TODO show a loading icon
                     BluetoothAPI.connectBt(data);
                 } else {
                     Toast.makeText(getApplicationContext(),

@@ -7,7 +7,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
@@ -19,8 +18,9 @@ import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
  */
 
 class BluetoothXmlParser {
-    // We don't use namespaces
-    private static final String ns = null;
+
+    private static final String ns = null; // We don't use namespaces
+    // Pre-defined XML tags
     private static final String TAG_DAILY_S11_LIST = "dailyS11List";
     private static final String TAG_DAILY_S11 = "dailyS11";
     private static final String TAG_MILEAGE = "mileage";

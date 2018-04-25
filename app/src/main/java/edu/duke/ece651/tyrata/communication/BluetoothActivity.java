@@ -27,6 +27,7 @@ import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 
 /**
+ * (NOT USED IN PRODUCTION)
  * Example Activity using Bluetooth API
  * @author Saeed Alrahma
  * Created by Saeed on 2/25/2018.
