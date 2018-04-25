@@ -3,29 +3,26 @@ package edu.duke.ece651.tyrata.vehicle;
 /**
  * This class is a Tire object
  * used to standardize the use of tire across the app
- * @author Saeed Alrahma
+ * @author Saeed Alrahma, De Lan
  * Created by Saeed on 3/10/2018.
- */
-
-/**
  * Updated by De Lan on 3/18/2018: with accordance with latest database design
  */
 public class Tire {
-    String mSensorId;
-    String mManufacturer;
-    String mModel;
-    String mSku;
-    int mAxisRow;
-    char mAxisSide;
-    int mAxisIndex;
-    double minit_thickness;
-    double mcurr_thickness;
-    int INIT_SS_ID;
-    int CUR_SS_ID;
-    double mS11;
-    double mOdometer;
-    String meol;
-    String mrepTime;
+    private String mSensorId;
+    private String mManufacturer;
+    private String mModel;
+    private String mSku;
+    private int mAxisRow;
+    private char mAxisSide;
+    private int mAxisIndex;
+    private double mInitThickness;
+    private double mCurrThickness;
+    private int mInitSsId;
+    private int mCurSsId;
+    private double mS11;
+    private double mOdometer;
+    private String mEol;
+    private String mRepTime;
 
 
 
@@ -50,14 +47,14 @@ public class Tire {
         this.mAxisRow = axisRow;
         this.mAxisSide = axisSide;
         this.mAxisIndex = axisIndex;
-        this.minit_thickness = init_thickness;
-        this.mcurr_thickness = curr_thickness;
-        this.INIT_SS_ID = INIT_SS;
-        this.CUR_SS_ID = CUR_SS;
+        this.mInitThickness = init_thickness;
+        this.mCurrThickness = curr_thickness;
+        this.mInitSsId = INIT_SS;
+        this.mCurSsId = CUR_SS;
         this.mS11 = s11;
         this.mOdometer = odometer;
-        this.meol = eol;
-        this.mrepTime = repTime;
+        this.mEol = eol;
+        this.mRepTime = repTime;
     }
 
     /** Constructor
@@ -145,45 +142,38 @@ public class Tire {
         return mAxisIndex;
     }
 
-    public double get_INIT_THICK(){ return minit_thickness; }
+    public double get_INIT_THICK(){ return mInitThickness; }
 
-    public double get_CURR_THCK() { return mcurr_thickness; }
+    public double get_CURR_THCK() { return mCurrThickness; }
 
-    public void setMcurr_thickness(double mcurr_thickness){ this.mcurr_thickness = mcurr_thickness;}
+    public void setMcurr_thickness(double mcurr_thickness){ this.mCurrThickness = mcurr_thickness;}
 
-    public int get_INIT_SS() {return INIT_SS_ID; }
+    public int get_INIT_SS() {return mInitSsId; }
 
-    public int get_CUR_SS() {return CUR_SS_ID; }
+    public int get_CUR_SS() {return mCurSsId; }
 
     public double getS11() { return mS11;}
 
     public double getOdometer() { return mOdometer;}
 
-    public String getEOL() { return meol;}
-    public void setMeol(String meol){this.meol = meol;}
+    public String getEOL() { return mEol;}
+    public void setMeol(String meol){this.mEol = meol;}
 
-    public String getRepTime() { return mrepTime;}
-    public void setMrepTime(String mrepTime){this.mrepTime = mrepTime;}
+    public String getRepTime() { return mRepTime;}
+    public void setMrepTime(String mrepTime){this.mRepTime = mrepTime;}
 
 
-//    public void setAxisIndex(int mAxisIndex) {
-//        this.mAxisIndex = mAxisIndex;
-//    }
-//    public double getS11Reference() {
-//        return mS11Reference;
-//    }
+    public void setAxisIndex(int mAxisIndex) {
+        this.mAxisIndex = mAxisIndex;
+    }
 
-//    public void setS11Reference(double mS11Reference) {
-//        this.mS11Reference = mS11Reference;
-//    }
+    public void setS11(double mS11Reference) {
+        this.mS11 = mS11Reference;
+    }
 
-//    public int getOdometerMileageReference() {
-//        return mOdometerMileageReference;
-//    }
-
-//    public void setOdometerMileageReference(int mOdometerMileageReference) {
-//        this.mOdometerMileageReference = mOdometerMileageReference;
-//    }
+    public void setOdometer(int mOdometer) {
+        this.mOdometer = mOdometer;
+    }
 
     public String getSensorId() {
         return mSensorId;

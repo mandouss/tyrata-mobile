@@ -619,7 +619,7 @@ public class Database extends AppCompatActivity {
                 int axis_num = vehicle_cursor.getInt(vehicle_cursor.getColumnIndex("AXIS_NUM"));
                 int tire_num = vehicle_cursor.getInt(vehicle_cursor.getColumnIndex("TIRE_NUM"));
                 Vehicle curr_vehicle = new Vehicle(vin, make, model, year, axis_num, tire_num);
-                curr_user.mVehicles.add(curr_vehicle);
+                curr_user.addVehicle(curr_vehicle);
             } while (vehicle_cursor.moveToNext());
         }
         vehicle_cursor.close();
@@ -652,7 +652,7 @@ public class Database extends AppCompatActivity {
         if (tire_cursor.moveToFirst()) {
             do {
                 Tire curr_tire = tireHelper(tire_cursor);
-                curr_vehicle.mTires.add(curr_tire);
+                curr_vehicle.addTire(curr_tire);
             } while (tire_cursor.moveToNext());
         }
         tire_cursor.close();

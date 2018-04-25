@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 /**
+ * This is a User object for all user-related information and functions
  * Created by Saeed on 3/10/2018.
  */
 
 public class User {
-    public String username;
-    public String email;
-    public String phone;
-    /* @TODO add more user attributes (e.g. login token/certification) */
-    public ArrayList<Vehicle> mVehicles;
+    private String mUserName;
+    private String mEmail;
+    private String mPhone;
+    private ArrayList<Vehicle> mVehicles;
 
     /** Constructor
      *
@@ -22,10 +22,9 @@ public class User {
      * @param number User phone number
      */
     public User(String name, String email, String number) {
-        this.username = name;
-        this.email = email;
-        this.phone = number;
-        /* @TODO include the rest of the attributes here */
+        this.mUserName = name;
+        this.mEmail = email;
+        this.mPhone = number;
         this.mVehicles = new ArrayList<>();
     }
 
@@ -85,5 +84,34 @@ public class User {
     public void pushNotification() {
         // @TODO
 
+    }
+
+    /* GETTERS and SETTERS */
+    public String getUserName() {
+        return mUserName;
+    }
+
+    public void setUserName(String username) {
+        this.mUserName = username;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        this.mEmail = email;
+    }
+
+    public String getPhone() {
+        return mPhone;
+    }
+
+    public void setPhone(String phone) {
+        this.mPhone = phone;
+    }
+
+    public ArrayList<Vehicle> getVehicles() {
+        return mVehicles;
     }
 }

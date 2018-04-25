@@ -175,7 +175,7 @@ public class Vehicle_Info extends AppCompatActivity {
         buttonnumber=Integer.parseInt(message_tirenumber);
 
         tire_list = (ListView) findViewById(R.id.tire_list);
-        initDataList(buttonnumber,curr_vehicle.mTires);
+        initDataList(buttonnumber,curr_vehicle.getTires());
 
         String[] from = { "img", "tire number","replace" };
         // 列表项组件Id 数组

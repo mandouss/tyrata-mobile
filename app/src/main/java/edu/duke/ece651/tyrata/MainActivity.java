@@ -135,14 +135,14 @@ public class MainActivity extends EmptyActivity {
         Database.myDatabase.close();
 
         TextView textView_username = findViewById(R.id.textView_user);
-        textView_username.setText(curr_user.username);
-        menu_username.setTitle(curr_user.username);
-        menu_email.setTitle(curr_user.email);
-        menu_phone.setTitle(curr_user.phone);
+        textView_username.setText(curr_user.getUserName());
+        menu_username.setTitle(curr_user.getUserName());
+        menu_email.setTitle(curr_user.getEmail());
+        menu_phone.setTitle(curr_user.getPhone());
 
         vehicle_list = (ListView) findViewById(R.id.vehicle_list);
 
-        initDataList(curr_user.mVehicles);
+        initDataList(curr_user.getVehicles());
 
         String[] from = { "img", "VIN", "make","model", "year" };
         int[] to = { R.id.item_img, R.id.item_vehicle, R.id.item_make,R.id.item_model,

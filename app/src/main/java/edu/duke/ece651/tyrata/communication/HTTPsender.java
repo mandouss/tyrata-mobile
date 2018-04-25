@@ -64,9 +64,9 @@ public class HTTPsender extends AppCompatActivity {
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         User user = Database.getUser(id);
         Database.myDatabase.close();
-        m = m + "<user><username>" + user.username +
-                "</username><email>" + user.email +
-                "</email><phone>" + user.phone +
+        m = m + "<user><username>" + user.getUserName() +
+                "</username><email>" + user.getEmail() +
+                "</email><phone>" + user.getPhone() +
                 "</phone></user>";
         return  m;
     }
