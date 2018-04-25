@@ -284,7 +284,7 @@ public class MainActivity extends EmptyActivity {
             startActivityForResult(discoverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
         } else {
             Toast.makeText(this,
-                    "Grant Location Access and try again",
+                    "Enable Bluetooth and try again",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -546,7 +546,6 @@ public class MainActivity extends EmptyActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case Common.MESSAGE_READ:
-                    showProgressDialog("Receiving message...");
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the msg
                     String msgStr = new String(readBuf, 0, msg.arg1);
