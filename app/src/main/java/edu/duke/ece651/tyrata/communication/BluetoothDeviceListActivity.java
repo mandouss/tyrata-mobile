@@ -34,15 +34,9 @@ import edu.duke.ece651.tyrata.R;
  *  https://developer.android.com/samples/BluetoothChat/index.html
  */
 public class BluetoothDeviceListActivity extends AppCompatActivity {
-    /**
-     * Return Intent extra
-     */
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
-    /**
-     * Newly discovered devices
-     */
-    private ArrayAdapter<String> mNewDevicesArrayAdapter;
+    public static String EXTRA_DEVICE_ADDRESS = "device_address"; // Return Intent extra
+    private ArrayAdapter<String> mNewDevicesArrayAdapter; // Newly discovered devices
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

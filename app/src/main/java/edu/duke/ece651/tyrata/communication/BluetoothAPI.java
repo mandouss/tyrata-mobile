@@ -1,17 +1,13 @@
 package edu.duke.ece651.tyrata.communication;
 
-import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,15 +33,17 @@ import static android.support.v4.app.ActivityCompat.startActivityForResult;
  */
 
 public class BluetoothAPI {
-    /* Constants */
-
-    /* GLOBAL */
     private static BluetoothAdapter mBluetoothAdapter; // Device BluetoothAPI adapter (required for all BluetoothAPI activity)
     private static ConnectThread mConnectThread;
     private static ConnectedThread mConnectedThread;
     private static Handler mHandler; // handler that gets info from Bluetooth service
 
-    /* Functions */
+    /**
+     * Enable device bluetooth (if available)
+     * @param activity The activity to return results
+     * @param handler The bluetooth connection handler
+     * @return True if bluetooth is enabled, false otherwise
+     */
     static boolean enableBt(Activity activity, Handler handler) {
         Log.v(Common.LOG_TAG_BT_API, "enableBt()");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -71,16 +69,27 @@ public class BluetoothAPI {
         return true;
     }
 
+    /**
+     * Disable device bluetooth discovery and
+     * close current connection
+     */
     public static void disableBt() {
         // Make sure we're not doing discovery anymore
         cancelBtDiscovery();
         closeBtConnection();
     }
 
+    /**
+     * Get all paired devices
+     * @return Set of paired devices
+     */
     static Set<BluetoothDevice> getBtPairedDevices() {
         return mBluetoothAdapter.getBondedDevices();
     }
 
+    /**
+     * Print a list of paired devices
+     */
     static void queryBtPairedDevices() {
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
@@ -95,6 +104,12 @@ public class BluetoothAPI {
         }
     }
 
+    /**
+     * Query if device is ready (bluetooth enabled with all permissions)
+     * @param activity The activity page to return results
+     * @param handler The bluetooth connection handler
+     * @return True if device ready to discover and connect through bluetooth, otherwise false
+     */
     public static boolean isBtReady(Activity activity, Handler handler) {
         Log.d(Common.LOG_TAG_BT_API, "isBtReady()");
 
@@ -110,6 +125,12 @@ public class BluetoothAPI {
 
         return true;
     }
+
+    /**
+     * Discover bluetooth devices
+     * @param activity The activity to return results
+     * @return True if device started discovering devices, false if discovery failed
+     */
     static boolean discoverBtDevices(Activity activity) {
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
@@ -125,6 +146,9 @@ public class BluetoothAPI {
         return discoverySuccess;
     }
 
+    /**
+     * Cancel bluetooth device discovery
+     */
     static void cancelBtDiscovery() {
         // Make sure we're not doing discovery anymore
         if (mBluetoothAdapter != null) {
@@ -132,6 +156,10 @@ public class BluetoothAPI {
         }
     }
 
+    /**
+     * Connect to a bluetooth device
+     * @param data Intent with device information to connect to
+     */
     public static void connectBt(Intent data) {
         Log.d(Common.LOG_TAG_BT_API, "connectBt()");
         Bundle extras = data.getExtras();
@@ -145,6 +173,10 @@ public class BluetoothAPI {
         }
     }
 
+    /**
+     * Connect to a bluetooth device
+     * @param device Bluetooth device to connect to
+     */
     private static void connectBt(BluetoothDevice device) {
         Log.d(Common.LOG_TAG_BT_API, "ConnectBt()");
 
@@ -157,12 +189,16 @@ public class BluetoothAPI {
         mConnectThread.start();
     }
 
+    /**
+     * Connect to a bluetooth device
+     * @param deviceAddress String with device MAC address to connect to
+     */
     static void connectBt(String deviceAddress) {
         connectBt(mBluetoothAdapter.getRemoteDevice(deviceAddress));
     }
 
-    /** Cancel all threads
-     *
+    /**
+     * Cancel all bluetooth threads
      */
     private static void closeBtConnection() {
         if (mConnectedThread != null)
@@ -208,14 +244,25 @@ public class BluetoothAPI {
         }
     }
 
+    /**
+     * Transfer success to connected device
+     */
     private static void writeSuccess() {
         write("S".getBytes());
     }
 
+    /**
+     * Transfer failure to connected device
+     */
     private static void writeFail() {
         write("F".getBytes());
     }
 
+    /**
+     * Process the received message into TireSnapshots
+     * @param msg XML formatted message with TireSnapshot for multiple days
+     * @return List of TireSnapshot
+     */
     public static ArrayList<TireSnapshot> processMsg(String msg) {
         ArrayList<TireSnapshot> tireSnapshotList = new ArrayList<>();
         try {
@@ -246,6 +293,9 @@ public class BluetoothAPI {
     }
 
 
+    /**
+     * Thread to establish a Bluetooth RRFCOM connection
+     */
     private static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
