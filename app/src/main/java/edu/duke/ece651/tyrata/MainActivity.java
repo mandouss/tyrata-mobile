@@ -1,6 +1,9 @@
 package edu.duke.ece651.tyrata;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -64,6 +67,7 @@ public class MainActivity extends EmptyActivity {
     private int user_ID;
     private StringBuilder mXmlStream;
     private String trace_message = "";
+    private ProgressDialog mProgressDialog;
 
     int notificationID = 1;
     @Override
@@ -269,6 +273,11 @@ public class MainActivity extends EmptyActivity {
         intent.putExtra("VIN", vin);
         startActivity(intent);
     }
+
+    /**
+     * Discover nearby bluetooth devices and establish a connection on select
+     * @param view The button that was clicked
+     */
     public void main_to_communication(View view) {
         Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "main_to_communication()");
 
@@ -278,7 +287,7 @@ public class MainActivity extends EmptyActivity {
             startActivityForResult(discoverIntent, Common.REQUEST_CONNECT_BT_DEVICE);
         } else {
             Toast.makeText(this,
-                    "Grant Location Access and try again",
+                    "Enable Bluetooth and try again",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -401,6 +410,29 @@ public class MainActivity extends EmptyActivity {
 
 
     /**
+     * Show a progress dialog with a message
+     * @param msg The message to display on the dialog
+     */
+    private void showProgressDialog(String msg) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.setMessage(msg);
+        mProgressDialog.show();
+    }
+
+    /**
+     * Hide the progress dialog
+     */
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    /**
      * Called when startActivityForResult finishes
      * @param requestCode Constant integer representing the request that finished
      * @param resultCode The result of the finished activity (e.g. OK, FAILED)
@@ -437,7 +469,6 @@ public class MainActivity extends EmptyActivity {
                     mXmlStream = new StringBuilder();
                     Toast.makeText(getApplicationContext(),
                             "Connecting...", Toast.LENGTH_SHORT).show();
-                    // @TODO show a loading icon
                     BluetoothAPI.connectBt(data);
                 } else {
                     Toast.makeText(getApplicationContext(),
@@ -470,8 +501,13 @@ public class MainActivity extends EmptyActivity {
                     mXmlStream.append(msgStr);
                     if (readBuf[msg.arg1-1] == Common.SIMULATOR_EOF) { // reached end of message/file
                         Log.d(Common.LOG_TAG_MAIN_ACTIVITY, "Message is: " + mXmlStream.length() + " Bytes");
+//                        hideProgressDialog();
+                        showProgressDialog("Parsing message...");
                         ArrayList<TireSnapshot> snapshots = BluetoothAPI.processMsg(mXmlStream.toString());
+//                        hideProgressDialog();
+                        showProgressDialog("Storing tire snapshots...");
                         handleReceivedSnapshots(snapshots);
+                        hideProgressDialog();
                     }
                     break;
                 case Common.MESSAGE_WRITE:
@@ -479,6 +515,7 @@ public class MainActivity extends EmptyActivity {
                     String writeMsg = new String(writeBuf, 0, msg.arg1);
                     Log.v(Common.LOG_TAG_MAIN_ACTIVITY, "Sent " + writeMsg);
 //                    Toast.makeText(getApplicationContext(), "Sent " + writeMsg, Toast.LENGTH_SHORT).show();
+                    hideProgressDialog();
                     break;
                 case Common.MESSAGE_TOAST:
                     // save the connected device's name
@@ -492,6 +529,7 @@ public class MainActivity extends EmptyActivity {
                     String deviceName = msg.getData().getString(Common.DEVICE_NAME);
                     Toast.makeText(getApplicationContext(), "Connected to "
                             + deviceName, Toast.LENGTH_SHORT).show();
+                    showProgressDialog("Waiting for message...");
                     break;
                 default:
                     Log.w(Common.LOG_TAG_MAIN_ACTIVITY, "Unknown message passed to handler: " + msg.what);

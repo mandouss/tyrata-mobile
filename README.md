@@ -13,46 +13,37 @@ which is 96% of Android devices on market.
 #### 1. User activity (registration and log-in)
     For new user, you should register with your user information and then login.
 #### 2. Main activity (main view navigation)
-    In the main activity page, you can view the account information as well as a list of vehicles owned by this account.
-    At the top right corner, you can see the two-level navigation hamburger button: 
-* Add Car
-* Report Accident
-* Communication
-    * GPS
-    * BLUETOOTH
-    * HTTP TEST
-    * TEST XML
-    * GET TIRESNAPSHOT LIST
-    * GET DATABASE
+    In the main activity page, you can see:
+* account information
+* report accident
+* add cehicle
+* get bluetooth data
+* vehicle list
 * Sign Out
     
 #### 3. Calibration activity (vehicle and tire)
-##### * Add Car
-    Click the "Add Car" button in the hamburger navigation bar, you can add three types of vehicles: four-wheel, ten-wheel and eighteen-wheel. 
+##### * add cehicle
+    Click the "add cehicle" button in the main page, you can add six types of vehicles: four-wheel, six-wheel, eight-wheel, ten-wheel, forteen-wheeland eighteen-wheel. 
     After you add a new vehicle, you'll be directed to main page and then click on the added vehicle in the list, you are able to calibrate/edit the 
     vehicle information, delete the vehicle or add tires to this vehicle.
-##### * Add Tire
+##### * add tire
     Click on the tire you want to calibrate in the list of respective vehicle, you're able to calibrate/edit the tire information or delete this tire.
 
 #### 4. Storage activity (local store and load)
-    Click on "Communication" -> "GET DATABASE"
-    Then the user, vehicle and tire informatio received from server will be saved into localdatabase.
+    Everytime you add new vehicle/tire, the data will be stored in the local database as well as sent through HTTP to the server. 
+    Once you get to the main page, the app will automatically sync data with the server
 
 #### 5. Bluetooth activity (discover, connect, and transmit/receive)
 ##### * Discover and connect
-    Click on "Communication" -> "BLUETOOTH"
-    You can see the paired device in the first part and the discovered devices in the second part, which you can connect the devices in the sedon part.
-##### * transmit/receive
-    Click on "Communication" -> "GET TIRESNAPSHOT LIST"
-    Here you will get the snapshot sent from the simulator. The app will process the raw data and save them in local database.
+    Click on "get bluetooth data"
+    You can see the paired device in the first part and the discovered devices in the second part, which you can connect the devices in the second part.
+    Here you will get the snapshot sent from the simulator. The app will process the raw data and save them in local database and send them to the server.
 
 #### 6. GPS activity (get device GPS)
-##### Click on "Communication" -> "GPS"
-    The GPS location will be displayed on the screen.
+    The GPS location will be saved along with the snapshot.
 
 #### 7. HTTP activity (send/receive data to/from the database)
-##### Click on "Communication" -> "HTTP TEST"
-    You will be directed to a new page where you can test the HTTP connection.
+    The local database syncs with the server through HTTP.
 
 ## Communications
 * The app communicates with the simulator through bluetooth
