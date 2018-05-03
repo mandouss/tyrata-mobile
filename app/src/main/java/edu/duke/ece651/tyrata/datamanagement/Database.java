@@ -39,8 +39,6 @@ public class Database extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main)
-
     }
 
     /* Created by Zijie Wang on 3/4/2018. */
@@ -52,7 +50,6 @@ public class Database extends AppCompatActivity {
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
         if (c != null && c.moveToFirst()) {
             if(c.getCount() < 10) {
-                //Log.i("test get mean", String.valueOf(c.getColumnIndex("OUTLIER")));
                 c.close();
                 return 0;
             }
@@ -87,7 +84,7 @@ public class Database extends AppCompatActivity {
             }while(c.moveToPrevious() && count < 10);
             c.close();
 
-            return sum/10;
+            return Math.sqrt(sum/10);
         }
         return 0;
     }
@@ -139,24 +136,25 @@ public class Database extends AppCompatActivity {
      * Called to save user data into table USER
      * @return true if user already exists, false when insert user succeeds
      */
-    public static boolean storeUserData(String name, String email, String phone) {
+    public static boolean storeUserData(String original_email, String name, String email, String phone) {
         myDatabase.execSQL("CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR, EMAIL VARCHAR, PHONE_NUMBER VARCHAR)");
         String sql = "SELECT * FROM USER WHERE EMAIL = ?";
         Cursor emailCursor = myDatabase.rawQuery(sql, new String[] {email});
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("NAME", name);
+        contentValues.put("EMAIL", email);
+        contentValues.put("PHONE_NUMBER", phone);
 
         if(emailCursor != null && emailCursor.moveToFirst()){
             Log.i("storeUser DUP, email:", email);
             emailCursor.close();
+            int user_ID = getUserID(original_email);
+            myDatabase.update("USER", contentValues, "ID = ?", new String[]{Integer.toString(user_ID)});
             return true;
         }
         else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("NAME", name);
-            contentValues.put("EMAIL", email);
-            contentValues.put("PHONE_NUMBER", phone);
             Log.i("In database", "insert user");
             long ID = myDatabase.insert("USER", null, contentValues);
-            updateTrace("CREATE", "USER", ID, "");
             return false;
         }
     }
@@ -180,7 +178,6 @@ public class Database extends AppCompatActivity {
         if (vehicle_ID > 0) {
             String sql = "SELECT * FROM VEHICLE WHERE VIN = ?";
             Cursor c = myDatabase.rawQuery(sql, new String[] {vin});
-
             if(c != null && c.moveToFirst() && vehicle_ID != c.getInt(c.getColumnIndex("ID"))){
                 Log.i("In storeVehicleData","Update VIN conflict");
                 c.close();
@@ -188,7 +185,7 @@ public class Database extends AppCompatActivity {
             }
             Log.i("In database", "update vehicle");
             myDatabase.update("VEHICLE", contentValues, "ID = ?", new String[]{Integer.toString(vehicle_ID)});
-            updateTrace( "UPDATE", "VEHICLE", vehicle_ID,original_vin);
+            updateTrace( "update", "VEHICLE", vehicle_ID,original_vin);
         }
         // Insert
         else {
@@ -202,7 +199,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("USER_ID", userid);
             Log.i("In database", "insert vehicle");
             long ID = myDatabase.insert("VEHICLE", null, contentValues);
-            updateTrace( "CREATE", "VEHICLE", ID,"");
+            updateTrace( "create", "VEHICLE", ID,"");
         }
         return true;
     }
@@ -232,7 +229,7 @@ public class Database extends AppCompatActivity {
                 return false;
             }
             myDatabase.update("TIRE", contentValues, "ID = ?", new String[]{Integer.toString(tire_ID)});
-            updateTrace( "UPDATE", "TIRE", tire_ID,original_sensor);
+            updateTrace( "update", "TIRE", tire_ID,original_sensor);
         }
         // Insert
         else {
@@ -253,7 +250,7 @@ public class Database extends AppCompatActivity {
             contentValues.put("CUR_SS_ID", cur_ss_id);
             Log.i("In database", "insert tire");
             long ID = myDatabase.insert("TIRE", null, contentValues);
-            updateTrace( "CREATE", "TIRE", ID,"");
+            updateTrace( "create", "TIRE", ID,"");
         }
         return true;
     }
@@ -278,7 +275,6 @@ public class Database extends AppCompatActivity {
             return -1;
         }
     }
-
     /* Created by Yue Li on 3/31/2018. */
     /**
      * Called to get the tire init mileage
@@ -395,27 +391,25 @@ public class Database extends AppCompatActivity {
         contentValues.put("LATITUDE", lat);
         Log.i("Snapshot Insertion", "New insert!!!");
         long ID = myDatabase.insert("SNAPSHOT", null, contentValues);
-        updateTrace( "CREATE", "SNAPSHOT", ID,"");
+        updateTrace( "create", "SNAPSHOT", ID,"");
         return true;
     }
 
     /*Created by Yue Li on 04/05/2018*/
     public static String notification(String sensor_id){
-        String sql = "SELECT * FROM SNAPSHOT WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = ?";
-        Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
-        if(c != null && c.moveToLast()) {
-            String timestamp = c.getString(c.getColumnIndex("TIMESTAMP"));
-            Calendar cal = TireSnapshot.convertStringToCalendar(timestamp);
-            Calendar today = Calendar.getInstance();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            long start = cal.getTimeInMillis();
-            long end = today.getTimeInMillis();
-            long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end - start));
-            c.close();
-            if (res > 30) {
-                String notification = "Disconnect Exceed 30 Days!";
-                return notification;
-            }
+        Cursor c = myDatabase.rawQuery("SELECT * FROM SNAPSHOT WHERE SNAPSHOT.TIRE_ID = TIRE.ID and TIRE.SENSOR_ID = '"+sensor_id+"'", null);
+        c.moveToLast();
+        String timestamp = c.getString(c.getColumnIndex("TIMESTAMP"));
+        Calendar cal = TireSnapshot.convertStringToCalendar(timestamp);
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+        long start = cal.getTimeInMillis();
+        long end = today.getTimeInMillis();
+        long res = TimeUnit.MILLISECONDS.toDays(Math.abs(end-start));
+        c.close();
+        if(res>30){
+            String notification = "Disconnect Exceed 30 Days!";
+            return notification;
         }
         return "";
     }
@@ -430,7 +424,7 @@ public class Database extends AppCompatActivity {
         contentValues.put("DESCRIPTION", record);
         contentValues.put("USER_ID", userid);
         long ID = myDatabase.insert("ACCIDENT", null, contentValues);
-        updateTrace( "CREATE", "ACCIDENT", ID,"");
+        updateTrace( "create", "ACCIDENT", ID,"");
     }
 
     // Added by De Lan on 03/23/2018
@@ -516,6 +510,7 @@ public class Database extends AppCompatActivity {
     public static int getTireID(String sensor_id){
         String sql = "SELECT * FROM TIRE WHERE SENSOR_ID = ?";
         Cursor c = myDatabase.rawQuery(sql, new String[] {sensor_id});
+
         int res = -1;
         if(c != null && c.moveToFirst()) {
             res = c.getInt(c.getColumnIndex("ID"));
@@ -567,7 +562,7 @@ public class Database extends AppCompatActivity {
      * Called to get the user's email with accident_id
      */
     public static String getEmailFromAccident(int accident_id){
-        Cursor c = myDatabase.rawQuery("SELECT EMAIL FROM USER, VEHICLE WHERE ACCIDENT.ID = '"+ accident_id+"' and ACCIDENT.USER_ID = USER.ID",null);
+        Cursor c = myDatabase.rawQuery("SELECT EMAIL FROM USER, ACCIDENT WHERE ACCIDENT.ID = '"+ accident_id+"' and ACCIDENT.USER_ID = USER.ID",null);
         String email = "";
         if(c != null && c.moveToFirst()) {
             email = c.getString(c.getColumnIndex("EMAIL"));
@@ -665,10 +660,10 @@ public class Database extends AppCompatActivity {
     public static Trace_item getTrace(){
         Trace_item trace_item = new Trace_item();
         Cursor c = myDatabase.rawQuery("SELECT * FROM TRACE WHERE ID = (SELECT min(ID) FROM TRACE)",null);
-        if(c == null){
+        if(c == null|| !c.moveToFirst()){
             return null;
         }
-        c.moveToFirst();
+        Log.i("database_trace",String.valueOf(c.getInt(c.getColumnIndex("ID"))));
         trace_item.setId(c.getInt(c.getColumnIndex("ID")));
         trace_item.setMethod(c.getString(c.getColumnIndex("METHOD_NAME")));
         trace_item.setTable_name(c.getString(c.getColumnIndex("TABLE_NAME")));
@@ -795,7 +790,7 @@ public class Database extends AppCompatActivity {
      * Called to delete a Vehicle with vin
      */
     public static void deleteVehicle(String vin){
-        updateTrace( "DELETE", "VEHICLE", 0, vin);
+        updateTrace( "delete", "VEHICLE", 0, vin);
         String sql = "DELETE FROM VEHICLE WHERE VIN = ?";
         SQLiteStatement s = myDatabase.compileStatement(sql);
         s.bindString(1, vin);
@@ -809,7 +804,7 @@ public class Database extends AppCompatActivity {
      * Called to delete a Tire with sensor_ID
      */
     public static void deleteTire(String sensor_ID ) {
-        updateTrace( "DELETE", "TIRE", 0, sensor_ID);
+        updateTrace( "delete", "TIRE", 0, sensor_ID);
         String del = "DELETE FROM TIRE WHERE SENSOR_ID = ?";
         SQLiteStatement s = myDatabase.compileStatement(del);
         s.bindString(1, sensor_ID);
@@ -822,6 +817,13 @@ public class Database extends AppCompatActivity {
      */
     public static void deleteTrace(int ID){
         String del = "DELETE FROM TRACE WHERE ID = '" + ID + "'";
+        myDatabase.execSQL("PRAGMA foreign_keys = on;");
+        myDatabase.execSQL(del);
+    }
+
+    /* Created by Ming Yang*/
+    public static void deleteNewestTrace(){
+        String del = "DELETE FROM TRACE WHERE ID = (SELECT MAX(ID) FROM TRACE)";
         myDatabase.execSQL("PRAGMA foreign_keys = on;");
         myDatabase.execSQL(del);
     }

@@ -10,10 +10,8 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,12 +25,15 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import edu.duke.ece651.tyrata.calibration.Report_accident;
 import edu.duke.ece651.tyrata.communication.BluetoothAPI;
 import edu.duke.ece651.tyrata.communication.BluetoothDeviceListActivity;
 import edu.duke.ece651.tyrata.communication.EmptyActivity;
+import edu.duke.ece651.tyrata.communication.HTTPsender;
+import edu.duke.ece651.tyrata.communication.ServerXmlParser;
 import edu.duke.ece651.tyrata.datamanagement.Database;
-import edu.duke.ece651.tyrata.display.TireInfo;
 import edu.duke.ece651.tyrata.display.Vehicle_Info;
 import edu.duke.ece651.tyrata.processing.GpsAPI;
 import edu.duke.ece651.tyrata.user.Edit_user_information;
@@ -40,7 +41,13 @@ import edu.duke.ece651.tyrata.user.User;
 import edu.duke.ece651.tyrata.vehicle.TireSnapshot;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,6 +55,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 
 public class MainActivity extends EmptyActivity {
@@ -58,9 +66,8 @@ public class MainActivity extends EmptyActivity {
     private NavigationView navigationView;
     private int user_ID;
     private StringBuilder mXmlStream;
+    private String trace_message = "";
     private ProgressDialog mProgressDialog;
-
-
 
     int notificationID = 1;
     @Override
@@ -167,6 +174,7 @@ public class MainActivity extends EmptyActivity {
         });
 
         Common.requestAccessCoarseLocation(this);
+        checkTraceTable();
     }
 
     @Override
@@ -186,15 +194,26 @@ public class MainActivity extends EmptyActivity {
 
     private void initDataList(ArrayList<Vehicle> vehicles) {
         int number = vehicles.size();
-        //图片资源
         int img[] ;
         img = new int[number];
-        for(int i = 0;i < number; i++) {
-            if(i%2==0) {
-                img[i] = R.drawable.vehicle_list2;
+        for (int i = 0; i < number; i++) {
+            int tirenum_list = vehicles.get(i).getNumTires();
+            if(tirenum_list == 4){
+                img[i] = R.drawable.liyue_vehicle;
+            }else if(tirenum_list == 6){
+                img[i] = R.drawable.vehicle_list_6tires;
             }
-            else{
+            else if(tirenum_list == 8){
                 img[i] = R.drawable.vehicle_list3;
+            }
+            else if(tirenum_list == 10){
+                img[i] = R.drawable.vehicle_list_10tires;
+            }
+            else if(tirenum_list == 14){
+                img[i] = R.drawable.vehicle_list3;
+            }
+            else if(tirenum_list == 18){
+                img[i] = R.drawable.vehicle_list_18tires;
             }
         }
         list = new ArrayList<Map<String, Object>>();
@@ -214,34 +233,13 @@ public class MainActivity extends EmptyActivity {
         // Handle item selection
         //EmptyActivity emptyActivity = new EmptyActivity();
         switch (item.getItemId()) {
-            case R.id.n_menu_addCar:
-//                main_to_addcar();
-                return true;
-            case R.id.n_menu_reportAccident:
-                //main_to_report();
-                return true;
-            case R.id.n_menu_signOut:
-                main_to_login();
-                return true;
-            case R.id.n_submenu_Bluetooth:
-                goToBluetooth();
-                return true;
             case R.id.n_submenu_Database:
                 getDatabaseFromXml();
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.n_submenu_GPS:
-                GpsAPI.getGPS(this);
-                return true;
-            case R.id.n_submenu_Http:
-                goToHTTP();
-                return true;
             case R.id.n_submenu_tireSnapshot:
                 getTireSnapshotListFromXml();
-                return true;
-            case R.id.n_submenu_XML:
-                testParseXml();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -347,7 +345,6 @@ public class MainActivity extends EmptyActivity {
                 }
                 catch(Exception e){
                     Log.e(Common.LOG_TAG_MAIN_ACTIVITY, "Error aquiring GPS", e);
-//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 if(init_thickness == -1){
                     if(!NotFoundSensorSet.contains(sensor_id)){
@@ -379,7 +376,7 @@ public class MainActivity extends EmptyActivity {
                 Log.i("test outlier2", String.valueOf(s11));
                 //Database.testSnapTable();
                 double deviation = Database.get_deviation_s11(sensor_id);
-                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                if((s11 < mean - 3 * 0.01 || s11 > mean + 3 * 0.01) && mean != 0) {
                     isoutlier = true;
                 }
                 Log.i("test outlier3", String.valueOf(isoutlier));
@@ -406,68 +403,11 @@ public class MainActivity extends EmptyActivity {
             Database.myDatabase.close();
         }
         catch(Exception e){
-//            String msg = "The sensor ID does not exist in local database, please check and enter valid sensor ID!";
             notification(e.getMessage());
             e.printStackTrace();
         }
     }
 
-    /**
-     * Called to display the notification of one tire of the vehicle for user
-     * @param vin the vehicle unique vin
-     * @param axis_row the tire axis_row
-     * @param axis_side the tire axis_side
-     * @param axis_index the tire axis_row
-     */
-    private void displayNotification(String vin,int axis_row,char axis_side,int axis_index) {
-        Intent i = new Intent(this, TireInfo.class);
-        i.putExtra("notificationID", notificationID);
-        i.putExtra("AXIS_ROW", axis_row);
-        i.putExtra("AXIS_INDEX",axis_index);
-        i.putExtra("AXIS_SIDE", axis_side);
-        i.putExtra("VIN", vin);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, i, 0);
-        NotificationManager nm = (NotificationManager) getSystemService
-                (NOTIFICATION_SERVICE);
-        String id = "my_channel_01";
-
-        String notification_content = "Your tire1 of vehicle "+vin+" need to be replaced.";
-        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, id)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("NOTIFICATION:")
-                .setContentText(notification_content)
-                .addAction(R.mipmap.ic_launcher, "See the details",
-                        pendingIntent);
-
-        assert nm != null;
-        nm.notify(notificationID, notifBuilder.build());
-    }
-
-    public void onClick(View view) {
-        String notification_vin = "vin1-1";
-        int notification_axis_row = 1;
-        int notification_axis_index = 1;
-        char notification_axis_side = 'L';
-        displayNotification(notification_vin,notification_axis_row,notification_axis_side,notification_axis_index);
-    }
-
-    /*private void setIconEnable(Menu menu, boolean enable)
-    {
-        try
-        {
-            Class<?> clazz = Class.forName("com.android.internal.view.menu.MenuBuilder");
-            Method m = clazz.getDeclaredMethod("setOptionalIconsVisible", boolean.class);
-            m.setAccessible(true);
-
-            //MenuBuilder实现Menu接口，创建菜单时，传进来的menu其实就是MenuBuilder对象(java的多态特征)
-            m.invoke(menu, enable);
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }*/
 
     /**
      * Show a progress dialog with a message
@@ -596,4 +536,92 @@ public class MainActivity extends EmptyActivity {
             }
         }
     };
+
+    // This method open a new thread to send and receive message from server
+    private void send_message(String urlStr) {
+        final String url = urlStr;
+        String resource;
+        new Thread() {
+            public void run() {
+                InputStream in = null;
+                Message msg = Message.obtain();
+                msg.what = 1;
+                try {
+                    Log.i("send_url",url);
+                    in = openHttpConnection(url);
+                    String resource = new Scanner(in).useDelimiter("\\Z").next();
+                    Log.i("test_new_method",resource);
+                    Bundle b = new Bundle();
+                    b.putString("get_message", resource);
+                    msg.setData(b);
+                    in.close();
+                }catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                traceHandler.sendMessage(msg);
+            }
+        }.start();
+    }
+
+    private InputStream openHttpConnection(String urlStr) {
+        InputStream in = null;
+        int resCode = -1;
+
+        try {
+            URL url = new URL(urlStr);
+            URLConnection urlConn = url.openConnection();
+
+            if (!(urlConn instanceof HttpURLConnection)) {
+                Log.i("new_method","wrong");
+                throw new IOException("URL is not an Http URL");
+            }
+
+            HttpURLConnection httpConn = (HttpURLConnection) urlConn;
+            httpConn.setAllowUserInteraction(false);
+            httpConn.setInstanceFollowRedirects(true);
+            httpConn.setRequestMethod("GET");
+            httpConn.connect();
+            resCode = httpConn.getResponseCode();
+
+            if (resCode == HttpURLConnection.HTTP_OK) {
+                Log.i("new_method","get");
+                in = httpConn.getInputStream();
+            }
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return in;
+    }
+
+    private Handler traceHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String message = msg.getData().getString("get_message");
+
+            ServerXmlParser parser = new ServerXmlParser();
+            InputStream msg_getdata = new ByteArrayInputStream(message.getBytes());
+            try {
+                parser.parse_server(msg_getdata, getApplicationContext());
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            checkTraceTable();
+        }
+    };
+
+    private void checkTraceTable(){
+        HTTPsender mSender = new HTTPsender();
+        trace_message = mSender.send_to_cloud(getApplicationContext());
+        if(trace_message != null) {
+            Log.i("main_trace",trace_message);
+            send_message(trace_message);
+        }
+        else{
+            Log.i("main","trace is null");
+        }
+    }
 }

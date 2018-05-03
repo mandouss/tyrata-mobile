@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 
 /**
@@ -64,6 +65,8 @@ public class TireSnapshot extends Tire {
     /* Updated by Zijie and Yue on 3/24/2018. */
     public double calculateTreadThickness(double init_mS11, double init_thickness) {
         /* implement tread thickness calcualtion/formaul */
+        Log.i("initial_s11", Double.toString(init_mS11));
+        Log.i("current_s11", Double.toString(mS11));
         return init_thickness - 12.50 * (mS11 - init_mS11);
     }
 

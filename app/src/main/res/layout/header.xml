@@ -7,7 +7,7 @@
     android:padding="30dp">
     <ImageView
         android:id="@+id/drawer_image"
-        android:src="@drawable/child4_2"
+        android:src="@drawable/alan"
         android:layout_width="100dp"
         android:layout_height="100dp"
         />

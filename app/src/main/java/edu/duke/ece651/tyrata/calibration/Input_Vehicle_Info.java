@@ -1,38 +1,28 @@
 package edu.duke.ece651.tyrata.calibration;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-
-import android.graphics.Color;
-
-import android.support.v7.app.ActionBar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.duke.ece651.tyrata.MainActivity;
-
-
 import edu.duke.ece651.tyrata.R;
 import edu.duke.ece651.tyrata.datamanagement.Database;
 import edu.duke.ece651.tyrata.vehicle.Vehicle;
+
+/*Created by Ming Yang
+ * the java code of the activity_input_vehicle_info.xml page
+ */
 
 public class Input_Vehicle_Info extends AppCompatActivity {
     private Spinner spinner_Tirenumber;
@@ -52,14 +42,18 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input__vehicle__info);
 
+        //add toolbar to the page
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         Intent intent = getIntent();
         user_ID = intent.getIntExtra("userID", 1);
-        // If this page is switched from vehicle edit
+
         String vin = intent.getStringExtra("VIN");
         vehicle_ID = -1;
+
+        //if the vehicle already exist, show the origin info on the edittext
         if (vin != null) {
             Database.myDatabase = openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
             Vehicle cur_vehicle = Database.getVehicle(vin);
@@ -75,11 +69,14 @@ public class Input_Vehicle_Info extends AppCompatActivity {
             EditText textView_year = findViewById(R.id.edit_year);
             textView_year.setText(String.valueOf(cur_vehicle.getYear()));
             original_vin = vin;
-        } else {
+        }
+        //if the vehicle doesn't exist, add a new vehicle
+        else {
             Log.i("Vehicle Input add_car", "add_car");
             original_vin = "";
         }
 
+        //set the spinner for the tire number
         spinner_Tirenumber = (Spinner) findViewById(R.id.spinner_tirenumber);
 
         dataList = new ArrayList<String>();
@@ -183,6 +180,10 @@ public class Input_Vehicle_Info extends AppCompatActivity {
         }
     }
 
+    /**Show the notification
+     *
+     * @param msg the message string that will show on the notification dialogue
+     */
     private void notification(String msg) {
         new AlertDialog.Builder(this)
                 .setTitle("NOTIFICATION")

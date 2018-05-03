@@ -12,7 +12,6 @@ public class User {
     public String username;
     public String email;
     public String phone;
-    /* @TODO add more user attributes (e.g. login token/certification) */
     public ArrayList<Vehicle> mVehicles;
 
     /** Constructor

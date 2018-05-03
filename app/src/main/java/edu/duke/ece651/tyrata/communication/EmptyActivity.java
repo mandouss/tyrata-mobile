@@ -37,18 +37,12 @@ public class EmptyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_empty);
     }
 
 
 
     public void goToBluetooth() {
         Intent intent = new Intent(this, BluetoothActivity.class);
-        startActivity(intent);
-    }
-
-    public void goToHTTP() {
-        Intent intent = new Intent(this, HttpActivity.class);
         startActivity(intent);
     }
 
@@ -142,7 +136,10 @@ public class EmptyActivity extends AppCompatActivity {
 //                Cursor c = Database.myDatabase.rawQuery("SELECT * FROM SNAPSHOT, TIRE WHERE TIRE.ID = TIRE_ID and TIRE.SENSOR_ID =  '"+sensor_id+"'", null);
                 if (c != null && c.moveToFirst()) {
                     double init_mS11 = c.getDouble(c.getColumnIndex("S11"));
-                    thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
+                    //thickness = tireSnapshotList.get(i).calculateTreadThickness(init_mS11, init_thickness);
+                    thickness = init_thickness - 12.50 * (s11 - init_mS11);
+                    Log.i("initial_s11", Double.toString(init_mS11));
+                    Log.i("current_s11", Double.toString(s11));
                     eol = Double.toString((thickness - 3) * 5000);
                     int days1 = (int) Double.parseDouble(eol)/20;
                     if(days1 < 30){
@@ -159,12 +156,17 @@ public class EmptyActivity extends AppCompatActivity {
                 Log.i("test outlier1", String.valueOf(mean));
                 Log.i("test outlier2", String.valueOf(s11));
                 //Database.testSnapTable();
-                double deviation = Database.get_deviation_s11(sensor_id);
-                if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                //double deviation = Database.get_deviation_s11(sensor_id);
+                //if((s11 < mean - 3 * deviation || s11 > mean + 3 * deviation) && mean != 0) {
+                if((s11 < mean - 3 * 0.01 || s11 > mean + 3 * 0.01) && mean != 0) {
                     isoutlier = true;
+                    Log.i("test min", String.valueOf(mean - 3 * 0.01));
+                    Log.i("test max", String.valueOf(mean + 3 * 0.01));
+                } else {
+                    isoutlier = false;
                 }
                 Log.i("test outlier3", String.valueOf(isoutlier));
-                Log.i("test outlier4", String.valueOf(deviation));
+                //Log.i("test outlier4", String.valueOf(deviation));
 
                 //Database.testSnapTable();
 

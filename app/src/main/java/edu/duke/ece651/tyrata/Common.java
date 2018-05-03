@@ -24,6 +24,7 @@ public class Common {
     public static final String LOG_TAG_BT_DEVICE_LIST_ACTIVITY = "BtDeviceListActivity";
     public static final String LOG_TAG_MAIN_ACTIVITY = "MainActivity";
     public static final String LOG_TAG_COMMON = "Common";
+    public static final String LOG_TAG_AUTHENTICATION_API = "AuthenticationAPI";
 
     // Defines constants for bundle keywords/tags
     public static final String DEVICE_NAME = "DEVICE_NAME";
@@ -46,6 +47,10 @@ public class Common {
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 2;
     public static final int REQUEST_CONNECT_BT_DEVICE = 3;
 
+    //tags for http tasks
+    public static final int GET_SALT = 1;
+    public static final int GET_AUTHENTICATION = 2;
+    public static final int GET_DATABASE = 3;
 
     /* GLOBAL VARIABLES */
 

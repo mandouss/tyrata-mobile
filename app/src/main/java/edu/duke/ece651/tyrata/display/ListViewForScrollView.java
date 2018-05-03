@@ -5,7 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 /**
- * Created by yangm on 2018/3/28.
+ * Created by Ming on 2018/3/28.
+ * used to replace the listview in the scrollview to fix the conflict
  */
 
 public class ListViewForScrollView extends ListView {

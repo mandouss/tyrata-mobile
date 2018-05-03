@@ -1,99 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <message>
-<download>
-    <user>
-        <user_id>2</user_id>
-        <name>ming2</name>
-        <email>mng@163.com</email>
-        <phone_number>1234567</phone_number>
-    </user>
-    <vehicle>
-        <vin>1HGBH41JXMN109186</vin>
-        <make>Ford</make>
-        <model>Mustang</model>
-        <year>2016</year>
-        <axis_num>2</axis_num>
-        <tire_num>4</tire_num>
-        <user_id>1</user_id>
-    </vehicle>
-    <vehicle>
-        <vin>2HGBH41HSTG106732</vin>
-        <make>Ford</make>
-        <model>Mustang</model>
-        <year>2013</year>
-        <axis_num>5</axis_num>
-        <tire_num>18</tire_num>
-        <user_id>1</user_id>
-    </vehicle>
-    <vehicle>
-        <vin>9HGBH23OGSSC136732</vin>
-        <make>Honda</make>
-        <model>Pontiac</model>
-        <year>2013</year>
-        <axis_num>5</axis_num>
-        <tire_num>18</tire_num>
-        <user_id>2</user_id>
-    </vehicle>
-    <vehicle>
-        <vin>6HGBH783TSVC135212</vin>
-        <make>Peugeot</make>
-        <model>Pontiac</model>
-        <year>2013</year>
-        <axis_num>5</axis_num>
-        <tire_num>18</tire_num>
-        <user_id>2</user_id>
-    </vehicle>
-    <tire>
-        <sensor_id>T-0001</sensor_id>
-        <manufacturer>APPOLO</manufacturer>
-        <model>P225/45R17 91V</model>
-        <sku>CM01-R</sku>
-        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
-        <axis_row>1</axis_row>
-        <axis_side>L</axis_side>
-        <axis_index>1</axis_index>
-        <init_ss_id>1</init_ss_id>
-        <cur_ss_id>3</cur_ss_id>
-        <init_thickness>15</init_thickness>
-    </tire>
-    <tire>
-        <sensor_id>T-0002</sensor_id>
-        <manufacturer>MECHELIN</manufacturer>
-        <model>P215/65R17 98T</model>
-        <sku>CM01-W</sku>
-        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
-        <axis_row>1</axis_row>
-        <axis_side>R</axis_side>
-        <axis_index>1</axis_index>
-        <init_ss_id>1</init_ss_id>
-        <cur_ss_id>3</cur_ss_id>
-        <init_thickness>14</init_thickness>
-    </tire>
-    <tire>
-        <sensor_id>T-0003</sensor_id>
-        <manufacturer>MAXXI</manufacturer>
-        <model>P225/45R17 91V</model>
-        <sku>CM01-B</sku>
-        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
-        <axis_row>2</axis_row>
-        <axis_side>L</axis_side>
-        <axis_index>1</axis_index>
-        <init_ss_id>1</init_ss_id>
-        <cur_ss_id>3</cur_ss_id>
-        <init_thickness>13</init_thickness>
-    </tire>
-    <tire>
-        <sensor_id>T-0004</sensor_id>
-        <manufacturer>YOKOHAMA</manufacturer>
-        <model>P215/65R17 98T</model>
-        <sku>CM01-J</sku>
-        <vehicle_id>1HGBH41JXMN109186</vehicle_id>
-        <axis_row>2</axis_row>
-        <axis_side>R</axis_side>
-        <axis_index>1</axis_index>
-        <init_ss_id>1</init_ss_id>
-        <cur_ss_id>3</cur_ss_id>
-        <init_thickness>12</init_thickness>
-    </tire>
-</download>
+    <download>
+        <user>
+            <name>ming2</name>
+            <email>mng@163.com</email>
+            <phone_number>1234567</phone_number>
+        </user>
+        <vehicle>
+            <vin>1FMCU0F75FUA23017</vin>
+            <make>Ford</make>
+            <model>Escape</model>
+            <year>2015</year>
+            <axis_num>2</axis_num>
+            <tire_num>4</tire_num>
+            <email>nancy@duke.edu</email>
+        </vehicle>
+        <vehicle>
+            <vin>2HGBH41HSTG106732</vin>
+            <make>Ford</make>
+            <model>Mustang</model>
+            <year>2013</year>
+            <axis_num>5</axis_num>
+            <tire_num>18</tire_num>
+            <email>nancy@duke.edu</email>
+        </vehicle>
+        <vehicle>
+            <vin>6HGBH783TSVC135212</vin>
+            <make>Peugeot</make>
+            <model>Pontiac</model>
+            <year>2013</year>
+            <axis_num>3</axis_num>
+            <tire_num>6</tire_num>
+            <email>Alan@duke.edu</email>
+        </vehicle>
+        <tire>
+            <sensorid>T-0001</sensorid>
+            <manufacturer>APPOLO</manufacturer>
+            <model>P225/45R17 91V</model>
+            <sku>CM01-R</sku>
+
+            <vin>1FMCU0F75FUA23017</vin>
+            <axisrow>1</axisrow>
+            <axisside>L</axisside>
+            <axisindex>1</axisindex>
+            <initthickness>15</initthickness>
+        </tire>
+        <tire>
+            <sensorid>T-0002</sensorid>
+            <manufacturer>MECHELIN</manufacturer>
+            <model>P215/65R17 98T</model>
+            <sku>CM01-W</sku>
+
+            <vin>1FMCU0F75FUA23017</vin>
+            <axisrow>1</axisrow>
+            <axisside>R</axisside>
+            <axisindex>1</axisindex>
+            <initthickness>14</initthickness>
+        </tire>
+        <tire>
+            <sensorid>T-0003</sensorid>
+            <manufacturer>MAXXI</manufacturer>
+            <model>P225/45R17 91V</model>
+            <sku>CM01-B</sku>
+
+            <vin>1FMCU0F75FUA23017</vin>
+            <axisrow>2</axisrow>
+            <axisside>L</axisside>
+            <axisindex>1</axisindex>
+            <initthickness>13</initthickness>
+        </tire>
+        <tire>
+            <sensorid>T-0004</sensorid>
+            <manufacturer>YOKOHAMA</manufacturer>
+            <model>P215/65R17 98T</model>
+            <sku>CM01-J</sku>
+
+            <vin>1FMCU0F75FUA23017</vin>
+            <axisrow>2</axisrow>
+            <axisside>R</axisside>
+            <axisindex>1</axisindex>
+            <initthickness>12</initthickness>
+        </tire>
+    </download>
 </message>

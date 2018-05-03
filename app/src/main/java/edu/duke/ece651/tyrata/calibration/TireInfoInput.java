@@ -113,6 +113,7 @@ public class TireInfoInput extends AppCompatActivity {
         EditText edit_SKU = (EditText) findViewById(R.id.edit_SKU);
         String message_SKU = edit_SKU.getText().toString();
 
+        //TODO: calculate thickness from init_ss_id, store initial thickness
         EditText edit_thickness = (EditText) findViewById(R.id.edit_thickness);
         String message_thickness = edit_thickness.getText().toString();
 

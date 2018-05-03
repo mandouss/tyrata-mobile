@@ -14,9 +14,7 @@ import edu.duke.ece651.tyrata.vehicle.Vehicle;
 
 import static edu.duke.ece651.tyrata.vehicle.TireSnapshot.convertCalendarToString;
 
-/**
- * Created by zhanglian1 on 2018-03-29.
- */
+/*Created by Naixin on 2018-03-29*/
 
 public class HTTPsender extends AppCompatActivity {
 
@@ -27,30 +25,43 @@ public class HTTPsender extends AppCompatActivity {
         if(trace_item != null) {
             String message = "<message>";
             message = message + "<id>" + String.valueOf(trace_item.getId()) + "</id><method>" + trace_item.getMethod() + "</method>";
-            switch (trace_item.getTable_name()) {
-                case "USER":
-                    message = message + userMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "VEHICLE":
-                    message = message + vehicleMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "TIRE":
-                    message = message + tireMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "SNAPSHOT":
-                    message = message + snapshotMessage(trace_item.getTarget_id(), context);
-                    break;
-                case "ACCIDENT":
-                    message = message + accidentMessage(trace_item.getTarget_id(), context);
-                    break;
-                default:
-                    break;
+            if(trace_item.getTarget_id() != 0) {
+                switch (trace_item.getTable_name()) {
+                    case "USER":
+                        message = message + userMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "VEHICLE":
+                        message = message + vehicleMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "TIRE":
+                        message = message + tireMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "SNAPSHOT":
+                        message = message + snapshotMessage(trace_item.getTarget_id(), context);
+                        break;
+                    case "ACCIDENT":
+                        message = message + accidentMessage(trace_item.getTarget_id(), context);
+                        break;
+                    default:
+                        break;
+                }
+                message = message + "<original_info>" + trace_item.getOrigin_info() + "</original_info>";
             }
-            message = message + "<original_info>" + trace_item.getOrigin_info() + "</original_info>";
-
+            else{
+                switch (trace_item.getTable_name()){
+                    case "VEHICLE":
+                        message = message + "<vehicle><vin>" + trace_item.getOrigin_info() + "</vin></vehicle><original_info></original_info>";
+                        break;
+                    case "TIRE":
+                        message = message + "<tire><sensorid>" + trace_item.getOrigin_info() + "</sensorid></tire><original_info></original_info>";
+                        break;
+                    default:
+                        break;
+                }
+            }
             message = message + "</message>";
             //HttpActivity httpActivity = new HttpActivity();
-            String myUrl = "http://vcm-2932.vm.duke.edu:9999/hello/XMLAction?xml_data=" + message;
+            String myUrl = "http://vcm-2932.vm.duke.edu:9999/tyrata-team/XmlAction?xml_data=" + message;
             return myUrl;
         }
         //httpActivity.startDownload(myUrl);
@@ -64,10 +75,11 @@ public class HTTPsender extends AppCompatActivity {
         Database.myDatabase = context.openOrCreateDatabase("TyrataData", MODE_PRIVATE, null);
         User user = Database.getUser(id);
         Database.myDatabase.close();
-        m = m + "<user><username>" + user.username +
-                "</username><email>" + user.email +
-                "</email><phone>" + user.phone +
-                "</phone></user>";
+
+        m = m + "<user><name>" + user.username +
+                "</name><email>" + user.email +
+                "</email><phone_num>" + user.phone +
+                "</phone_num></user>";
         return  m;
     }
 
@@ -82,9 +94,9 @@ public class HTTPsender extends AppCompatActivity {
                 "</make><model>" + vehicle.getModel() +
                 "</model><year>" + String.valueOf(vehicle.getYear()) +
                 "</year><vin>" + vehicle.getVin() +
-                "</vin><numaxis>" + String.valueOf(vehicle.getNumAxis()) +
-                "</numaxis><numtires>" + String.valueOf(vehicle.getNumTires()) +
-                "</numtires><email>" + email +
+                "</vin><axis_num>" + String.valueOf(vehicle.getNumAxis()) +
+                "</axis_num><tire_num>" + String.valueOf(vehicle.getNumTires()) +
+                "</tire_num><email>" + email +
                 "</email></vehicle>";
         return m;
     }

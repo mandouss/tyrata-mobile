@@ -1,8 +1,8 @@
 package edu.duke.ece651.tyrata.communication;
 
-/**
- * Created by zhanglian1 on 2018-03-29.
- */
+/*Created by Ming on 2018-03-29.
+* used to get trace from the database and then send to the server
+*/
 
 public class Trace_item {
 
